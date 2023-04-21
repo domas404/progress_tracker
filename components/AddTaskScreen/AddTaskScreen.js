@@ -106,7 +106,8 @@ export default function AddTaskScreen({navigation}) {
                                 "subTaskCount": 0,
                                 "completeTaskCount": 0,
                                 "archived": false,
-                                "taskList": []
+                                "taskList": [],
+                                "taskLog": 0, // how many tasks were added in total (including deleted)
                             })
                             navigation.navigate('home');
                         }}

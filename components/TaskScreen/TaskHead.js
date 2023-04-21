@@ -8,7 +8,7 @@ const colors = {
 
 export default function TaskHead(props) {
 
-    console.log(props);
+    // console.log(props);
 
     const styles = StyleSheet.create({
         header: {
@@ -53,7 +53,7 @@ export default function TaskHead(props) {
             borderColor: colors.accentLight,
         },
         progressBarComplete: {
-            // width: `${props.percent}%`,
+            width: `${props.percent}%`,
             minWidth: '15%',
             height: 30,
             borderRadius: 15,

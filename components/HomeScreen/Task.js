@@ -133,9 +133,9 @@ export default function Task(props) {
             activeOpacity={0.7}
             onPress={() => props.navigation.navigate('task', {
                 id: props.id,
-                percent: props.percent,
-                description: props.description,
-                title: props.title
+                // percent: props.percent,
+                // description: props.description,
+                // title: props.title
             })}
         >
             

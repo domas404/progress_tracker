@@ -32,7 +32,7 @@ export default function HomeScreen({navigation}) {
         // maps data of tasks from local storage into array of objects (tasks)
         const tasksWithInfo = allKeys.map(async (key) => {
             let task = await getValuesByKey(key); // gets all task data by key
-            console.log(task);
+            // console.log(task);
             let newTask = { // creates object with provided data
                 id: key,
                 title: task.title,

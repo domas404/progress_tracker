@@ -42,23 +42,23 @@ export default function AddSubTaskScreen(props) {
     const storeNewSubTask = async (value) => {
         
         key = props.route.params.id;
-        console.log("Key", key);
+        // console.log("Key", key);
         try {
             taskObject = await getValuesByKey(key);
             taskCount = taskObject.subTaskCount + 1;
             allSubtasks = taskObject.taskList;
-            console.log("Before:", taskObject);
+            // console.log("Before:", taskObject);
             allSubtasks = [...allSubtasks, value];
             taskObject = {...taskObject, taskList: allSubtasks, subTaskCount: taskCount};
-            console.log("After:", taskObject);
+            // console.log("After:", taskObject);
             setTask((prevTask) => {
                 return {...prevTask, taskObject};
             });
             // console.log("aaaa");
             const jsonValue = JSON.stringify(taskObject);
-            console.log(jsonValue);
+            // console.log(jsonValue);
             await AsyncStorage.mergeItem(JSON.stringify(key), jsonValue);
-            console.log("Done.");
+            // console.log("Done.");
             // return(taskObject);
             // await AsyncStorage.setItem('taskCount', JSON.stringify(key+1));
         } catch (e) {
@@ -67,9 +67,6 @@ export default function AddSubTaskScreen(props) {
         // getMyStringValue();
     }
 
-    function aaa(){
-        console.log("Saved task:", task);
-    }
 
     const [title, setTitle] = React.useState('');
     const [weight, setWeight] = React.useState('');
@@ -107,7 +104,7 @@ export default function AddSubTaskScreen(props) {
                             })
                             // console.log(task);
                             setTimeout(() => {
-                                console.log("Task in AddSubTaskScreen: ", task);
+                                // console.log("Task in AddSubTaskScreen: ", task);
                                 navigation.navigate('task', {
                                     description: task.taskObject.description,
                                     title: task.taskObject.title,
