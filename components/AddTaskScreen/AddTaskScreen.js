@@ -102,7 +102,7 @@ export default function AddTaskScreen({navigation}) {
                             storeNewTask({
                                 "title": title,
                                 "description": description,
-                                "pinned": false,
+                                "pinned": true,
                                 "subTaskCount": 0,
                                 "completeTaskCount": 0,
                                 "archived": false,
