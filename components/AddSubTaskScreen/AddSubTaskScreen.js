@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -26,6 +26,8 @@ clearAll = async () => {
 
 export default function AddSubTaskScreen(props) {
 
+    // console.log(props.route.params.id);
+
     const navigation = props.navigation;
 
     const getValuesByKey = async (key) => {
@@ -33,22 +35,40 @@ export default function AddSubTaskScreen(props) {
         return JSON.parse(values);
     }
 
-    console.log(props.id);
+    // console.log(props.id);
+
+    const [task, setTask] = useState({});
 
     const storeNewSubTask = async (value) => {
-        // key = props.id;
-        // try {
-        //     taskObject = getValuesByKey();
-        //     allSubtasks = taskObject.taskList;
-        //     allSubtasks = [...allSubtasks, value];
-        //     taskObject = {...taskObject, allSubtasks};
-        //     const jsonValue = JSON.stringify(taskObject);
-        //     await AsyncStorage.setItem(JSON.stringify(key), jsonValue);
-        //     // await AsyncStorage.setItem('taskCount', JSON.stringify(key+1));
-        // } catch (e) {
-        //     // saving error
-        // }
+        
+        key = props.route.params.id;
+        console.log("Key", key);
+        try {
+            taskObject = await getValuesByKey(key);
+            taskCount = taskObject.subTaskCount + 1;
+            allSubtasks = taskObject.taskList;
+            console.log("Before:", taskObject);
+            allSubtasks = [...allSubtasks, value];
+            taskObject = {...taskObject, taskList: allSubtasks, subTaskCount: taskCount};
+            console.log("After:", taskObject);
+            setTask((prevTask) => {
+                return {...prevTask, taskObject};
+            });
+            // console.log("aaaa");
+            const jsonValue = JSON.stringify(taskObject);
+            console.log(jsonValue);
+            await AsyncStorage.mergeItem(JSON.stringify(key), jsonValue);
+            console.log("Done.");
+            // return(taskObject);
+            // await AsyncStorage.setItem('taskCount', JSON.stringify(key+1));
+        } catch (e) {
+            // saving error
+        }
         // getMyStringValue();
+    }
+
+    function aaa(){
+        console.log("Saved task:", task);
     }
 
     const [title, setTitle] = React.useState('');
@@ -85,7 +105,16 @@ export default function AddSubTaskScreen(props) {
                                 "weight": weight === '' ? 1 : weight,
                                 "complete": false,
                             })
-                            navigation.navigate('task');
+                            // console.log(task);
+                            setTimeout(() => {
+                                console.log("Task in AddSubTaskScreen: ", task);
+                                navigation.navigate('task', {
+                                    description: task.taskObject.description,
+                                    title: task.taskObject.title,
+                                    id: task.taskObject.id,
+                                    percent: task.taskObject.percent
+                                });
+                            }, 100);
                         }}
                     >
                         <Text style={styles.buttonText}>ADD</Text>

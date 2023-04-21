@@ -32,10 +32,11 @@ export default function HomeScreen({navigation}) {
         // maps data of tasks from local storage into array of objects (tasks)
         const tasksWithInfo = allKeys.map(async (key) => {
             let task = await getValuesByKey(key); // gets all task data by key
-            // console.log(task);
+            console.log(task);
             let newTask = { // creates object with provided data
                 id: key,
                 title: task.title,
+                description: task.description,
                 percent: task.completeTaskCount === 0 ? 0: task.completeTaskCount/task.subTaskCount*100,
                 pinned: task.pinned,
             }
@@ -44,30 +45,34 @@ export default function HomeScreen({navigation}) {
         })
     }
 
-    // updates task list (when new task is added to local storage)
+    // updates task list to display (when new task is added to local storage)
     const updateTasks = () => {
         manageTasks();
         pinnedTasks = tasks.filter((e) => e.pinned);
         restOfTasks = tasks.filter((e) => !e.pinned);
-        // console.log(pinnedTasks);
+        // console.log(tasks);
+        // all tasks
         setMappedTasks(() => restOfTasks.map((task) => {
             return (
                 <Task
                     id={task.id}
                     title={task.title}
                     percent={task.percent}
+                    description={task.description}
                     pinned={task.pinned}
                     key={task.id}
                     navigation={navigation}
                 />
             )
         }));
+        // pinned tasks
         setMappedPinnedTasks(() => pinnedTasks.map((task) => {
             return (
                 <Task
                     id={task.id}
                     title={task.title}
                     percent={task.percent}
+                    description={task.description}
                     pinned={task.pinned}
                     key={task.id}
                     navigation={navigation}

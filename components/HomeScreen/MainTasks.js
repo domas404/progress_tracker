@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { StyleSheet, Text, View, Alert } from 'react-native';
-import Task from "./Task"
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from "react";
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function MainTasks(props) {
     // Determines how to sort tasks

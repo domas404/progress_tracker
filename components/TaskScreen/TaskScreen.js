@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View, Image, SafeAreaView, Dimensions, ScrollView, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import TaskHead from "./TaskHead"
 import MainSubTasks from "./MainSubTasks"
 
 export default function TaskScreen(props) {
     const navigation = props.navigation;
-    console.log(props.route.params);
+    // console.log(props.route.params);
     // console.log(props.route);
     // const taskInfo = props.props;
+
+    console.log("Props:", props);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -14,7 +16,8 @@ export default function TaskScreen(props) {
                 <TaskHead
                     name={props.route.params.title}
                     percent={props.route.params.percent}
-                    />
+                    description={props.route.params.description}
+                />
                 <MainSubTasks />
             </ScrollView>
             <TouchableOpacity

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, SafeAreaView, Dimensions } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 const colors = {
     accentDark: '#13573F',
@@ -7,6 +7,8 @@ const colors = {
 }
 
 export default function TaskHead(props) {
+
+    console.log(props);
 
     const styles = StyleSheet.create({
         header: {
@@ -51,7 +53,7 @@ export default function TaskHead(props) {
             borderColor: colors.accentLight,
         },
         progressBarComplete: {
-            width: `${props.percent}%`,
+            // width: `${props.percent}%`,
             minWidth: '15%',
             height: 30,
             borderRadius: 15,
@@ -83,7 +85,7 @@ export default function TaskHead(props) {
                 <Text style={styles.mainText}>{props.name}</Text>
             </View>
             <View style={styles.pinnedTextContainer}>
-                <Text style={styles.pinnedLabelText}>Optional short description about current assignment and its tasks.</Text>
+                <Text style={styles.pinnedLabelText}>{props.description}</Text>
             </View>
             <View style={styles.taskTags}>
                 <Text style={styles.tag}>#Tags #tags #tags #tags #tags</Text>

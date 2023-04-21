@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 const colors = {
     accentDark: '#13573F',
@@ -134,6 +134,7 @@ export default function Task(props) {
             onPress={() => props.navigation.navigate('task', {
                 id: props.id,
                 percent: props.percent,
+                description: props.description,
                 title: props.title
             })}
         >

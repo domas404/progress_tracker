@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -19,7 +19,7 @@ getAllKeys = async () => {
       // read key error
     }
   
-    console.log(keys)
+    console.log(keys);
 }
 
 // getAllKeys();
@@ -102,7 +102,7 @@ export default function AddTaskScreen({navigation}) {
                             storeNewTask({
                                 "title": title,
                                 "description": description,
-                                "pinned": true,
+                                "pinned": false,
                                 "subTaskCount": 0,
                                 "completeTaskCount": 0,
                                 "archived": false,
