@@ -48,6 +48,7 @@ export default function AddSubTaskScreen(props) {
             taskCount = taskObject.subTaskCount + 1;
             allSubtasks = taskObject.taskList;
             // console.log("Before:", taskObject);
+            value = {...value, id: taskCount}
             allSubtasks = [...allSubtasks, value];
             taskObject = {...taskObject, taskList: allSubtasks, subTaskCount: taskCount};
             // console.log("After:", taskObject);

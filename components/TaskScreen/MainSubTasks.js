@@ -44,12 +44,6 @@ export default function MainTasks(props) {
             </View>
             {/* <SubTask title="Sukurti setting lango dizainą" percent={80} pinned={false} ></SubTask> */}
             {props.taskList}
-            {/* <SubTask title="Sumodeliuot duomenų bazę" percent={80} pinned={false} ></SubTask>
-            <SubTask title="Pakeist task menu" percent={80} pinned={false} ></SubTask>
-            <SubTask title="Pridėt progress bar" percent={80} pinned={false} ></SubTask>
-            <SubTask title="Subtask placeholder" percent={80} pinned={false} ></SubTask>
-            <SubTask title="Subtask placeholder" percent={80} pinned={false} ></SubTask>
-            <SubTask title="Subtask placeholder" percent={80} pinned={false} ></SubTask> */}
         </View>
     )
 }

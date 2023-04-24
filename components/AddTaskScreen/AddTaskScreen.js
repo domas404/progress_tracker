@@ -109,7 +109,7 @@ export default function AddTaskScreen({navigation}) {
                                 "taskList": [],
                                 "taskLog": 0, // how many tasks were added in total (including deleted)
                             })
-                            navigation.navigate('home');
+                            navigation.navigate('home', { addedTask: true });
                         }}
                     >
                         <Text style={styles.buttonText}>ADD</Text>

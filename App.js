@@ -17,6 +17,7 @@ export default function App() {
           <Stack.Screen
             name="home"
             component={HomeScreen}
+            initialParams={{'addedTask':false}}
           />
           <Stack.Screen
             name="task"

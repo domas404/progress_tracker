@@ -5,11 +5,21 @@ import MainHead from "./MainHead"
 import Task from "./Task"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function HomeScreen({navigation}) {
+
+clearAll = async () => {
+    await AsyncStorage.clear()
+    console.log('Cleared.')
+}
+
+// clearAll();
+
+export default function HomeScreen(props) {
+
+    const navigation = props.navigation;
 
     const [tasks, setTasks] = useState([]); // task objects
     const [mappedTasks, setMappedTasks] = useState([]); // task objects mapped to Task components
-    const [mappedPinnedTasks, setMappedPinnedTasks] = useState([]); // task objects that are pinned mapped to Task components
+    const [mappedPinnedTasks, setMappedPinnedTasks] = useState([]); // pinned task objects mapped to Task components
 
     // Returns all keys in local storage
     const getAllKeys = async () => {
@@ -24,68 +34,104 @@ export default function HomeScreen({navigation}) {
         return JSON.parse(values);
     }
 
+    const setTaskObject = async (allKeys) => {
+        const results = []
+        for (let key of allKeys) {
+            results.push(await getValuesByKey(key));
+        }
+        return results;
+    }
+
+    promisedSetTasks = (newTask) => new Promise(resolve => {
+        setTasks((prevTasks) => prevTasks.find(e => e.id == newTask.id) ? prevTasks : [...prevTasks, newTask]);
+        resolve(newTask);
+    })
+
     // reads all tasks from local storage
     const manageTasks = async () => {
         let allKeys = await getAllKeys(); // get all keys from local storage
         allKeys = allKeys.filter(element => element !== 'taskCount'); // remove taskCount key from array
+        const savePromises = [];
 
-        // maps data of tasks from local storage into array of objects (tasks)
-        const tasksWithInfo = allKeys.map(async (key) => {
-            let task = await getValuesByKey(key); // gets all task data by key
-            // console.log(task);
-            let newTask = { // creates object with provided data
-                id: key,
-                title: task.title,
-                description: task.description,
-                percent: task.completeTaskCount === 0 ? 0: task.completeTaskCount/task.subTaskCount*100,
-                pinned: task.pinned,
-            }
-            // adds task to task array if there's no task with exact id
-            setTasks((prevTasks) => prevTasks.find(e => e.id == newTask.id) ? prevTasks : [...prevTasks, newTask]);
-        })
+        const readTasks = await setTaskObject(allKeys);
+        for(var i=0; i<readTasks.length; i++){
+            savePromises.push(await promisedSetTasks({
+                id: allKeys[i],
+                title: readTasks[i].title,
+                description: readTasks[i].description,
+                percent: readTasks[i].completeTaskCount === 0 ? 0: readTasks[i].completeTaskCount/readTasks[i].subTaskCount*100,
+                pinned: readTasks[i].pinned,
+            }));
+        }
+        return savePromises;
     }
 
-    // updates task list to display (when new task is added to local storage)
-    const updateTasks = () => {
-        manageTasks();
-        pinnedTasks = tasks.filter((e) => e.pinned);
-        restOfTasks = tasks.filter((e) => !e.pinned);
-        // console.log(tasks);
-        // all tasks
-        setMappedTasks(() => restOfTasks.map((task) => {
-            return (
-                <Task
-                    id={task.id}
-                    title={task.title}
-                    percent={task.percent}
-                    description={task.description}
-                    pinned={task.pinned}
-                    key={task.id}
-                    navigation={navigation}
-                />
-            )
-        }));
-        // pinned tasks
-        setMappedPinnedTasks(() => pinnedTasks.map((task) => {
-            return (
-                <Task
-                    id={task.id}
-                    title={task.title}
-                    percent={task.percent}
-                    description={task.description}
-                    pinned={task.pinned}
-                    key={task.id}
-                    navigation={navigation}
-                />
-            )
-        }));
+    // maps task list to Task components and updates displayed task list (when new task is added to local storage)
+    const updateTasks = async () => {
+        await manageTasks().then((ta) => {
+            console.log("TASKS in UpdateTasks():", ta);
+            pinnedTasks = ta.filter((e) => e.pinned);
+            restOfTasks = ta.filter((e) => !e.pinned);
+            // all tasks
+            setMappedTasks(() => restOfTasks.map((task) => {
+                return (
+                    <Task
+                        id={task.id}
+                        title={task.title}
+                        percent={task.percent}
+                        description={task.description}
+                        pinned={task.pinned}
+                        key={task.id}
+                        navigation={navigation}
+                    />
+                )
+            }));
+            // pinned tasks
+            setMappedPinnedTasks(() => pinnedTasks.map((task) => {
+                return (
+                    <Task
+                        id={task.id}
+                        title={task.title}
+                        percent={task.percent}
+                        description={task.description}
+                        pinned={task.pinned}
+                        key={task.id}
+                        navigation={navigation}
+                    />
+                )
+            }));
+        })
+
     };
+    // console.log(props);
+
+    const onTaskAdded = () => {
+        console.log("Did it add new task?", props.route.params.addedTask);
+        if(props.route.params.addedTask){
+            console.log("Rerendering...");
+            setTimeout(() => {
+                updateTasks();
+                props.route.params.addedTask = false;
+            }, 100);
+        }
+    }
+
+    useEffect(() => {
+        onTaskAdded();
+        // console.log(props.route.params.addedTask);
+    }, [props.route.params.addedTask]);
+
+    // setTimeout(() => {
+    //     console.log("All the params: ", props.route.params);
+    // }, 1000);
+
+    // console.log(props.route.params.addedTask);
+
+    // updateTasks();
 
     // rerenders tasks every 0.5 sec
     useEffect(() => {
-        setTimeout(() => {
-            updateTasks();
-        }, 1000);
+        updateTasks();
     }, []);
 
     return (
