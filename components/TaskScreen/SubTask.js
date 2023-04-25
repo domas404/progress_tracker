@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 
 const colors = {
     accentDark: '#13573F',
@@ -63,6 +63,10 @@ export default function SubTask(props) {
         // console.log("Current task state:", complete);
     }
 
+    const onLongSubtaskPress = () => {
+        Alert.alert("U ok?");
+    }
+
     useEffect(() => {
         // console.log("Changed task state.");
     }, [complete]);
@@ -72,6 +76,7 @@ export default function SubTask(props) {
             style={basicStyle.taskContainer}
             activeOpacity={0.7}
             onPress={onSubtaskPress}
+            onLongPress={onLongSubtaskPress}
         >
             <View style={basicStyle.checkBox}>
                 {

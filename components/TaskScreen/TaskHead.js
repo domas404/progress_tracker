@@ -58,7 +58,7 @@ export default function TaskHead(props) {
             height: 30,
             borderRadius: 15,
             backgroundColor: colors.accentLight,
-            marginLeft: -1,
+            // marginLeft: -1,
             marginTop: -1,
         },
         progressPercent: {
