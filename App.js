@@ -22,6 +22,7 @@ export default function App() {
           <Stack.Screen
             name="task"
             component={TaskScreen}
+            initialParams={{'addedSubTask':false}}
           />
           <Stack.Screen
             name="add_task"

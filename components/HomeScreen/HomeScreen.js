@@ -31,6 +31,7 @@ export default function HomeScreen(props) {
     // Returns value by key
     const getValuesByKey = async (key) => {
         values = await AsyncStorage.getItem(key);
+        // console.log(values);
         return JSON.parse(values);
     }
 
@@ -69,7 +70,7 @@ export default function HomeScreen(props) {
     // maps task list to Task components and updates displayed task list (when new task is added to local storage)
     const updateTasks = async () => {
         await manageTasks().then((ta) => {
-            console.log("TASKS in UpdateTasks():", ta);
+            // console.log("TASKS in UpdateTasks():", ta);
             pinnedTasks = ta.filter((e) => e.pinned);
             restOfTasks = ta.filter((e) => !e.pinned);
             // all tasks
@@ -103,10 +104,9 @@ export default function HomeScreen(props) {
         })
 
     };
-    // console.log(props);
 
     const onTaskAdded = () => {
-        console.log("Did it add new task?", props.route.params.addedTask);
+        console.log("New task added?", props.route.params.addedTask);
         if(props.route.params.addedTask){
             console.log("Rerendering...");
             setTimeout(() => {
@@ -118,16 +118,8 @@ export default function HomeScreen(props) {
 
     useEffect(() => {
         onTaskAdded();
-        // console.log(props.route.params.addedTask);
     }, [props.route.params.addedTask]);
 
-    // setTimeout(() => {
-    //     console.log("All the params: ", props.route.params);
-    // }, 1000);
-
-    // console.log(props.route.params.addedTask);
-
-    // updateTasks();
 
     // rerenders tasks every 0.5 sec
     useEffect(() => {

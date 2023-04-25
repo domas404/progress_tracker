@@ -50,7 +50,7 @@ export default function AddTaskScreen({navigation}) {
             // saving error
         }
         // console.log('Value set.');
-        getMyStringValue();
+        // getMyStringValue();
     }
 
     const [title, setTitle] = React.useState('');

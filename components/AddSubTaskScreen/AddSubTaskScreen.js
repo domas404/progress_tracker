@@ -3,14 +3,6 @@ import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity } fro
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-// initializeCount = async () => {
-//     isInitialised = await AsyncStorage.getItem('taskCount')
-//     if(isInitialised === null)
-//         await AsyncStorage.setItem('taskCount', JSON.stringify(0));
-// }
-
-// initializeCount();
-
 // getMyStringValue = async () => {
 //     // console.log(await AsyncStorage.getItem('36'));
     
@@ -39,26 +31,36 @@ export default function AddSubTaskScreen(props) {
 
     const [task, setTask] = useState({});
 
+    promisedSetTasks = (newTask) => new Promise(resolve => {
+        setTask((prevTask) => {
+            return {...prevTask, newTask};
+        });
+        resolve(newTask);
+    })
+
     const storeNewSubTask = async (value) => {
         
         key = props.route.params.id;
         // console.log("Key", key);
         try {
-            taskObject = await getValuesByKey(key);
-            taskCount = taskObject.subTaskCount + 1;
-            allSubtasks = taskObject.taskList;
+            let taskObject = await getValuesByKey(key);
+            console.log(taskObject);
+            let taskCount = taskObject.subTaskCount + 1;   // increment task count
+            let taskID = taskObject.taskLog + 1;           // determine new subtask's ID
+            let allSubtasks = taskObject.taskList;         // take all task's existing subtasks
             // console.log("Before:", taskObject);
-            value = {...value, id: taskCount}
-            allSubtasks = [...allSubtasks, value];
-            taskObject = {...taskObject, taskList: allSubtasks, subTaskCount: taskCount};
+            value = {...value, id: taskID}                 // set new subtask's ID
+            allSubtasks = [...allSubtasks, value];         // add new subtask to subtask array
+
+            // replace subtask array with a new one
+            taskObject = {...taskObject, taskList: allSubtasks, subTaskCount: taskCount, taskLog: taskID };
             // console.log("After:", taskObject);
-            setTask((prevTask) => {
-                return {...prevTask, taskObject};
-            });
+            await promisedSetTasks(taskObject);
             // console.log("aaaa");
             const jsonValue = JSON.stringify(taskObject);
             // console.log(jsonValue);
-            await AsyncStorage.mergeItem(JSON.stringify(key), jsonValue);
+            await AsyncStorage.mergeItem(key, jsonValue);
+            return(await promisedSetTasks(taskObject));
             // console.log("Done.");
             // return(taskObject);
             // await AsyncStorage.setItem('taskCount', JSON.stringify(key+1));
@@ -98,19 +100,20 @@ export default function AddSubTaskScreen(props) {
                     <TouchableOpacity
                         style={styles.addButton}
                         onPress={() => {
-                            storeNewSubTask({
+                            const storedTask = storeNewSubTask({
                                 "title": title,
                                 "weight": weight === '' ? 1 : weight,
                                 "complete": false,
                             })
                             // console.log(task);
                             setTimeout(() => {
-                                // console.log("Task in AddSubTaskScreen: ", task);
+                                // console.log("Task in AddSubTaskScreen: ", storedTask);
                                 navigation.navigate('task', {
-                                    description: task.taskObject.description,
-                                    title: task.taskObject.title,
-                                    id: task.taskObject.id,
-                                    percent: task.taskObject.percent
+                                    // description: task.taskObject.description,
+                                    // title: task.taskObject.title,
+                                    id: props.route.params.id,
+                                    // percent: task.taskObject.percent
+                                    addedSubTask: true,
                                 });
                             }, 100);
                         }}

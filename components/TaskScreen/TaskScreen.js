@@ -20,6 +20,11 @@ export default function TaskScreen(props) {
         return JSON.parse(values);
     }
 
+    promisedSetSubTasks = (newSubTask) => new Promise(resolve => {
+        setSubTasks((prevSubTasks) => prevSubTasks.find(e => e.id == newSubTask.id) ? prevSubTasks : [...prevSubTasks, newSubTask])
+        resolve(newSubTask);
+    })
+
     // reads all tasks from local storage
     const manageTasks = async () => {
         let key = props.route.params.id;
@@ -28,39 +33,56 @@ export default function TaskScreen(props) {
         let allSubtasks = taskInfo.taskList;
         // console.log("Subtasks", allSubtasks);
 
-        const subTasksWithInfo = allSubtasks.map(async (subtask) => {
-            let newSubTask = {
-                id: subtask.id,
-                title: subtask.title,
-                weight: subtask.weight,
-                complete: subtask.complete
-            }
-            setSubTasks((prevSubTasks) => prevSubTasks.find(e => e.id == newSubTask.id) ? prevSubTasks : [...prevSubTasks, newSubTask]);
-        })
+        const savePromises = [];
+
+        for(var i=0; i<allSubtasks.length; i++){
+            savePromises.push({
+                id: allSubtasks[i].id,
+                title: allSubtasks[i].title,
+                weight: allSubtasks[i].weight,
+                complete: allSubtasks[i].complete
+            });
+        }
+        return savePromises;
     }
 
     // updates task list to display (when new task is added to local storage)
-    const updateTasks = () => {
-        manageTasks();
-        setMappedSubTasks(() => subTasks.map((task) => {
-            return (
-                <SubTask
-                    id={task.id}
-                    title={task.title}
-                    key={task.id}
-                    complete={task.complete}
-                    weight={task.weight}
-                    // navigation={navigation}
-                />
-            )
-        }));
+    const updateTasks = async () => {
+        await manageTasks().then((ta) => {
+            setMappedSubTasks(() => ta.map((task) => {
+                return (
+                    <SubTask
+                        id={task.id}
+                        title={task.title}
+                        key={task.id}
+                        complete={task.complete}
+                        weight={task.weight}
+                        // navigation={navigation}
+                    />
+                )
+            }));
+        })
     };
+
+    const onSubTaskAdded = () => {
+        console.log("New task added?", props.route.params.addedSubTask);
+        if(props.route.params.addedSubTask){
+            console.log("Rerendering...");
+            setTimeout(() => {
+                updateTasks();
+                props.route.params.addedSubTask = false;
+            }, 100);
+        }
+    }
+
+    useEffect(() => {
+        // console.log("TASK ID:", props.route.params.id);
+        onSubTaskAdded();
+    }, [props.route.params.addedSubTask]);
 
     // rerenders tasks every 0.5 sec
     useEffect(() => {
-        // setTimeout(() => {
-            updateTasks();
-        // }, 500);
+        updateTasks();
     }, []);
 
 
@@ -73,7 +95,7 @@ export default function TaskScreen(props) {
 
     // console.log("Mapped Subtasks:", mappedSubTasks);
 
-    console.log("Task properties:", taskProps);
+    // console.log("Task properties:", taskProps);
 
     return (
         <SafeAreaView style={styles.container}>
