@@ -108,6 +108,8 @@ export default function AddTaskScreen({navigation}) {
                                 "archived": false,
                                 "taskList": [],
                                 "taskLog": 0, // how many tasks were added in total (including deleted)
+                                "weightSum": 0,
+                                "completeWeightSum": 0,
                             })
                             navigation.navigate('home', { addedTask: true });
                         }}

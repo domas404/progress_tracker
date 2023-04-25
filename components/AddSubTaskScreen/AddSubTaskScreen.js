@@ -44,7 +44,7 @@ export default function AddSubTaskScreen(props) {
         // console.log("Key", key);
         try {
             let taskObject = await getValuesByKey(key);
-            console.log(taskObject);
+            // console.log(taskObject);
             let taskCount = taskObject.subTaskCount + 1;   // increment task count
             let taskID = taskObject.taskLog + 1;           // determine new subtask's ID
             let allSubtasks = taskObject.taskList;         // take all task's existing subtasks
@@ -53,7 +53,13 @@ export default function AddSubTaskScreen(props) {
             allSubtasks = [...allSubtasks, value];         // add new subtask to subtask array
 
             // replace subtask array with a new one
-            taskObject = {...taskObject, taskList: allSubtasks, subTaskCount: taskCount, taskLog: taskID };
+            taskObject = {
+                ...taskObject,
+                taskList: allSubtasks,
+                subTaskCount: taskCount,
+                taskLog: taskID,
+                weightSum: taskObject.weightSum + value.weight,
+            };
             // console.log("After:", taskObject);
             await promisedSetTasks(taskObject);
             // console.log("aaaa");
@@ -102,7 +108,7 @@ export default function AddSubTaskScreen(props) {
                         onPress={() => {
                             const storedTask = storeNewSubTask({
                                 "title": title,
-                                "weight": weight === '' ? 1 : weight,
+                                "weight": weight === '' ? 1 : parseInt(weight),
                                 "complete": false,
                             })
                             // console.log(task);

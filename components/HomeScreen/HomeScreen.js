@@ -4,6 +4,7 @@ import MainTasks from "./MainTasks"
 import MainHead from "./MainHead"
 import Task from "./Task"
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 
 clearAll = async () => {
@@ -60,7 +61,7 @@ export default function HomeScreen(props) {
                 id: allKeys[i],
                 title: readTasks[i].title,
                 description: readTasks[i].description,
-                percent: readTasks[i].completeTaskCount === 0 ? 0: readTasks[i].completeTaskCount/readTasks[i].subTaskCount*100,
+                percent: readTasks[i].completeTaskCount === 0 ? 0: Math.round(readTasks[i].completeWeightSum/readTasks[i].weightSum*100),
                 pinned: readTasks[i].pinned,
             }));
         }
@@ -120,11 +121,13 @@ export default function HomeScreen(props) {
         onTaskAdded();
     }, [props.route.params.addedTask]);
 
+    const isFocused = useIsFocused();
 
     // rerenders tasks every 0.5 sec
     useEffect(() => {
         updateTasks();
-    }, []);
+        // const isFocused = useIsFocused();
+    }, [isFocused]);
 
     return (
         <SafeAreaView style={styles.container}>

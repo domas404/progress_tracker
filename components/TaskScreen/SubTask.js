@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 const colors = {
     accentDark: '#13573F',
@@ -7,6 +7,8 @@ const colors = {
 }
 
 export default function SubTask(props) {
+
+    // console.log(props);
 
     const basicStyle = StyleSheet.create({
         taskContainer: {
@@ -39,14 +41,47 @@ export default function SubTask(props) {
             fontSize: 20,
             color: colors.accentDark,
             fontWeight: 500,
-
+        },
+        checked: {
+            backgroundColor: colors.accentLight,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        tick: {
+            height: 18,
+            width: 18,
+            // borderWidth: 1,
+            // borderColor: colors.accentDark,
         }
-    })
+    });
+
+    const [complete, setComplete] = useState(props.complete);
+
+    const onSubtaskPress = () => {
+        setComplete((prevComplete) => !prevComplete);
+        props.onCheckSubTask(props.id);
+        // console.log("Current task state:", complete);
+    }
+
+    useEffect(() => {
+        // console.log("Changed task state.");
+    }, [complete]);
 
     return (
-        <TouchableOpacity style={basicStyle.taskContainer} activeOpacity={0.7}>
+        <TouchableOpacity
+            style={basicStyle.taskContainer}
+            activeOpacity={0.7}
+            onPress={onSubtaskPress}
+        >
             <View style={basicStyle.checkBox}>
-                <View style={basicStyle.checkBoxShape}></View>
+                {
+                    complete ?
+                        <View style={[basicStyle.checkBoxShape, basicStyle.checked]}>
+                            <Image style={basicStyle.tick} source={require("../../assets/tick_green.png")} />
+                        </View>
+                    :
+                        <View style={basicStyle.checkBoxShape}></View>
+                }
             </View>
             <Text style={basicStyle.subTaskText}>{props.title}</Text>
         </TouchableOpacity>
