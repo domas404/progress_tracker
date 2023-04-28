@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView, Image, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LabelSection(props) {
@@ -32,6 +32,8 @@ export default function LabelSection(props) {
             backgroundColor: 'white',
             padding: 10,
             borderRadius: 24,
+            maxHeight: 250,
+            overflow: 'visible',
         },
         searchIcon: {
             height: 18,
@@ -200,7 +202,7 @@ export default function LabelSection(props) {
                         onChangeText={text => handleSearch(text)}
                     />
                 </TouchableOpacity>
-                <View style={styles.optionsContainer}>
+                <ScrollView nestedScrollEnabled={true} style={styles.optionsContainer} keyboardShouldPersistTaps='handled'>
                     {
                         filteredLabels.length == 0 && searchInput != "" ?
                             <TouchableOpacity
@@ -213,7 +215,11 @@ export default function LabelSection(props) {
                         :
                         filteredLabels.map((label) => {
                             return (
-                                <TouchableOpacity style={styles.labelOption} onPress={() => onLabelCheck(label)} key={label.id}>
+                                <TouchableOpacity
+                                    style={styles.labelOption}
+                                    onPress={() => onLabelCheck(label)}
+                                    key={label.id}
+                                >
                                     {
                                         label.checked ?
                                         <View style={[styles.checkBox, styles.checkedCheckBox]}>
@@ -227,7 +233,7 @@ export default function LabelSection(props) {
                             )
                         })
                     }
-                </View>
+                </ScrollView>
             </View>
         </View>
     )

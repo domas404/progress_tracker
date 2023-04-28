@@ -80,7 +80,8 @@ export default function AddTaskScreen({navigation}) {
                         multiline={true}
                     />
                 </View>
-            <ScrollView contentContainerStyle={styles.scroll}>
+            <View style={styles.scrollContainer}>
+            <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps='handled'>
                 <View style={styles.formContainer}>
                     <Text style={styles.inputLabel}>Due date</Text>
                     <View style={styles.datetimeContainer}>
@@ -140,6 +141,7 @@ export default function AddTaskScreen({navigation}) {
                     </View>
                 </View>
             </ScrollView>
+            </View>
         </SafeAreaView>
     )
 }
@@ -149,13 +151,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#13573F',
-        flex: 1,
+        height: '15%',
         marginTop: 20,
         minHeight: 100,
     },
+    scrollContainer: {
+        borderTopLeftRadius: 40,
+        borderTopRightRadius: 40,
+        backgroundColor: '#eee',
+        flex: 1,
+    },
     scroll: {
         justifyContent: 'center',
-        minHeight: '100%',
+        // minHeight: '100%',
     },
     header: {
         fontSize: 32,
