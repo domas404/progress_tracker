@@ -1,6 +1,8 @@
-import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MultipleSelectList } from 'react-native-dropdown-select-list'
+import LabelSection from './LabelSection'
 
 
 initializeCount = async () => {
@@ -39,6 +41,14 @@ clearAll = async () => {
 
 export default function AddTaskScreen({navigation}) {
 
+    const [selected, setSelected] = useState("");
+
+    const data = [
+        { key:'1', value:'Karo studijos' },
+        { key:'2', value:'Univeras' },
+        { key:'3', value:'Humanoidai' },
+    ]
+
     const storeNewTask = async (value) => {
         key = JSON.parse(await AsyncStorage.getItem('taskCount'));
         // console.log(key);
@@ -59,65 +69,77 @@ export default function AddTaskScreen({navigation}) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}>
-                {/* <Text style={styles.header}>Add a new task</Text> */}
-                <TextInput
-                    style={[styles.titleInput, styles.header]}
-                    onChangeText={newTitle => setTitle(newTitle)}
-                    defaultValue={title}
-                    placeholder='Add task title...'
-                    placeholderTextColor='rgba(255,255,255,0.7)'
-                    multiline={true}
-                />
-            </View>
-            <View style={styles.formContainer}>
-                <Text style={styles.inputLabel}>Due date</Text>
-                <View style={styles.datetimeContainer}>
-                    <View style={styles.dateContainer}>
-                        <Text style={styles.date}>yyyy-mm-dd</Text>
+                <View style={styles.headerContainer}>
+                    {/* <Text style={styles.header}>Add a new task</Text> */}
+                    <TextInput
+                        style={[styles.titleInput, styles.header]}
+                        onChangeText={newTitle => setTitle(newTitle)}
+                        defaultValue={title}
+                        placeholder='Add task title...'
+                        placeholderTextColor='rgba(255,255,255,0.7)'
+                        multiline={true}
+                    />
+                </View>
+            <ScrollView contentContainerStyle={styles.scroll}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.inputLabel}>Due date</Text>
+                    <View style={styles.datetimeContainer}>
+                        <View style={styles.dateContainer}>
+                            <Text style={styles.date}>2023-05-31</Text>
+                        </View>
+                        <View style={styles.dateContainer}>
+                            <Text style={styles.date}>23:59</Text>
+                        </View>
                     </View>
-                    <View style={styles.dateContainer}>
-                        <Text style={styles.date}>-- : --</Text>
+                    <Text style={styles.inputLabel}>Description</Text>
+                    <TextInput
+                        style={[styles.input, styles.descriptionInput]}
+                        onChangeText={newDescription => setDescription(newDescription)}
+                        defaultValue={description}
+                        placeholder='Add a short description (optional)'
+                        multiline={true}
+                    />
+                    <Text style={styles.inputLabel}>Labels</Text>
+                    {/* <MultipleSelectList
+                        setSelected={(val) => setSelected(val)}
+                        data={data}
+                        save="value"
+                        boxStyles={{width: '95%', marginLeft: '2.5%', borderRadius: 24, backgroundColor: 'white', borderWidth: 0, marginTop: 10}}
+                        dropdownStyles={{width: '95%', marginLeft: '2.5%', borderRadius: 24, backgroundColor: 'white', borderWidth: 0}}
+                        badgeStyles={{backgroundColor: '#AED3C5', height: 36, justifyContent:'center'}}
+                        badgeTextStyles={{color: '#13573F', fontSize: 14, fontWeight: 700}}
+                    /> */}
+                    <LabelSection />
+                    {/* <TextInput
+                        style={styles.input}
+                        onChangeText={newTags => setTags(newTags)}
+                        defaultValue={tags}
+                        placeholder='Add labels'
+                    /> */}
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.addButton}
+                            onPress={() => {
+                                storeNewTask({
+                                    "title": title,
+                                    "description": description,
+                                    "pinned": false,
+                                    "subTaskCount": 0,
+                                    "completeTaskCount": 0,
+                                    "archived": false,
+                                    "taskList": [],
+                                    "taskLog": 0, // how many tasks were added in total (including deleted)
+                                    "weightSum": 0,
+                                    "completeWeightSum": 0,
+                                })
+                                navigation.navigate('home', { addedTask: true });
+                            }}
+                        >
+                            <Text style={styles.buttonText}>ADD</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
-                <Text style={styles.inputLabel}>Description</Text>
-                <TextInput
-                    style={[styles.input, styles.descriptionInput]}
-                    onChangeText={newDescription => setDescription(newDescription)}
-                    defaultValue={description}
-                    placeholder='Add a short description (optional)'
-                    multiline={true}
-                />
-                <Text style={styles.inputLabel}>Labels</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={newTags => setTags(newTags)}
-                    defaultValue={tags}
-                    placeholder='Add labels'
-                />
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        style={styles.addButton}
-                        onPress={() => {
-                            storeNewTask({
-                                "title": title,
-                                "description": description,
-                                "pinned": false,
-                                "subTaskCount": 0,
-                                "completeTaskCount": 0,
-                                "archived": false,
-                                "taskList": [],
-                                "taskLog": 0, // how many tasks were added in total (including deleted)
-                                "weightSum": 0,
-                                "completeWeightSum": 0,
-                            })
-                            navigation.navigate('home', { addedTask: true });
-                        }}
-                    >
-                        <Text style={styles.buttonText}>ADD</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }
@@ -129,6 +151,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#13573F',
         flex: 1,
         marginTop: 20,
+        minHeight: 100,
+    },
+    scroll: {
+        justifyContent: 'center',
+        minHeight: '100%',
     },
     header: {
         fontSize: 32,

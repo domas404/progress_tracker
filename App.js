@@ -4,35 +4,38 @@ import HomeScreen from "./components/HomeScreen/HomeScreen"
 import TaskScreen from "./components/TaskScreen/TaskScreen"
 import AddTaskScreen from './components/AddTaskScreen/AddTaskScreen';
 import AddSubTaskScreen from './components/AddSubTaskScreen/AddSubTaskScreen';
+import { MenuProvider } from 'react-native-popup-menu';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
     return (
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false
-          }}>
-          <Stack.Screen
-            name="home"
-            component={HomeScreen}
-            initialParams={{'addedTask':false}}
-          />
-          <Stack.Screen
-            name="task"
-            component={TaskScreen}
-            initialParams={{'addedSubTask':false}}
-          />
-          <Stack.Screen
-            name="add_task"
-            component={AddTaskScreen}
-          />
-          <Stack.Screen
-            name="add_subtask"
-            component={AddSubTaskScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false
+            }}>
+            <Stack.Screen
+              name="home"
+              component={HomeScreen}
+              initialParams={{'addedTask':false}}
+            />
+            <Stack.Screen
+              name="task"
+              component={TaskScreen}
+              initialParams={{'addedSubTask':false}}
+            />
+            <Stack.Screen
+              name="add_task"
+              component={AddTaskScreen}
+            />
+            <Stack.Screen
+              name="add_subtask"
+              component={AddSubTaskScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      
     );
 }

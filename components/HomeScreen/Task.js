@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Dimensions } from 'react-native';
 
 const colors = {
     accentDark: '#13573F',
@@ -39,7 +39,8 @@ export default function Task(props) {
         titleAndMenu: {
             width: '85%',
             flexDirection: 'row',
-            justifyContent: 'flex-start'
+            justifyContent: 'flex-start',
+            overflow: 'visible',
         },
         taskTitle: {
             fontWeight: 700,
@@ -70,8 +71,9 @@ export default function Task(props) {
         taskMenu: {
             height: 28,
             width: 28,
-            marginLeft: 15
-        }
+            marginLeft: 15,
+            overflow:'visible',
+        },
     })
 
     const styles1 = StyleSheet.create({
@@ -120,10 +122,14 @@ export default function Task(props) {
         },
         tag: {
             color: colors.accentLight,
-        }
+        },
     });
 
     const styles = props.pinned ? styles2 : styles1;
+
+    const onMorePress = () => {
+        Alert.alert("Menu opened");
+    }
 
     // console.log(props.id);
 
@@ -143,7 +149,9 @@ export default function Task(props) {
             <View style={[basicStyle.taskTitleContainer, styles.taskTitleContainer]}>
                 <View style={basicStyle.titleAndMenu}>
                     <Text style={[basicStyle.taskTitle, styles.taskTitle]}>{props.title}</Text>
-                    <Image style={basicStyle.taskMenu} source={require("../../assets/dots_light_green.png")} resizeMode='contain' />
+                        <TouchableOpacity>
+                            <Image style={basicStyle.taskMenu} source={require("../../assets/dots_light_green.png")} resizeMode='contain' />
+                        </TouchableOpacity>
                 </View>
             </View>
             <View style={[basicStyle.progressBar, styles.progressBar]}>
@@ -156,8 +164,26 @@ export default function Task(props) {
             <View style={[basicStyle.taskTags, styles.taskTags]}>
                 <Text style={[basicStyle.tag, styles.tag]}>#Tags #tags #tags #tags #tags</Text>
             </View>
+
+            {/* <MenuProvider> */}
+                {/* <Menu>
+                    <MenuTrigger>
+                        <TouchableOpacity style={styles.menuButton}>
+                            <Text style={styles.text}>PupUp Menu</Text>
+                        </TouchableOpacity>
+                    </MenuTrigger>
+                    <MenuOptions>
+                        <MenuOption onSelect={() => alert(`Save`)} text='Save' />
+                        <MenuOption onSelect={() => alert(`Delete`)} >
+                            <Text style={{ color: 'red' }}>Delete</Text>
+                        </MenuOption>
+                        <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
+                    </MenuOptions>
+                </Menu> */}
+            {/* </MenuProvider> */}
             
         </TouchableOpacity>
+
     )
 }
 

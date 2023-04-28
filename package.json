@@ -21,7 +21,9 @@
     "react-dom": "18.2.0",
     "react-native": "0.71.6",
     "react-native-datepicker": "^1.7.2",
+    "react-native-dropdown-select-list": "^2.0.4",
     "react-native-modal-datetime-picker": "^15.0.0",
+    "react-native-popup-menu": "^0.16.1",
     "react-native-web": "~0.18.10"
   },
   "devDependencies": {
