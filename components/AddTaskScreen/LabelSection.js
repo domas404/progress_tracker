@@ -25,6 +25,7 @@ export default function LabelSection(props) {
             borderRadius: 15,
             color: '#13573F',
             fontWeight: 700,
+            fontSize: 16,
         },
         allLabelContainer: {
             marginTop: 10,
@@ -47,6 +48,7 @@ export default function LabelSection(props) {
         },
         searchInput: {
             marginLeft: 10,
+            fontSize: 16,
         },
         checkBox: {
             height: 20,
@@ -56,6 +58,7 @@ export default function LabelSection(props) {
             borderRadius: 6,
             alignItems: 'center',
             justifyContent: 'center',
+            marginTop: 3,
         },
         checkedCheckBox: {
             backgroundColor: '#13573F',
@@ -65,13 +68,15 @@ export default function LabelSection(props) {
             marginBottom: 5,
             marginTop: 0,
             flexDirection: 'row',
-            padding: 8
+            padding: 8,
+            alignItems: 'center',
         },
         optionsContainer: {
             marginTop: 10,
         },
         labelText: {
             marginLeft: 10,
+            fontSize: 16,
         },
         tickIcon: {
             height: 14,
@@ -85,6 +90,7 @@ export default function LabelSection(props) {
             paddingLeft: 5,
             paddingRight: 15,
             color: '#666',
+            fontSize: 16,
             // fontWeight: 500,
         },
         createLabelOption: {
@@ -124,9 +130,11 @@ export default function LabelSection(props) {
             newLabel[labelIndex].checked = !prevLabels[labelIndex].checked;
             return newLabel;
         });
-
+        // console.log(isChecked);
         if(isChecked) {
             setChosenLabels((prevLabels) => {
+                console.log("Update tasks when checked is true");
+                props.updateLabels(() => [...prevLabels, option]);
                 return [...prevLabels, option];
             });
         } else {
@@ -134,11 +142,14 @@ export default function LabelSection(props) {
             // console.log("Labels", chosenLabels);
             // console.log("Label to remove", labelToRemove);
             setChosenLabels((prevChosenLabels) => {
+                console.log("Update tasks when checked is false");
                 let newLabelList = [...prevChosenLabels];
                 newLabelList.splice(labelToRemove, 1);
                 // console.log("NewLabelList after splicing:", newLabelList);
+                props.updateLabels(newLabelList);
                 return newLabelList;
             });
+            console.log(chosenLabels);
         }
     }
 
@@ -161,7 +172,7 @@ export default function LabelSection(props) {
     }
 
     const handleNewLabel = (name) => {
-        console.log("New label:", name);
+        // console.log("New label:", name);
         let newLabelObject = {
             id: labels.length,
             checked: false,

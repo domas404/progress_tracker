@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 const colors = {
     accentDark: '#13573F',
@@ -75,9 +75,32 @@ export default function TaskHead(props) {
         },
         tag: {
             flexWrap: 'wrap',
-            color: colors.accentLight,
+            flexDirection: 'row',
+            marginTop: 10,
         },
+        labelText: {
+            marginRight: 10,
+            paddingLeft: 10,
+            paddingRight: 10,
+            paddingTop: 3,
+            paddingBottom: 3,
+            borderRadius: 15,
+            color: colors.accentLight,
+            // backgroundColor: colors.accentLight,
+            borderWidth: 1,
+            borderColor: colors.accentLight,
+            // fontWeight: 700,
+            // fontSize: 16,
+        }
     })
+
+    // console.log(props.labels);
+
+    // const taskLabels = props.labels;
+
+    // const mappedLabels = taskLabels.map((label) => {
+    //     return <Text style={styles.labelText}>{label.labelName}</Text>
+    // })
 
     return (
         <View style={styles.header}>
@@ -88,7 +111,21 @@ export default function TaskHead(props) {
                 <Text style={styles.pinnedLabelText}>{props.description}</Text>
             </View>
             <View style={styles.taskTags}>
-                <Text style={styles.tag}>#Tags #tags #tags #tags #tags</Text>
+                <View style={styles.tag}>
+                    {
+                        props.labels ? props.labels.map((label) => {
+                            return (
+                                <TouchableOpacity>
+                                    <Text style={styles.labelText}>
+                                        {label.labelName}
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })
+                        :
+                        <Text>{">:("}</Text>
+                    }
+                </View>
             </View>
             <View style={styles.progressBar}>
                 <View style={styles.progressBarWhole}>

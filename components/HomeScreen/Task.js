@@ -8,7 +8,7 @@ const colors = {
 
 export default function Task(props) {
 
-    // console.log(props.id);
+    // console.log(props.labels);
 
     const basicStyle = StyleSheet.create({
         taskContainer: {
@@ -74,6 +74,11 @@ export default function Task(props) {
             marginLeft: 15,
             overflow:'visible',
         },
+        labelText: {
+            // backgroundColor: 'red',
+            marginRight: 10,
+            color: colors.accentLight,
+        }
     })
 
     const styles1 = StyleSheet.create({
@@ -162,7 +167,20 @@ export default function Task(props) {
                 </View>
             </View>
             <View style={[basicStyle.taskTags, styles.taskTags]}>
-                <Text style={[basicStyle.tag, styles.tag]}>#Tags #tags #tags #tags #tags</Text>
+                <View style={[basicStyle.tag, styles.tag]}>
+                    {
+                        props.labels ?
+                            props.labels.map((label) => {
+                                return (
+                                    <Text style={basicStyle.labelText} key={label.id}>
+                                        {label.labelName}
+                                    </Text>
+                                )
+                            })
+                        :
+                        ">:("
+                    }
+                </View>
             </View>
 
             {/* <MenuProvider> */}

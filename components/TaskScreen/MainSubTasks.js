@@ -4,6 +4,8 @@ import SubTask from "./SubTask"
 
 export default function MainTasks(props) {
 
+    // console.log(props);
+
     const sortingOrder = 'Date';
 
     const styles = StyleSheet.create({

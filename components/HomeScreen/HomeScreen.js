@@ -63,6 +63,7 @@ export default function HomeScreen(props) {
                 description: readTasks[i].description,
                 percent: readTasks[i].completeTaskCount === 0 ? 0: Math.round(readTasks[i].completeWeightSum/readTasks[i].weightSum*100),
                 pinned: readTasks[i].pinned,
+                labels: readTasks[i].labels
             }));
         }
         return savePromises;
@@ -84,6 +85,7 @@ export default function HomeScreen(props) {
                         description={task.description}
                         pinned={task.pinned}
                         key={task.id}
+                        labels={task.labels}
                         navigation={navigation}
                     />
                 )
@@ -98,6 +100,7 @@ export default function HomeScreen(props) {
                         description={task.description}
                         pinned={task.pinned}
                         key={task.id}
+                        labels={task.labels}
                         navigation={navigation}
                     />
                 )

@@ -65,7 +65,11 @@ export default function AddTaskScreen({navigation}) {
 
     const [title, setTitle] = React.useState('');
     const [description, setDescription] = React.useState('');
-    const [tags, setTags] = React.useState('');
+    const [labels, setLabels] = React.useState([]);
+
+    const updateLabels = (newLabels) => {
+        setLabels(newLabels);
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -110,7 +114,7 @@ export default function AddTaskScreen({navigation}) {
                         badgeStyles={{backgroundColor: '#AED3C5', height: 36, justifyContent:'center'}}
                         badgeTextStyles={{color: '#13573F', fontSize: 14, fontWeight: 700}}
                     /> */}
-                    <LabelSection />
+                    <LabelSection updateLabels={updateLabels} />
                     {/* <TextInput
                         style={styles.input}
                         onChangeText={newTags => setTags(newTags)}
@@ -132,6 +136,7 @@ export default function AddTaskScreen({navigation}) {
                                     "taskLog": 0, // how many tasks were added in total (including deleted)
                                     "weightSum": 0,
                                     "completeWeightSum": 0,
+                                    "labels": labels,
                                 })
                                 navigation.navigate('home', { addedTask: true });
                             }}
@@ -163,6 +168,7 @@ const styles = StyleSheet.create({
     },
     scroll: {
         justifyContent: 'center',
+        paddingBottom: 20,
         // minHeight: '100%',
     },
     header: {
@@ -186,8 +192,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     descriptionInput: {
-        height: 100,
+        minHeight: 80,
         textAlignVertical: 'top',
+        fontSize: 16,
     },
     container: {
         flex: 1,

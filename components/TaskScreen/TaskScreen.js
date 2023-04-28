@@ -121,6 +121,7 @@ export default function TaskScreen(props) {
                     name={taskProps.title}
                     percent={taskProps.completeTaskCount === 0 ? 0: Math.round(taskProps.completeWeightSum/taskProps.weightSum*100)}
                     description={taskProps.description}
+                    labels={taskProps.labels}
                 />
                 <MainSubTasks taskList={mappedSubTasks} />
             </ScrollView>
