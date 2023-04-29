@@ -1,11 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-const colors = {
-    accentDark: '#13573F',
-    accentLight: '#AED3C5'
-}
-
 export default function TaskHead(props) {
 
     // console.log(props);
@@ -33,7 +28,7 @@ export default function TaskHead(props) {
             textAlign: 'center'
         },
         pinnedLabelText: {
-            color: '#AED3C5',
+            color: props.appColors.lightAccent,
             fontWeight: 700,
             fontSize: 16
         },
@@ -48,16 +43,16 @@ export default function TaskHead(props) {
         progressBarWhole: {
             height: 30,
             borderRadius: 15,
-            backgroundColor: colors.accentDark,
+            backgroundColor: props.appColors.darkAccent,
             borderWidth: 1,
-            borderColor: colors.accentLight,
+            borderColor: props.appColors.lightAccent,
         },
         progressBarComplete: {
             width: `${props.percent}%`,
             minWidth: '15%',
             height: 30,
             borderRadius: 15,
-            backgroundColor: colors.accentLight,
+            backgroundColor: props.appColors.lightAccent,
             // marginLeft: -1,
             marginTop: -1,
         },
@@ -67,7 +62,7 @@ export default function TaskHead(props) {
             lineHeight: 30,
             paddingRight: 10,
             fontWeight: 700,
-            color: colors.accentDark,
+            color: props.appColors.darkAccent,
         },
         taskTags: {
             width: '80%',
@@ -85,10 +80,10 @@ export default function TaskHead(props) {
             paddingTop: 3,
             paddingBottom: 3,
             borderRadius: 15,
-            color: colors.accentLight,
+            color: props.appColors.lightAccent,
             // backgroundColor: colors.accentLight,
             borderWidth: 1,
-            borderColor: colors.accentLight,
+            borderColor: props.appColors.lightAccent,
             // fontWeight: 700,
             // fontSize: 16,
         }

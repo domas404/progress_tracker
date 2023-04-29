@@ -11,7 +11,7 @@ export default function MainTasks(props) {
     const styles = StyleSheet.create({
         mainTasksContainer: {
             width: '100%',
-            backgroundColor: '#eee',
+            backgroundColor: props.appColors.mono2,
             alignItems: 'center',
             // justifyContent: 'center',
             flex: 2,
@@ -28,12 +28,12 @@ export default function MainTasks(props) {
         },
         all: {
             fontWeight: 700,
-            color: '#13573F',
+            color: props.appColors.darkAccent,
             fontSize: 16
         },
         sortBy: {
             fontWeight: 700,
-            color: '#13573F',
+            color: props.appColors.darkAccent,
             fontSize: 16
         }
     })

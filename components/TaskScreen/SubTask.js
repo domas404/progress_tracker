@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 
-const colors = {
-    accentDark: '#13573F',
-    accentLight: '#AED3C5'
-}
-
 export default function SubTask(props) {
 
     // console.log(props);
@@ -17,11 +12,11 @@ export default function SubTask(props) {
             borderRadius: 28,
             flexDirection: 'column',
             marginTop: 15,
-            backgroundColor: '#fff',
-            color: colors.accentDark,
+            backgroundColor: props.appColors.mono1,
+            color: props.appColors.darkAccent,
             flexDirection: 'row',
             alignItems: 'center',
-            shadowColor: '#666',
+            shadowColor: props.appColors.mono3,
             elevation: 3
         },
         checkBox: {
@@ -33,17 +28,17 @@ export default function SubTask(props) {
         checkBoxShape: {
             width: '100%',
             borderWidth: 1,
-            borderColor: colors.accentDark,
+            borderColor: props.appColors.darkAccent,
             height: '100%',
             borderRadius: 15,
         },
         subTaskText: {
             fontSize: 20,
-            color: colors.accentDark,
+            color: props.appColors.darkAccent,
             fontWeight: 500,
         },
         checked: {
-            backgroundColor: colors.accentLight,
+            backgroundColor: props.appColors.lightAccent,
             justifyContent: 'center',
             alignItems: 'center',
         },

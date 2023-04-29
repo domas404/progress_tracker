@@ -29,7 +29,107 @@ clearAll = async () => {
 
 // clearAll();
 
-export default function AddTaskScreen({navigation}) {
+export default function AddTaskScreen(props) {
+
+    // console.log(props);
+    appColors = props.route.params.appColors;
+    // console.log("AddTaskScreen",appColors);
+
+    const styles = StyleSheet.create({
+        headerContainer: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: appColors.darkAccent,
+            height: '15%',
+            marginTop: 20,
+            minHeight: 100,
+        },
+        scrollContainer: {
+            borderTopLeftRadius: 40,
+            borderTopRightRadius: 40,
+            backgroundColor: appColors.mono2,
+            flex: 1,
+        },
+        scroll: {
+            justifyContent: 'center',
+            paddingBottom: 20,
+            // minHeight: '100%',
+        },
+        header: {
+            fontSize: 32,
+            color: 'white',
+        },
+        formContainer: {
+            borderTopLeftRadius: 40,
+            borderTopRightRadius: 40,
+            backgroundColor: appColors.mono2,
+            flex: 4,
+            paddingTop: 10,
+        },
+        input: {
+            height: 50,
+            margin: 12,
+            backgroundColor: 'white',
+            padding: 10,
+            borderRadius: 25,
+            paddingLeft: 15,
+            fontSize: 16,
+        },
+        descriptionInput: {
+            minHeight: 80,
+            textAlignVertical: 'top',
+            fontSize: 16,
+        },
+        container: {
+            flex: 1,
+            backgroundColor: appColors.darkAccent,
+        },
+        addButton: {
+            width: '35%',
+            height: 60,
+            backgroundColor: appColors.darkAccent,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 30,
+        },
+        buttonText: {
+            color: 'white',
+            fontSize: 20,
+            fontWeight: 700,
+        },
+        inputLabel: {
+            fontWeight: 700,
+            color: appColors.darkAccent,
+            fontSize: 16,
+            marginLeft: '5%',
+            marginTop: 15,
+        },
+        dateContainer: {
+            backgroundColor: appColors.lightAccent,
+            // width: 140,
+            height: 40,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 20,
+            marginLeft: '2.5%',
+            marginTop: 10,
+            paddingLeft: 20,
+            paddingRight: 20
+        },
+        date: {
+            fontSize: 16,
+            fontWeight: 700,
+            color: appColors.darkAccent
+        },
+        datetimeContainer: {
+            flexDirection: 'row',
+        },
+        buttonContainer: {
+            width: '100%',
+            alignItems: 'flex-end',
+            padding: '2.5%',
+        }
+      });
 
     const [selected, setSelected] = useState("");
 
@@ -112,6 +212,7 @@ export default function AddTaskScreen({navigation}) {
                     <Text style={styles.inputLabel}>Labels</Text>
                     <LabelSection
                         updateLabels={updateLabels}
+                        appColors={appColors}
                     />
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
@@ -131,7 +232,7 @@ export default function AddTaskScreen({navigation}) {
                                     "labels": labels,
                                 });
                                 storeLabels(labels);
-                                navigation.navigate('home', { addedTask: true });
+                                props.navigation.navigate('home', { addedTask: true });
                                 ToastAndroid.show("Task added", ToastAndroid.SHORT);
                             }}
                         >
@@ -144,99 +245,3 @@ export default function AddTaskScreen({navigation}) {
         </SafeAreaView>
     )
 }
-
-const styles = StyleSheet.create({
-    headerContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#13573F',
-        height: '15%',
-        marginTop: 20,
-        minHeight: 100,
-    },
-    scrollContainer: {
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
-        backgroundColor: '#eee',
-        flex: 1,
-    },
-    scroll: {
-        justifyContent: 'center',
-        paddingBottom: 20,
-        // minHeight: '100%',
-    },
-    header: {
-        fontSize: 32,
-        color: 'white',
-    },
-    formContainer: {
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
-        backgroundColor: '#eee',
-        flex: 4,
-        paddingTop: 10,
-    },
-    input: {
-        height: 50,
-        margin: 12,
-        backgroundColor: 'white',
-        padding: 10,
-        borderRadius: 25,
-        paddingLeft: 15,
-        fontSize: 16,
-    },
-    descriptionInput: {
-        minHeight: 80,
-        textAlignVertical: 'top',
-        fontSize: 16,
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#13573F',
-    },
-    addButton: {
-        width: '35%',
-        height: 60,
-        backgroundColor: '#13573F',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 30,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: 700,
-    },
-    inputLabel: {
-        fontWeight: 700,
-        color: '#13573F',
-        fontSize: 16,
-        marginLeft: '5%',
-        marginTop: 15,
-    },
-    dateContainer: {
-        backgroundColor: '#AED3C5',
-        // width: 140,
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 20,
-        marginLeft: '2.5%',
-        marginTop: 10,
-        paddingLeft: 20,
-        paddingRight: 20
-    },
-    date: {
-        fontSize: 16,
-        fontWeight: 700,
-        color: '#13573F'
-    },
-    datetimeContainer: {
-        flexDirection: 'row',
-    },
-    buttonContainer: {
-        width: '100%',
-        alignItems: 'flex-end',
-        padding: '2.5%',
-    }
-  });

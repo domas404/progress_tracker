@@ -15,6 +15,14 @@ initializeStorageElement = async (key, value) => {
 initializeStorageElement('taskCount', JSON.stringify(0));
 initializeStorageElement('labels', JSON.stringify([]));
 
+const appColors = {
+    lightAccent: '#AED3C5',
+    darkAccent: '#13573F',
+    mono1: '#FFF',
+    mono2: '#EEE',
+    mono3: '#AEAEAE',
+    mono4: '#444',
+}
 
 clearAll = async () => {
     await AsyncStorage.clear()
@@ -97,6 +105,7 @@ export default function HomeScreen(props) {
                         key={task.id}
                         labels={task.labels}
                         navigation={navigation}
+                        appColors={appColors}
                     />
                 )
             }));
@@ -112,6 +121,7 @@ export default function HomeScreen(props) {
                         key={task.id}
                         labels={task.labels}
                         navigation={navigation}
+                        appColors={appColors}
                     />
                 )
             }));
@@ -145,13 +155,13 @@ export default function HomeScreen(props) {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scroll}>
-                <MainHead navigation={navigation} mappedTasks={mappedPinnedTasks} />
-                <MainTasks navigation={navigation} mappedTasks={mappedTasks} />
+                <MainHead navigation={navigation} mappedTasks={mappedPinnedTasks} appColors={appColors} />
+                <MainTasks navigation={navigation} mappedTasks={mappedTasks} appColors={appColors} />
             </ScrollView>
             <TouchableOpacity
                 style={styles.addTaskContainer}
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate('add_task')}
+                onPress={() => navigation.navigate('add_task', { appColors: appColors, navigation:navigation })}
             >
                 <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
             </TouchableOpacity>
@@ -162,7 +172,7 @@ export default function HomeScreen(props) {
 const styles = StyleSheet.create({
     container: {
         height: '100%',
-        backgroundColor: '#13573F',
+        backgroundColor: appColors.darkAccent,
         alignContent: 'stretch',
     },
     scroll: {
@@ -170,7 +180,7 @@ const styles = StyleSheet.create({
         minHeight: '100%',
     },
     addTaskContainer: {
-        backgroundColor: '#13573F',
+        backgroundColor: appColors.darkAccent,
         borderRadius: 35,
         position: 'absolute',
         bottom: 30,

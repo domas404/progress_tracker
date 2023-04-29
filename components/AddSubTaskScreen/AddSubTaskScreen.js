@@ -18,7 +18,71 @@ clearAll = async () => {
 
 export default function AddSubTaskScreen(props) {
 
-    // console.log(props.route.params.id);
+    let appColors = props.route.params.appColors;
+    // console.log(appColors);
+
+    const styles = StyleSheet.create({
+        headerContainer: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: appColors.darkAccent,
+            flex: 1,
+            marginTop: 20,
+        },
+        header: {
+            fontSize: 32,
+            color: appColors.mono1,
+        },
+        formContainer: {
+            borderTopLeftRadius: 40,
+            borderTopRightRadius: 40,
+            backgroundColor: appColors.mono2,
+            flex: 4,
+            paddingTop: 10,
+        },
+        input: {
+            height: 50,
+            margin: 12,
+            backgroundColor: appColors.mono1,
+            padding: 10,
+            borderRadius: 25,
+            paddingLeft: 15,
+            fontSize: 16,
+        },
+        descriptionInput: {
+            height: 100,
+            textAlignVertical: 'top',
+        },
+        container: {
+            flex: 1,
+            backgroundColor: appColors.darkAccent,
+        },
+        addButton: {
+            width: '35%',
+            height: 60,
+            backgroundColor: appColors.darkAccent,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 30,
+        },
+        buttonText: {
+            color: appColors.mono1,
+            fontSize: 20,
+            fontWeight: 700,
+        },
+        inputLabel: {
+            fontWeight: 700,
+            color: appColors.darkAccent,
+            fontSize: 16,
+            marginLeft: '5%',
+            marginTop: 15,
+        },
+        buttonContainer: {
+            width: '100%',
+            alignItems: 'flex-end',
+            padding: '2.5%',
+        }
+      });
 
     const navigation = props.navigation;
 
@@ -132,86 +196,3 @@ export default function AddSubTaskScreen(props) {
         </SafeAreaView>
     )
 }
-
-const styles = StyleSheet.create({
-    headerContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#13573F',
-        flex: 1,
-        marginTop: 20,
-    },
-    header: {
-        fontSize: 32,
-        color: 'white',
-    },
-    formContainer: {
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
-        backgroundColor: '#eee',
-        flex: 4,
-        paddingTop: 10,
-    },
-    input: {
-        height: 50,
-        margin: 12,
-        backgroundColor: 'white',
-        padding: 10,
-        borderRadius: 25,
-        paddingLeft: 15,
-        fontSize: 16,
-    },
-    descriptionInput: {
-        height: 100,
-        textAlignVertical: 'top',
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#13573F',
-    },
-    addButton: {
-        width: '35%',
-        height: 60,
-        backgroundColor: '#13573F',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 30,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: 700,
-    },
-    inputLabel: {
-        fontWeight: 700,
-        color: '#13573F',
-        fontSize: 16,
-        marginLeft: '5%',
-        marginTop: 15,
-    },
-    dateContainer: {
-        backgroundColor: '#AED3C5',
-        // width: 140,
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 20,
-        marginLeft: '2.5%',
-        marginTop: 10,
-        paddingLeft: 20,
-        paddingRight: 20
-    },
-    date: {
-        fontSize: 16,
-        fontWeight: 700,
-        color: '#13573F'
-    },
-    datetimeContainer: {
-        flexDirection: 'row',
-    },
-    buttonContainer: {
-        width: '100%',
-        alignItems: 'flex-end',
-        padding: '2.5%',
-    }
-  });

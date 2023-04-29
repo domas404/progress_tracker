@@ -5,6 +5,46 @@ export default function MainTasks(props) {
     // Determines how to sort tasks
     const sortingOrder = 'Date';
 
+    const styles = StyleSheet.create({
+        mainTasksContainer: {
+            width: '100%',
+            backgroundColor: props.appColors.mono2,
+            alignItems: 'center',
+            flexGrow: 1,
+            borderTopLeftRadius: 40,
+            borderTopRightRadius: 40,
+            paddingBottom: 20,
+        },
+        sortByContainer: {
+            height: 25,
+            width: '80%',
+            alignItems: 'center',
+            marginTop: 15,
+            justifyContent: "space-between",
+            flexDirection: 'row'
+        },
+        all: {
+            fontWeight: 700,
+            color: props.appColors.darkAccent,
+            fontSize: 16
+        },
+        sortBy: {
+            fontWeight: 700,
+            color: props.appColors.darkAccent,
+            fontSize: 16
+        },
+        noTasksContainer: {
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 100,
+        },
+        noTasksText: {
+            fontSize: 16,
+            color: props.appColors.mono4,
+        }
+    })
+
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
@@ -25,42 +65,3 @@ export default function MainTasks(props) {
     )
 }
 
-const styles = StyleSheet.create({
-    mainTasksContainer: {
-        width: '100%',
-        backgroundColor: '#eee',
-        alignItems: 'center',
-        flexGrow: 1,
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
-        paddingBottom: 20,
-    },
-    sortByContainer: {
-        height: 25,
-        width: '80%',
-        alignItems: 'center',
-        marginTop: 15,
-        justifyContent: "space-between",
-        flexDirection: 'row'
-    },
-    all: {
-        fontWeight: 700,
-        color: '#13573F',
-        fontSize: 16
-    },
-    sortBy: {
-        fontWeight: 700,
-        color: '#13573F',
-        fontSize: 16
-    },
-    noTasksContainer: {
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 100,
-    },
-    noTasksText: {
-        fontSize: 16,
-        color: '#666',
-    }
-})

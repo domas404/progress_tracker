@@ -6,6 +6,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SubTask from "./SubTask"
 
 export default function TaskScreen(props) {
+    // console.log(props.route.params);
+
+    const styles = StyleSheet.create({
+        container: {
+            height: '100%',
+            backgroundColor: props.route.params.appColors.darkAccent,
+            alignContent: 'stretch',
+        },
+        scroll: {
+            justifyContent: 'center',
+            minHeight: '100%',
+        },
+        addTaskContainer: {
+            backgroundColor: props.route.params.appColors.darkAccent,
+            borderRadius: 35,
+            position: 'absolute',
+            bottom: 30,
+            right: 20,
+            padding: 20
+        },
+        addTask: {
+            height: 30,
+            width: 30,
+        }
+    });
 
     // console.log(props.route.params);
 
@@ -84,6 +109,7 @@ export default function TaskScreen(props) {
                         weight={task.weight}
                         parentId={props.route.params.id}
                         onCheckSubTask={onCheckSubTask}
+                        appColors={props.route.params.appColors}
                         // navigation={navigation}
                     />
                 )
@@ -122,40 +148,20 @@ export default function TaskScreen(props) {
                     percent={taskProps.completeTaskCount === 0 ? 0: Math.round(taskProps.completeWeightSum/taskProps.weightSum*100)}
                     description={taskProps.description}
                     labels={taskProps.labels}
+                    appColors={props.route.params.appColors}
                 />
-                <MainSubTasks taskList={mappedSubTasks} />
+                <MainSubTasks
+                    taskList={mappedSubTasks}
+                    appColors={props.route.params.appColors}
+                />
             </ScrollView>
             <TouchableOpacity
                 style={styles.addTaskContainer}
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate('add_subtask', { id: props.route.params.id })}
+                onPress={() => navigation.navigate('add_subtask', { id: props.route.params.id, appColors: props.route.params.appColors })}
             >
                 <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
             </TouchableOpacity>
         </SafeAreaView>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        height: '100%',
-        backgroundColor: '#13573F',
-        alignContent: 'stretch',
-    },
-    scroll: {
-        justifyContent: 'center',
-        minHeight: '100%',
-    },
-    addTaskContainer: {
-        backgroundColor: '#13573F',
-        borderRadius: 35,
-        position: 'absolute',
-        bottom: 30,
-        right: 20,
-        padding: 20
-    },
-    addTask: {
-        height: 30,
-        width: 30,
-    }
-});

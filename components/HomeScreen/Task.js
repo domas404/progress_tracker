@@ -1,11 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 
-const colors = {
-    accentDark: '#13573F',
-    accentLight: '#AED3C5'
-}
-
 export default function Task(props) {
 
     // console.log(props.labels);
@@ -17,7 +12,7 @@ export default function Task(props) {
             borderRadius: 24,
             flexDirection: 'column',
             marginTop: 15,
-            shadowColor: '#666',
+            shadowColor: props.appColors.mono3,
             elevation: 3
         },
         taskTitleContainer: {
@@ -76,56 +71,56 @@ export default function Task(props) {
         },
         labelText: {
             marginRight: 10,
-            color: colors.accentLight,
+            color: props.appColors.lightAccent,
         }
     })
 
     const styles1 = StyleSheet.create({
         taskContainer: {
-            backgroundColor: '#fff',
-            color: colors.accentDark,
+            backgroundColor: props.appColors.mono1,
+            color: props.appColors.darkAccent,
         },
         taskTitle: {
-            color: colors.accentDark,
+            color: props.appColors.darkAccent,
         },
         progressBarWhole: {
-            backgroundColor: colors.accentLight,
+            backgroundColor: props.appColors.lightAccent,
         },
         progressBarComplete: {
-            backgroundColor: colors.accentDark,
+            backgroundColor: props.appColors.darkAccent,
         },
         progressPercent: {
-            color: 'white',
+            color: props.appColors.mono1,
         },
         tag: {
-            color: colors.accentLight,
+            color: props.appColors.lightAccent,
         }
     });
 
     const styles2 = StyleSheet.create({
         taskContainer: {
             borderWidth: 1,
-            borderColor: colors.accentLight,
-            backgroundColor: colors.accentDark,
+            borderColor: props.appColors.lightAccent,
+            backgroundColor: props.appColors.darkAccent,
         },
         taskTitle: {
-            color: '#fff',
+            color: props.appColors.mono1,
         },
         progressBarWhole: {
-            backgroundColor: colors.accentDark,
+            backgroundColor: props.appColors.darkAccent,
             borderWidth: 1,
-            borderColor: colors.accentLight,
+            borderColor: props.appColors.lightAccent,
         },
         progressBarComplete: {
-            backgroundColor: colors.accentLight,
+            backgroundColor: props.appColors.lightAccent,
             marginLeft: -1,
             marginTop: -1,
         },
         progressPercent: {
-            color: colors.accentDark,
+            color: props.appColors.darkAccent,
         },
         tag: {
-            color: colors.accentLight,
+            color: props.appColors.lightAccent,
         },
     });
 
@@ -138,6 +133,7 @@ export default function Task(props) {
             onPress={() => props.navigation.navigate('task', {
                 id: props.id,
                 addedSubTask: false,
+                appColors: props.appColors
             })}
         >
             <View style={[basicStyle.taskTitleContainer, styles.taskTitleContainer]}>

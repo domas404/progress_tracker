@@ -2,6 +2,35 @@ import React from "react";
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function MainHead(props) {
+
+    const styles = StyleSheet.create({
+        header: {
+            width: '100%',
+            alignItems: 'center',
+            height: 'auto',
+            paddingTop: '15%',
+            marginBottom: '5%'
+        },
+        mainTextContainer: {
+            width: '90%',
+            margin: '5%'
+        },
+        pinnedTextContainer: {
+            width: "80%",
+        },
+        mainText: {
+            color: 'white',
+            fontSize: 32,
+            fontWeight: 700,
+            textAlign: 'center'
+        },
+        pinnedLabelText: {
+            color: props.appColors.lightAccent,
+            fontWeight: 700,
+            fontSize: 16
+        }
+    });
+
     return (
         <View style={styles.header}>
             <View style={styles.mainTextContainer}>
@@ -14,31 +43,3 @@ export default function MainHead(props) {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    header: {
-        width: '100%',
-        alignItems: 'center',
-        height: 'auto',
-        paddingTop: '15%',
-        marginBottom: '5%'
-    },
-    mainTextContainer: {
-        width: '90%',
-        margin: '5%'
-    },
-    pinnedTextContainer: {
-        width: "80%",
-    },
-    mainText: {
-        color: 'white',
-        fontSize: 32,
-        fontWeight: 700,
-        textAlign: 'center'
-    },
-    pinnedLabelText: {
-        color: '#AED3C5',
-        fontWeight: 700,
-        fontSize: 16
-    }
-});

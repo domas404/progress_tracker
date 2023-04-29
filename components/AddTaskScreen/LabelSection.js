@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LabelSection(props) {
 
+    // console.log(props);
+
     const styles = StyleSheet.create({
         container: {
             width: '95%',
@@ -16,21 +18,21 @@ export default function LabelSection(props) {
             flexWrap: 'wrap',
         },
         chosenLabel: {
-            backgroundColor: '#AED3C5',
+            backgroundColor: props.appColors.lightAccent,
             margin: 5,
             paddingTop: 5,
             paddingBottom: 5,
             paddingLeft: 15,
             paddingRight: 15,
             borderRadius: 15,
-            color: '#13573F',
+            color:  props.appColors.darkAccent,
             fontWeight: 700,
             fontSize: 16,
         },
         allLabelContainer: {
             marginTop: 10,
             width: '100%',
-            backgroundColor: 'white',
+            backgroundColor:  props.appColors.mono1,
             padding: 10,
             borderRadius: 24,
             maxHeight: 250,
@@ -54,14 +56,14 @@ export default function LabelSection(props) {
             height: 20,
             width: 20,
             borderWidth: 1,
-            borderColor: '#13573F',
+            borderColor:  props.appColors.darkAccent,
             borderRadius: 6,
             alignItems: 'center',
             justifyContent: 'center',
             marginTop: 3,
         },
         checkedCheckBox: {
-            backgroundColor: '#13573F',
+            backgroundColor:  props.appColors.darkAccent,
             borderWidth: 0,
         },
         labelOption: {
@@ -89,7 +91,7 @@ export default function LabelSection(props) {
             paddingBottom: 5,
             paddingLeft: 5,
             paddingRight: 15,
-            color: '#666',
+            color:  props.appColors.mono4,
             fontSize: 16,
             // fontWeight: 500,
         },
