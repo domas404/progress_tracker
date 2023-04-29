@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MultipleSelectList } from 'react-native-dropdown-select-list'
-import LabelSection from './LabelSection'
+import LabelSection from './LabelSection';
 
 
-initializeCount = async () => {
-    isInitialised = await AsyncStorage.getItem('taskCount')
+initializeStorageElement = async (key, value) => {
+    isInitialised = await AsyncStorage.getItem(key);
     if(isInitialised === null)
-        await AsyncStorage.setItem('taskCount', JSON.stringify(0));
+        await AsyncStorage.setItem(key, value);
 }
 
-initializeCount();
+initializeStorageElement('taskCount', JSON.stringify(0));
+initializeStorageElement('labels', JSON.stringify([]));
 
 getAllKeys = async () => {
     let keys = []
@@ -59,8 +59,23 @@ export default function AddTaskScreen({navigation}) {
         } catch (e) {
             // saving error
         }
-        // console.log('Value set.');
-        // getMyStringValue();
+    }
+
+    const storeLabels = async (newLabels) => {
+        // console.log("newLabels", newLabels);
+        let storedLabels = JSON.parse(await AsyncStorage.getItem('labels'));
+        // console.log("storedLabels", storedLabels);
+        // console.log("aaa");
+        let labelsToStore = [...storedLabels];
+        for(let label of newLabels){
+            if(storedLabels.find((e) => e.id == label.id)){
+                continue;
+            } else {
+                labelsToStore.push(label);
+            }
+        }
+        // console.log("labelsToStore", labelsToStore);
+        await AsyncStorage.setItem('labels', JSON.stringify(labelsToStore));
     }
 
     const [title, setTitle] = React.useState('');
@@ -105,22 +120,9 @@ export default function AddTaskScreen({navigation}) {
                         multiline={true}
                     />
                     <Text style={styles.inputLabel}>Labels</Text>
-                    {/* <MultipleSelectList
-                        setSelected={(val) => setSelected(val)}
-                        data={data}
-                        save="value"
-                        boxStyles={{width: '95%', marginLeft: '2.5%', borderRadius: 24, backgroundColor: 'white', borderWidth: 0, marginTop: 10}}
-                        dropdownStyles={{width: '95%', marginLeft: '2.5%', borderRadius: 24, backgroundColor: 'white', borderWidth: 0}}
-                        badgeStyles={{backgroundColor: '#AED3C5', height: 36, justifyContent:'center'}}
-                        badgeTextStyles={{color: '#13573F', fontSize: 14, fontWeight: 700}}
-                    /> */}
-                    <LabelSection updateLabels={updateLabels} />
-                    {/* <TextInput
-                        style={styles.input}
-                        onChangeText={newTags => setTags(newTags)}
-                        defaultValue={tags}
-                        placeholder='Add labels'
-                    /> */}
+                    <LabelSection
+                        updateLabels={updateLabels}
+                    />
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
                             style={styles.addButton}
@@ -137,8 +139,10 @@ export default function AddTaskScreen({navigation}) {
                                     "weightSum": 0,
                                     "completeWeightSum": 0,
                                     "labels": labels,
-                                })
+                                });
+                                storeLabels(labels);
                                 navigation.navigate('home', { addedTask: true });
+                                ToastAndroid.show("Task added", ToastAndroid.SHORT);
                             }}
                         >
                             <Text style={styles.buttonText}>ADD</Text>

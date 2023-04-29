@@ -115,7 +115,7 @@ export default function TaskHead(props) {
                     {
                         props.labels ? props.labels.map((label) => {
                             return (
-                                <TouchableOpacity>
+                                <TouchableOpacity key={label.id}>
                                     <Text style={styles.labelText}>
                                         {label.labelName}
                                     </Text>

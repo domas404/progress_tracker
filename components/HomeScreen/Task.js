@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 
 const colors = {
     accentDark: '#13573F',
@@ -75,7 +75,6 @@ export default function Task(props) {
             overflow:'visible',
         },
         labelText: {
-            // backgroundColor: 'red',
             marginRight: 10,
             color: colors.accentLight,
         }
@@ -132,12 +131,6 @@ export default function Task(props) {
 
     const styles = props.pinned ? styles2 : styles1;
 
-    const onMorePress = () => {
-        Alert.alert("Menu opened");
-    }
-
-    // console.log(props.id);
-
     return (
         <TouchableOpacity
             style={[basicStyle.taskContainer, styles.taskContainer]}
@@ -145,12 +138,8 @@ export default function Task(props) {
             onPress={() => props.navigation.navigate('task', {
                 id: props.id,
                 addedSubTask: false,
-                // percent: props.percent,
-                // description: props.description,
-                // title: props.title
             })}
         >
-            
             <View style={[basicStyle.taskTitleContainer, styles.taskTitleContainer]}>
                 <View style={basicStyle.titleAndMenu}>
                     <Text style={[basicStyle.taskTitle, styles.taskTitle]}>{props.title}</Text>
@@ -172,36 +161,18 @@ export default function Task(props) {
                         props.labels ?
                             props.labels.map((label) => {
                                 return (
-                                    <Text style={basicStyle.labelText} key={label.id}>
-                                        {label.labelName}
-                                    </Text>
+                                    <TouchableOpacity key={label.id}>
+                                        <Text style={basicStyle.labelText}>
+                                            {label.labelName}
+                                        </Text>
+                                    </TouchableOpacity>
                                 )
                             })
                         :
                         ">:("
                     }
                 </View>
-            </View>
-
-            {/* <MenuProvider> */}
-                {/* <Menu>
-                    <MenuTrigger>
-                        <TouchableOpacity style={styles.menuButton}>
-                            <Text style={styles.text}>PupUp Menu</Text>
-                        </TouchableOpacity>
-                    </MenuTrigger>
-                    <MenuOptions>
-                        <MenuOption onSelect={() => alert(`Save`)} text='Save' />
-                        <MenuOption onSelect={() => alert(`Delete`)} >
-                            <Text style={{ color: 'red' }}>Delete</Text>
-                        </MenuOption>
-                        <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
-                    </MenuOptions>
-                </Menu> */}
-            {/* </MenuProvider> */}
-            
+            </View>            
         </TouchableOpacity>
-
     )
 }
-

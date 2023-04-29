@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -121,6 +121,7 @@ export default function AddSubTaskScreen(props) {
                                     // percent: task.taskObject.percent
                                     addedSubTask: true,
                                 });
+                                ToastAndroid.show("Subtask added", ToastAndroid.SHORT);
                             }, 100);
                         }}
                     >

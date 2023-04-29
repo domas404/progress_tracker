@@ -120,6 +120,10 @@ export default function LabelSection(props) {
     const [filteredLabels, setFilteredLabels] = useState(initialLabels);
     const [searchInput, setSearchInput] = useState("");
 
+    useEffect(() => {
+        props.updateLabels(chosenLabels);
+    }, [chosenLabels]);
+
     const onLabelCheck = (option) => {
 
         let isChecked = !option.checked;
@@ -134,8 +138,9 @@ export default function LabelSection(props) {
         if(isChecked) {
             setChosenLabels((prevLabels) => {
                 console.log("Update tasks when checked is true");
-                props.updateLabels(() => [...prevLabels, option]);
-                return [...prevLabels, option];
+                newLabelList = [...prevLabels, option];
+                // props.updateLabels(() => newLabelList);
+                return newLabelList;
             });
         } else {
             let labelToRemove = chosenLabels.findIndex((label) => label.id == option.id);
@@ -146,7 +151,7 @@ export default function LabelSection(props) {
                 let newLabelList = [...prevChosenLabels];
                 newLabelList.splice(labelToRemove, 1);
                 // console.log("NewLabelList after splicing:", newLabelList);
-                props.updateLabels(newLabelList);
+                // props.updateLabels(() => newLabelList);
                 return newLabelList;
             });
             console.log(chosenLabels);

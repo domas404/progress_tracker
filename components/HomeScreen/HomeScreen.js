@@ -53,6 +53,7 @@ export default function HomeScreen(props) {
     const manageTasks = async () => {
         let allKeys = await getAllKeys(); // get all keys from local storage
         allKeys = allKeys.filter(element => element !== 'taskCount'); // remove taskCount key from array
+        allKeys = allKeys.filter(element => element !== 'labels'); // remove labels key from array
         const savePromises = [];
 
         const readTasks = await setTaskObject(allKeys);
