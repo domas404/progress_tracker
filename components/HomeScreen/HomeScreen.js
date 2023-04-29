@@ -6,6 +6,15 @@ import Task from "./Task"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
+initializeStorageElement = async (key, value) => {
+    isInitialised = await AsyncStorage.getItem(key);
+    if(isInitialised === null)
+        await AsyncStorage.setItem(key, value);
+}
+
+initializeStorageElement('taskCount', JSON.stringify(0));
+initializeStorageElement('labels', JSON.stringify([]));
+
 
 clearAll = async () => {
     await AsyncStorage.clear()

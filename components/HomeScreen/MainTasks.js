@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function MainTasks(props) {
     // Determines how to sort tasks
     const sortingOrder = 'Date';
+
+    const [tasks, setTasks] = useState([]);
+
+    useEffect(() => {
+        setTasks(props.mappedTasks);
+    }, [props.mappedTasks]);
+
+    // console.log("Tasks", props.mappedTasks);
 
     return (
         <View style={styles.mainTasksContainer}>
@@ -11,7 +19,8 @@ export default function MainTasks(props) {
                 <Text style={styles.all}>All</Text>
                 <Text style={styles.sortBy}>Sort By: {sortingOrder}</Text>
             </View>
-            {props.mappedTasks}
+            {/* {props.mappedTasks} */}
+            {props.mappedTasks.length != 0 ? tasks : <View style={styles.noTasksContainer}><Text style={styles.noTasksText}>Nothing to display &#128542;</Text></View>}
         </View>
     )
 }
@@ -43,5 +52,15 @@ const styles = StyleSheet.create({
         fontWeight: 700,
         color: '#13573F',
         fontSize: 16
+    },
+    noTasksContainer: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 100,
+    },
+    noTasksText: {
+        fontSize: 16,
+        color: '#666',
     }
 })

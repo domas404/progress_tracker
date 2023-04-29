@@ -3,16 +3,6 @@ import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Scro
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LabelSection from './LabelSection';
 
-
-initializeStorageElement = async (key, value) => {
-    isInitialised = await AsyncStorage.getItem(key);
-    if(isInitialised === null)
-        await AsyncStorage.setItem(key, value);
-}
-
-initializeStorageElement('taskCount', JSON.stringify(0));
-initializeStorageElement('labels', JSON.stringify([]));
-
 getAllKeys = async () => {
     let keys = []
     try {
