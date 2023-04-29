@@ -107,18 +107,31 @@ export default function LabelSection(props) {
         }
     });
 
-    let initialLabels = [
-        { labelName: 'univeras', checked: false, id: 0 },
-        { labelName: 'karo studijos', checked: false, id: 1 }
-    ];
+    
 
-    let initialChosenLabels = initialLabels.filter((label) => label.checked);
+    // const initialLabels = getInitialLabels() == undefined ? [] : getInitialLabels();
+    // console.log(getInitialLabels());
+    // const initialLabels = [];
+
+    // let initialChosenLabels = initialLabels.filter((label) => label.checked);
     // console.log(initialChosenLabels);
 
-    const [chosenLabels, setChosenLabels] = useState(initialChosenLabels);
-    const [labels, setLabels] = useState(initialLabels);
-    const [filteredLabels, setFilteredLabels] = useState(initialLabels);
+    const [chosenLabels, setChosenLabels] = useState([]);
+    const [labels, setLabels] = useState([]);
+    const [filteredLabels, setFilteredLabels] = useState([]);
     const [searchInput, setSearchInput] = useState("");
+
+    const getInitialLabels = async () => {
+        storedLabels = await AsyncStorage.getItem('labels');
+        storedLabels = JSON.parse(storedLabels);
+        storedLabels.map(label => label.checked = false);
+        // console.log("storedLabels",storedLabels);
+        setLabels(storedLabels);
+        setFilteredLabels(storedLabels);
+    }
+    useEffect(() => {
+        getInitialLabels();
+    }, []);
 
     useEffect(() => {
         props.updateLabels(chosenLabels);
