@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Text, Alert, ToastAndroid } from 'react-native';
 import MainTasks from "./MainTasks"
 import MainHead from "./MainHead"
 import Task from "./Task"
@@ -161,9 +161,27 @@ export default function HomeScreen(props) {
             <TouchableOpacity
                 style={styles.addTaskContainer}
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate('add_task', { appColors: appColors, navigation:navigation })}
+                onPress={() => navigation.navigate('add_task', { appColors: appColors })}
             >
                 <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.removeTasksContainer}
+                activeOpacity={0.8}
+                onPress={ () => {
+                    Alert.alert('Delete', 'Delete everything fr?', [
+                        {
+                          text: 'Cancel',
+                          onPress: () => console.log("Cancel"),
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => clearAll()
+                        },
+                      ]);
+                }}
+            >
+                <Text style={styles.delete}>DELETE ALL</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );
@@ -190,5 +208,20 @@ const styles = StyleSheet.create({
     addTask: {
         height: 30,
         width: 30,
+    },
+    removeTasksContainer: {
+        backgroundColor: appColors.darkAccent,
+        borderRadius: 35,
+        position: 'absolute',
+        bottom: 30,
+        left: 20,
+        padding: 15
+    },
+    delete: {
+        color: appColors.mono1,
+        fontSize: 16,
+        fontWeight: 700,
+        paddingRight: 10,
+        paddingLeft: 10,
     }
 });

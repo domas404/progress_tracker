@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LabelSection from './LabelSection';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 getAllKeys = async () => {
     let keys = []
@@ -31,9 +32,7 @@ clearAll = async () => {
 
 export default function AddTaskScreen(props) {
 
-    // console.log(props);
     appColors = props.route.params.appColors;
-    // console.log("AddTaskScreen",appColors);
 
     const styles = StyleSheet.create({
         headerContainer: {
@@ -176,6 +175,35 @@ export default function AddTaskScreen(props) {
         setLabels(newLabels);
     }
 
+    const date_time = new Date().getTime();
+    
+
+    const [date, setDate] = useState(new Date(date_time));
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setDate(currentDate);
+      };
+
+    const showMode = (currentMode) => {
+        DateTimePickerAndroid.open({
+          value: date,
+          onChange,
+          mode: currentMode,
+          is24Hour: true,
+        });
+    };
+
+    const showTimepicker = () => {
+        showMode('time');
+    };
+    
+    const showDatepicker = () => {
+        showMode('date');
+    };
+
+    console.log(date);
+
     return (
         <SafeAreaView style={styles.container}>
                 <View style={styles.headerContainer}>
@@ -194,12 +222,23 @@ export default function AddTaskScreen(props) {
                 <View style={styles.formContainer}>
                     <Text style={styles.inputLabel}>Due date</Text>
                     <View style={styles.datetimeContainer}>
-                        <View style={styles.dateContainer}>
-                            <Text style={styles.date}>2023-05-31</Text>
-                        </View>
-                        <View style={styles.dateContainer}>
-                            <Text style={styles.date}>23:59</Text>
-                        </View>
+                        <TouchableOpacity onPress={showDatepicker} style={styles.dateContainer}>
+                            <Text style={styles.date}>
+                                {
+                                    `${date.getFullYear()}-` +
+                                    `${date.getMonth() < 9 ? "0"+(date.getMonth()+1) : date.getMonth()+1}-` +
+                                    `${date.getDate() < 10 ? "0"+date.getDate() : date.getDate()}`
+                                }
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={showTimepicker} style={styles.dateContainer}>
+                            <Text style={styles.date}>
+                                {
+                                    `${date.getHours() < 10 ? "0" + date.getHours() : date.getHours()}:` +
+                                    `${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()}`
+                                }
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                     <Text style={styles.inputLabel}>Description</Text>
                     <TextInput

@@ -184,6 +184,7 @@ export default function AddSubTaskScreen(props) {
                                     id: props.route.params.id,
                                     // percent: task.taskObject.percent
                                     addedSubTask: true,
+                                    appColors: appColors
                                 });
                                 ToastAndroid.show("Subtask added", ToastAndroid.SHORT);
                             }, 100);
