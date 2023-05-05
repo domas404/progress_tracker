@@ -176,6 +176,8 @@ export default function AddTaskScreen(props) {
     }
 
     const date_time = new Date().getTime();
+
+    // console.log("new date", new Date(new Date().getTime()));
     
 
     const [date, setDate] = useState(new Date(date_time));
@@ -202,7 +204,7 @@ export default function AddTaskScreen(props) {
         showMode('date');
     };
 
-    console.log(date);
+    // console.log(date);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -269,6 +271,8 @@ export default function AddTaskScreen(props) {
                                     "weightSum": 0,
                                     "completeWeightSum": 0,
                                     "labels": labels,
+                                    "dueDate": date,
+                                    "dateCreated": new Date(new Date().getTime()),
                                 });
                                 storeLabels(labels);
                                 props.navigation.navigate('home', { addedTask: true });

@@ -8,10 +8,12 @@ export default function SubTask(props) {
     const basicStyle = StyleSheet.create({
         taskContainer: {
             width: '90%',
-            height: 80,
+            // height: 80,
+            paddingTop: 15,
+            paddingBottom: 15,
             borderRadius: 28,
             flexDirection: 'column',
-            marginTop: 15,
+            marginTop: 10,
             backgroundColor: props.appColors.mono1,
             color: props.appColors.darkAccent,
             flexDirection: 'row',
@@ -36,6 +38,7 @@ export default function SubTask(props) {
             fontSize: 20,
             color: props.appColors.darkAccent,
             fontWeight: 500,
+            width: '75%',
         },
         checked: {
             backgroundColor: props.appColors.lightAccent,

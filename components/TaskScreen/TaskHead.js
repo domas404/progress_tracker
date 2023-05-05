@@ -74,7 +74,8 @@ export default function TaskHead(props) {
             marginTop: 10,
         },
         labelText: {
-            marginRight: 10,
+            marginRight: 5,
+            marginBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
             paddingTop: 3,
@@ -86,6 +87,14 @@ export default function TaskHead(props) {
             borderColor: props.appColors.lightAccent,
             // fontWeight: 700,
             // fontSize: 16,
+        },
+        dateContainer: {
+            width: '80%',
+            alignItems: 'flex-end',
+        },
+        dueDate: {
+            color: props.appColors.lightAccent,
+            fontWeight: 700,
         }
     })
 
@@ -97,8 +106,19 @@ export default function TaskHead(props) {
     //     return <Text style={styles.labelText}>{label.labelName}</Text>
     // })
 
+    const dateToDisplay = new Date(Date.parse(props.dueDate));
+
     return (
         <View style={styles.header}>
+            <View style={styles.dateContainer}>
+                <Text style={styles.dueDate}>
+                    Due: {
+                        `${dateToDisplay.getFullYear()}-` +
+                        `${dateToDisplay.getMonth() < 9 ? "0" + (dateToDisplay.getMonth() + 1) : dateToDisplay.getMonth()+1}-` +
+                        `${dateToDisplay.getDate() < 10 ? "0" + dateToDisplay.getDate() : dateToDisplay.getDate()}`
+                    }
+                </Text>
+            </View>
             <View style={styles.mainTextContainer}>
                 <Text style={styles.mainText}>{props.name}</Text>
             </View>

@@ -17,6 +17,7 @@ export default function MainTasks(props) {
             flex: 2,
             borderTopLeftRadius: 40,
             borderTopRightRadius: 40,
+            paddingBottom: 110,
         },
         sortByContainer: {
             height: 25,
