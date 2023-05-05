@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView, ToastAndroid } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView, ToastAndroid, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LabelSection from './LabelSection';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
@@ -67,7 +67,8 @@ export default function AddTaskScreen(props) {
         },
         input: {
             height: 50,
-            margin: 12,
+            marginLeft: '2.5%',
+            width: '95%',
             backgroundColor: 'white',
             padding: 10,
             borderRadius: 25,
@@ -100,8 +101,8 @@ export default function AddTaskScreen(props) {
             fontWeight: 700,
             color: appColors.darkAccent,
             fontSize: 16,
-            marginLeft: '5%',
-            marginTop: 15,
+            // marginLeft: 10,
+            // marginTop: 15,
         },
         dateContainer: {
             backgroundColor: appColors.lightAccent,
@@ -111,7 +112,7 @@ export default function AddTaskScreen(props) {
             alignItems: 'center',
             borderRadius: 20,
             marginLeft: '2.5%',
-            marginTop: 10,
+            // marginTop: 10,
             paddingLeft: 20,
             paddingRight: 20
         },
@@ -127,8 +128,25 @@ export default function AddTaskScreen(props) {
             width: '100%',
             alignItems: 'flex-end',
             padding: '2.5%',
+        },
+        labelImage: {
+            width: 20,
+            height: 20,
+            marginLeft: '5%',
+            marginRight: 5
+        },
+        labelLabelContainer: {
+            flexDirection: 'row',
+            width: '90%',
+            alignItems: 'center',
+            marginTop: 20,
+            marginBottom: 10,
+        },
+        titleInput: {
+            padding: '2.5%',
+            textAlign: 'center',
         }
-      });
+    });
 
     const [selected, setSelected] = useState("");
 
@@ -217,12 +235,16 @@ export default function AddTaskScreen(props) {
                         placeholder='Add task title...'
                         placeholderTextColor='rgba(255,255,255,0.7)'
                         multiline={true}
+                        autoFocus={true}
                     />
                 </View>
             <View style={styles.scrollContainer}>
             <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps='handled'>
                 <View style={styles.formContainer}>
-                    <Text style={styles.inputLabel}>Due date</Text>
+                    <View style={styles.labelLabelContainer}>
+                        <Image style={styles.labelImage} source={require("../../assets/calendar_green.png")} resizeMode='contain' />
+                        <Text style={styles.inputLabel}>Due date</Text>
+                    </View>
                     <View style={styles.datetimeContainer}>
                         <TouchableOpacity onPress={showDatepicker} style={styles.dateContainer}>
                             <Text style={styles.date}>
@@ -242,15 +264,21 @@ export default function AddTaskScreen(props) {
                             </Text>
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.inputLabel}>Description</Text>
+                    <View style={styles.labelLabelContainer}>
+                        <Image style={styles.labelImage} source={require("../../assets/notes_green.png")} resizeMode='contain' />
+                        <Text style={styles.inputLabel}>Notes</Text>
+                    </View>
                     <TextInput
                         style={[styles.input, styles.descriptionInput]}
                         onChangeText={newDescription => setDescription(newDescription)}
                         defaultValue={description}
-                        placeholder='Add a short description (optional)'
+                        placeholder='Add a short description...'
                         multiline={true}
                     />
-                    <Text style={styles.inputLabel}>Labels</Text>
+                    <View style={styles.labelLabelContainer}>
+                        <Image style={styles.labelImage} source={require("../../assets/label_green.png")} resizeMode='contain' />
+                        <Text style={styles.inputLabel}>Labels</Text>
+                    </View>
                     <LabelSection
                         updateLabels={updateLabels}
                         appColors={appColors}

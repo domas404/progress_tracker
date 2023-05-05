@@ -155,6 +155,7 @@ export default function AddSubTaskScreen(props) {
                     placeholder='Add subtask title...'
                     placeholderTextColor='rgba(255,255,255,0.7)'
                     multiline={true}
+                    autoFocus={true}
                 />
             </View>
             <View style={styles.formContainer}>

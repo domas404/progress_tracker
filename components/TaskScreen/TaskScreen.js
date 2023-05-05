@@ -150,6 +150,7 @@ export default function TaskScreen(props) {
                     labels={taskProps.labels}
                     appColors={props.route.params.appColors}
                     dueDate={taskProps.dueDate}
+                    navigation={navigation}
                 />
                 <MainSubTasks
                     taskList={mappedSubTasks}

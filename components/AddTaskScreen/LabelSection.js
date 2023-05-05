@@ -11,7 +11,7 @@ export default function LabelSection(props) {
             width: '95%',
             // height: '40%',
             minHeight: 200,
-            margin: '2.5%',
+            marginLeft: '2.5%',
         },
         chosenLabelsContainer: {
             flexDirection: 'row',

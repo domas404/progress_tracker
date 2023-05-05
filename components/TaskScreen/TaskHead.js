@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 export default function TaskHead(props) {
 
@@ -11,7 +11,7 @@ export default function TaskHead(props) {
             alignItems: 'center',
             // flex: 1,
             height: 'auto',
-            paddingTop: '15%',
+            paddingTop: '10%',
             marginBottom: '5%'
         },
         mainTextContainer: {
@@ -89,12 +89,24 @@ export default function TaskHead(props) {
             // fontSize: 16,
         },
         dateContainer: {
-            width: '80%',
-            alignItems: 'flex-end',
+            width: '90%',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'row'
         },
         dueDate: {
             color: props.appColors.lightAccent,
             fontWeight: 700,
+        },
+        goBack: {
+            width: 24,
+            height: 24,
+            
+        },
+        goBackContainer: {
+            // backgroundColor: props.appColors.lightAccent,
+            padding: 8,
+
         }
     })
 
@@ -111,6 +123,12 @@ export default function TaskHead(props) {
     return (
         <View style={styles.header}>
             <View style={styles.dateContainer}>
+                <TouchableOpacity
+                    onPress={() => props.navigation.navigate('home')}
+                    style={styles.goBackContainer}
+                >
+                    <Image style={styles.goBack} source={require("../../assets/go_back_light_green.png")} resizeMode='contain' />
+                </TouchableOpacity>
                 <Text style={styles.dueDate}>
                     Due: {
                         `${dateToDisplay.getFullYear()}-` +
