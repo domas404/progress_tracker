@@ -41,9 +41,11 @@ export default function HomeScreen(props) {
         // console.log(measurements);
         let newPosition = { x: Math.round(measurements.px), y: Math.round(measurements.py)};
         setOptionsMenuPosition(newPosition);
-        setModalVisible(prevState => !prevState);
         setSelectedTask(id);
         checkIfPinned(id);
+        setTimeout(() => {
+            setModalVisible(prevState => !prevState);
+        }, 30);
     }
 
     const styles = StyleSheet.create({
@@ -234,17 +236,8 @@ export default function HomeScreen(props) {
 
     const checkIfPinned = async (id) => {
         const taskToCheck = await getValuesByKey(id);
-        // console.log(taskToCheck.pinned);
+        console.log(taskToCheck.pinned);
         setIsTaskPinned({ taskId: id, isPinned: taskToCheck.pinned })
-    }
-
-    const pinText = () => {
-        // console.log(checkIfPinned());
-        // const isPinned = checkIfPinned();
-        // console.log(isTaskPinned);
-        if(isTaskPinned.isPinned)
-            return "Unpin";
-        else return "Pin";
     }
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -256,11 +249,12 @@ export default function HomeScreen(props) {
                 transparent
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(prevState => !prevState)}
+                animationType="fade"
             >
                 <Pressable style={styles.modalBackground} onPress={() => setModalVisible(prevState => !prevState)} />
                 <View style={[styles.optionsMenuContainer]}>
                     <TouchableOpacity style={styles.optionsMenuOption} onPress={() => pinSelectedTask()}>
-                        <Text style={styles.option}>{pinText()}</Text>
+                        <Text style={styles.option}>{isTaskPinned.isPinned ? "Unpin" : "Pin"}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.optionsMenuOption}>
                         <Text style={styles.option}>Edit</Text>
