@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Text, Alert, ToastAndroid } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Text, Alert, ToastAndroid, View, Modal, Pressable } from 'react-native';
 import MainTasks from "./MainTasks"
 import MainHead from "./MainHead"
 import Task from "./Task"
@@ -32,6 +32,103 @@ clearAll = async () => {
 // clearAll();
 
 export default function HomeScreen(props) {
+
+    const [optionsMenu, setOptionsMenu] = useState(false);
+    const [optionsMenuPosition, setOptionsMenuPosition] = useState({ x: 100, y: 100 });
+    const [scrollPosition, setScrollPosition] = useState();
+
+    const onOptionsMenuPress = (id, measurements) => {
+        console.log(measurements);
+        // setOptionsMenu(prevState => !prevState);
+        let newPosition = { x: measurements.px, y: measurements.py}
+        setOptionsMenuPosition(newPosition);
+        // console.log(modalVisible);
+        setModalVisible(prevState => !prevState);
+    }
+
+    const styles = StyleSheet.create({
+        container: {
+            height: '100%',
+            backgroundColor: appColors.darkAccent,
+            alignContent: 'stretch',
+        },
+        scroll: {
+            justifyContent: 'center',
+            minHeight: '100%',
+            position: 'relative'
+        },
+        addTaskContainer: {
+            backgroundColor: appColors.darkAccent,
+            borderRadius: 35,
+            position: 'absolute',
+            bottom: 30,
+            right: 20,
+            padding: 20
+        },
+        addTask: {
+            height: 30,
+            width: 30,
+        },
+        removeTasksContainer: {
+            backgroundColor: appColors.darkAccent,
+            borderRadius: 35,
+            position: 'absolute',
+            bottom: 30,
+            left: 20,
+            padding: 15
+        },
+        delete: {
+            color: appColors.mono1,
+            fontSize: 16,
+            fontWeight: 700,
+            paddingRight: 10,
+            paddingLeft: 10,
+        },
+        optionsMenuContainer: {
+            position: 'absolute',
+            top: Math.round(optionsMenuPosition.y - scrollPosition),
+            right: 65,
+            backgroundColor: appColors.mono1,
+            // height: '50%',
+            width: '50%',
+            borderRadius: 24,
+            shadowColor: appColors.mono4,
+            elevation: 4,
+        },
+        optionsMenuOption: {
+            padding: 16,
+            marginLeft: 10,
+            marginRight: 10,
+            borderBottomColor: appColors.mono2,
+            borderBottomWidth: 1,
+        },
+        deleteOptionsMenuOption: {
+            padding: 16,
+            marginLeft: 10,
+            marginRight: 10,
+        },
+        option: {
+            // marginTop: 10,
+            // marginBottom: 10,
+            color: appColors.darkAccent,
+            fontWeight: 700,
+            fontSize: 16,
+        },
+        deleteOption: {
+            // marginTop: 10,
+            // marginBottom: 10,
+            color: '#DE3F3F',
+            fontWeight: 700,
+            fontSize: 16,
+        },
+        modalBackground: {
+            height: '100%',
+            width: '100%'
+        },
+        modal: {
+            
+        }
+    });
 
     const navigation = props.navigation;
 
@@ -106,6 +203,7 @@ export default function HomeScreen(props) {
                         labels={task.labels}
                         navigation={navigation}
                         appColors={appColors}
+                        optionsMenu={onOptionsMenuPress}
                     />
                 )
             }));
@@ -122,6 +220,7 @@ export default function HomeScreen(props) {
                         labels={task.labels}
                         navigation={navigation}
                         appColors={appColors}
+                        optionsMenu={onOptionsMenuPress}
                     />
                 )
             }));
@@ -140,6 +239,36 @@ export default function HomeScreen(props) {
         }
     }
 
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const MenuComponent = () => {
+        return (
+            <Modal
+                style={styles.modal}
+                transparent
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(prevState => !prevState)}
+            >
+                <Pressable style={styles.modalBackground} onPress={() => setModalVisible(prevState => !prevState)} />
+                <View style={[styles.optionsMenuContainer]}>
+                    <TouchableOpacity style={styles.optionsMenuOption}>
+                        <Text style={styles.option}>Pin</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.optionsMenuOption}>
+                        <Text style={styles.option}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.optionsMenuOption}>
+                        <Text style={styles.option}>Archive</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.deleteOptionsMenuOption}>
+                        <Text style={styles.deleteOption}>Delete</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
+        )
+    }
+
+
     useEffect(() => {
         onTaskAdded();
     }, [props.route.params.addedTask]);
@@ -152,11 +281,20 @@ export default function HomeScreen(props) {
         // const isFocused = useIsFocused();
     }, [isFocused]);
 
+
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scroll}>
+            <ScrollView
+                contentContainerStyle={styles.scroll}
+                onMomentumScrollEnd={(event) => {
+                    let newPosition = event.nativeEvent.contentOffset.y
+                    setScrollPosition(newPosition);
+                    // console.log("Scroll position:", scrollPosition, "Menu Position:", optionsMenuPosition.y);
+                }}
+            >
                 <MainHead navigation={navigation} mappedTasks={mappedPinnedTasks} appColors={appColors} />
                 <MainTasks navigation={navigation} mappedTasks={mappedTasks} appColors={appColors} />
+                { modalVisible && <MenuComponent /> }
             </ScrollView>
             <TouchableOpacity
                 style={styles.addTaskContainer}
@@ -183,45 +321,9 @@ export default function HomeScreen(props) {
             >
                 <Text style={styles.delete}>DELETE ALL</Text>
             </TouchableOpacity>
+            
         </SafeAreaView>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        height: '100%',
-        backgroundColor: appColors.darkAccent,
-        alignContent: 'stretch',
-    },
-    scroll: {
-        justifyContent: 'center',
-        minHeight: '100%',
-    },
-    addTaskContainer: {
-        backgroundColor: appColors.darkAccent,
-        borderRadius: 35,
-        position: 'absolute',
-        bottom: 30,
-        right: 20,
-        padding: 20
-    },
-    addTask: {
-        height: 30,
-        width: 30,
-    },
-    removeTasksContainer: {
-        backgroundColor: appColors.darkAccent,
-        borderRadius: 35,
-        position: 'absolute',
-        bottom: 30,
-        left: 20,
-        padding: 15
-    },
-    delete: {
-        color: appColors.mono1,
-        fontSize: 16,
-        fontWeight: 700,
-        paddingRight: 10,
-        paddingLeft: 10,
-    }
-});
+

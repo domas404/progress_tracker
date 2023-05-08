@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 
 export default function Task(props) {
 
-    // console.log(props.labels);
+    // console.log(props);
 
     const basicStyle = StyleSheet.create({
         taskContainer: {
@@ -126,6 +126,30 @@ export default function Task(props) {
 
     const styles = props.pinned ? styles2 : styles1;
 
+    const myRef = useRef();
+    const [position, setPosition] = useState({});
+
+    const getPosition = () => {
+        myRef.current.measure((fx, fy, width, height, px, py) => {
+            const location = {
+                fx: fx,
+                fy: fy,
+                width: width,
+                height: height,
+                px: px,
+                py: py,
+            };
+            setPosition(location);
+        })
+    };
+
+    useEffect(() => {
+        setTimeout(() => {
+            getPosition();
+        }, 0);
+    }, []);
+
+
     return (
         <TouchableOpacity
             style={[basicStyle.taskContainer, styles.taskContainer]}
@@ -139,7 +163,10 @@ export default function Task(props) {
             <View style={[basicStyle.taskTitleContainer, styles.taskTitleContainer]}>
                 <View style={basicStyle.titleAndMenu}>
                     <Text style={[basicStyle.taskTitle, styles.taskTitle]}>{props.title}</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => props.optionsMenu(props.id, position)}
+                            ref={myRef}
+                        >
                             <Image style={basicStyle.taskMenu} source={require("../../assets/dots_light_green.png")} resizeMode='contain' />
                         </TouchableOpacity>
                 </View>
