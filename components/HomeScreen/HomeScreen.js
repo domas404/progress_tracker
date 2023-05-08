@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Text, Alert, ToastAndroid, View, Modal, Pressable } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Text, Alert, View, Modal, Pressable } from 'react-native';
 import MainTasks from "./MainTasks"
 import MainHead from "./MainHead"
 import Task from "./Task"
@@ -33,17 +33,17 @@ clearAll = async () => {
 
 export default function HomeScreen(props) {
 
-    const [optionsMenu, setOptionsMenu] = useState(false);
     const [optionsMenuPosition, setOptionsMenuPosition] = useState({ x: 100, y: 100 });
-    const [scrollPosition, setScrollPosition] = useState();
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const [selectedTask, setSelectedTask] = useState();
 
     const onOptionsMenuPress = (id, measurements) => {
-        console.log(measurements);
-        // setOptionsMenu(prevState => !prevState);
-        let newPosition = { x: measurements.px, y: measurements.py}
+        // console.log(measurements);
+        let newPosition = { x: Math.round(measurements.px), y: Math.round(measurements.py)};
         setOptionsMenuPosition(newPosition);
-        // console.log(modalVisible);
         setModalVisible(prevState => !prevState);
+        setSelectedTask(id);
+        checkIfPinned(id);
     }
 
     const styles = StyleSheet.create({
@@ -55,7 +55,6 @@ export default function HomeScreen(props) {
         scroll: {
             justifyContent: 'center',
             minHeight: '100%',
-            position: 'relative'
         },
         addTaskContainer: {
             backgroundColor: appColors.darkAccent,
@@ -86,11 +85,10 @@ export default function HomeScreen(props) {
         },
         optionsMenuContainer: {
             position: 'absolute',
-            top: Math.round(optionsMenuPosition.y - scrollPosition),
+            top: optionsMenuPosition.y - scrollPosition,
             right: 65,
             backgroundColor: appColors.mono1,
-            // height: '50%',
-            width: '50%',
+            width: 180,
             borderRadius: 24,
             shadowColor: appColors.mono4,
             elevation: 4,
@@ -108,15 +106,11 @@ export default function HomeScreen(props) {
             marginRight: 10,
         },
         option: {
-            // marginTop: 10,
-            // marginBottom: 10,
             color: appColors.darkAccent,
             fontWeight: 700,
             fontSize: 16,
         },
         deleteOption: {
-            // marginTop: 10,
-            // marginBottom: 10,
             color: '#DE3F3F',
             fontWeight: 700,
             fontSize: 16,
@@ -124,9 +118,6 @@ export default function HomeScreen(props) {
         modalBackground: {
             height: '100%',
             width: '100%'
-        },
-        modal: {
-            
         }
     });
 
@@ -239,6 +230,23 @@ export default function HomeScreen(props) {
         }
     }
 
+    const [isTaskPinned, setIsTaskPinned] = useState({});
+
+    const checkIfPinned = async (id) => {
+        const taskToCheck = await getValuesByKey(id);
+        // console.log(taskToCheck.pinned);
+        setIsTaskPinned({ taskId: id, isPinned: taskToCheck.pinned })
+    }
+
+    const pinText = () => {
+        // console.log(checkIfPinned());
+        // const isPinned = checkIfPinned();
+        // console.log(isTaskPinned);
+        if(isTaskPinned.isPinned)
+            return "Unpin";
+        else return "Pin";
+    }
+
     const [modalVisible, setModalVisible] = useState(false);
 
     const MenuComponent = () => {
@@ -251,8 +259,8 @@ export default function HomeScreen(props) {
             >
                 <Pressable style={styles.modalBackground} onPress={() => setModalVisible(prevState => !prevState)} />
                 <View style={[styles.optionsMenuContainer]}>
-                    <TouchableOpacity style={styles.optionsMenuOption}>
-                        <Text style={styles.option}>Pin</Text>
+                    <TouchableOpacity style={styles.optionsMenuOption} onPress={() => pinSelectedTask()}>
+                        <Text style={styles.option}>{pinText()}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.optionsMenuOption}>
                         <Text style={styles.option}>Edit</Text>
@@ -280,6 +288,15 @@ export default function HomeScreen(props) {
         updateTasks();
         // const isFocused = useIsFocused();
     }, [isFocused]);
+
+    const pinSelectedTask = async () => {
+        // console.log(selectedTask);
+        const taskToPin = await getValuesByKey(selectedTask);
+        // const taskToPin = getValuesByKey(id);
+        AsyncStorage.mergeItem(selectedTask, JSON.stringify({ pinned: !taskToPin.pinned }));
+        setModalVisible(prevState => !prevState);
+        updateTasks();
+    }
 
 
     return (

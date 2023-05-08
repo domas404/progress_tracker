@@ -13,7 +13,7 @@ export default function MainTasks(props) {
             flexGrow: 1,
             borderTopLeftRadius: 40,
             borderTopRightRadius: 40,
-            paddingBottom: 20,
+            paddingBottom: 120,
         },
         sortByContainer: {
             height: 25,

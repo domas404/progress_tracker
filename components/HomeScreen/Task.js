@@ -140,13 +140,14 @@ export default function Task(props) {
                 py: py,
             };
             setPosition(location);
-        })
+        });
+        // console.log("Updated task positions.");
     };
 
     useEffect(() => {
         setTimeout(() => {
             getPosition();
-        }, 0);
+        }, 10);
     }, []);
 
 
@@ -164,7 +165,10 @@ export default function Task(props) {
                 <View style={basicStyle.titleAndMenu}>
                     <Text style={[basicStyle.taskTitle, styles.taskTitle]}>{props.title}</Text>
                         <TouchableOpacity
-                            onPress={() => props.optionsMenu(props.id, position)}
+                            onPress={() => {
+                                getPosition();
+                                props.optionsMenu(props.id, position);
+                            }}
                             ref={myRef}
                         >
                             <Image style={basicStyle.taskMenu} source={require("../../assets/dots_light_green.png")} resizeMode='contain' />
