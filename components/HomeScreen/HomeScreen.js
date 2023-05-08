@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Text, Alert, View, Modal, Pressable } from 'react-native';
+import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Text, Alert, View, Modal, Pressable, ToastAndroid } from 'react-native';
 import MainTasks from "./MainTasks"
 import MainHead from "./MainHead"
 import Task from "./Task"
@@ -236,7 +236,7 @@ export default function HomeScreen(props) {
 
     const checkIfPinned = async (id) => {
         const taskToCheck = await getValuesByKey(id);
-        console.log(taskToCheck.pinned);
+        // console.log(taskToCheck.pinned);
         setIsTaskPinned({ taskId: id, isPinned: taskToCheck.pinned })
     }
 
@@ -262,7 +262,7 @@ export default function HomeScreen(props) {
                     <TouchableOpacity style={styles.optionsMenuOption}>
                         <Text style={styles.option}>Archive</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.deleteOptionsMenuOption}>
+                    <TouchableOpacity style={styles.deleteOptionsMenuOption} onPress={() => deleteSelectedTask()}>
                         <Text style={styles.deleteOption}>Delete</Text>
                     </TouchableOpacity>
                 </View>
@@ -292,6 +292,25 @@ export default function HomeScreen(props) {
         updateTasks();
     }
 
+    const deleteSelectedTask = async () => {
+        const taskToDelete = await getValuesByKey(selectedTask);
+        console.log(taskToDelete);
+        Alert.alert(`Delete ${taskToDelete.title}?`, 'This action permanetly deletes task with all of its contents.', [
+            {
+                text: 'Cancel',
+                onPress: () => setModalVisible(prevState => !prevState),
+            },
+            {
+                text: 'Delete',
+                onPress: () => {
+                    setModalVisible(prevState => !prevState);
+                    AsyncStorage.removeItem(selectedTask);
+                    updateTasks();
+                    ToastAndroid.show("Task deleted", ToastAndroid.SHORT);
+                }
+            },
+        ]);
+    }
 
     return (
         <SafeAreaView style={styles.container}>
