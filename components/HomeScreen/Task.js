@@ -3,33 +3,36 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-na
 
 export default function Task(props) {
 
-    // console.log(props);
-
     const basicStyle = StyleSheet.create({
         taskContainer: {
             width: '90%',
-            height: 120,
+            // height: 120,
             borderRadius: 24,
             flexDirection: 'column',
             marginTop: 15,
             shadowColor: props.appColors.mono3,
-            elevation: 3
+            elevation: 3,
+            paddingBottom: 10,
         },
         taskTitleContainer: {
-            flex: 0.8,
+            paddingTop: 15,
+            paddingBottom: 10,
             justifyContent: 'center',
             alignItems: 'flex-end',
             flexDirection: 'row',
         },
         progressBar: {
-            flex: 1,
+            // flex: 1,
             justifyContent: 'center',
             alignSelf: 'center',
             width: '90%',
         },
         taskTags: {
-            flex: 0.6,
+            // flex: 0.6,
             alignItems: 'center',
+            paddingLeft: 10,
+            paddingTop: 5,
+            // flexDirection: 'row',
         },
         titleAndMenu: {
             width: '90%',
@@ -40,7 +43,7 @@ export default function Task(props) {
         },
         taskTitle: {
             fontWeight: 700,
-            // width: '80%',
+            maxWidth: 260,
             fontSize: 18,
         },
         progressBarWhole: {
@@ -63,6 +66,7 @@ export default function Task(props) {
         tag: {
             width: '90%',
             flexWrap: 'wrap',
+            flexDirection: 'row',
         },
         taskMenu: {
             height: 28,
@@ -201,7 +205,7 @@ export default function Task(props) {
             <View style={[basicStyle.taskTags, styles.taskTags]}>
                 <View style={[basicStyle.tag, styles.tag]}>
                     {
-                        props.labels ?
+                        props.labels.length > 0 ?
                             props.labels.map((label) => {
                                 return (
                                     <TouchableOpacity key={label.id}>
@@ -212,7 +216,7 @@ export default function Task(props) {
                                 )
                             })
                         :
-                        ">:("
+                        <Text></Text>
                     }
                 </View>
             </View>            

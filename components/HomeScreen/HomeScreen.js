@@ -65,7 +65,7 @@ export default function HomeScreen(props) {
 
     // sorting orders: date, title, progress, deadline
     const [sortingOrder, setSortingOrder] = useState('date');
-    const [sortAsc, setSortAsc] = useState('false');
+    const [sortAsc, setSortAsc] = useState(true);
 
     const styles = StyleSheet.create({
         container: {
