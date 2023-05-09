@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, TextInput } from 'react-native';
 
 export default function SubTask(props) {
 
@@ -12,7 +12,7 @@ export default function SubTask(props) {
             paddingTop: 15,
             paddingBottom: 15,
             borderRadius: 28,
-            flexDirection: 'column',
+            // flexDirection: 'column',
             marginTop: 10,
             backgroundColor: props.appColors.mono1,
             color: props.appColors.darkAccent,
@@ -38,7 +38,7 @@ export default function SubTask(props) {
             fontSize: 20,
             color: props.appColors.darkAccent,
             fontWeight: 500,
-            width: '75%',
+            width: '84%',
         },
         checked: {
             backgroundColor: props.appColors.darkAccent,
@@ -51,6 +51,80 @@ export default function SubTask(props) {
             width: 18,
             // borderWidth: 1,
             // borderColor: colors.accentDark,
+        },
+        subTaskTextContainer: {
+            width: '100%',
+        },
+        subTaskEditContainer: {
+            width: '95%',
+            paddingLeft: '5%',
+        },
+        editWeightContainer: {
+            marginTop: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+        },
+        editWeight: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: props.appColors.mono2,
+            borderRadius: 18,
+            paddingLeft: 15,
+            paddingRight: 15,
+            paddingTop: 2,
+            paddingBottom: 2,
+        },
+        editSubTaskText: {
+            fontSize: 20,
+            color: props.appColors.darkAccent,
+            fontWeight: 500,
+            width: '90%',
+        },
+        weight: {
+            paddingLeft: 10,
+            // paddingRight: 10,
+            paddingTop: 2,
+            paddingBottom: 2,
+            borderRadius: 20,
+            minWidth: 50,
+            // backgroundColor: props.appColors.lightAccent,
+            alignItems: 'center',
+        },
+        weightInput: {
+            textAlign: 'center',
+        },
+        textInputContainer: {
+            borderBottomWidth: 1,
+            borderColor: props.appColors.mono2,
+            paddingBottom: 10,
+        },
+        weightInputText: {
+            fontSize: 16,
+            fontWeight: 700,
+            color: props.appColors.darkAccent,
+        },
+        weightLabelText: {
+            fontSize: 14,
+            fontWeight: 700,
+            color: props.appColors.darkAccent,
+            paddingRight: 10,
+            borderRightWidth: 1,
+            borderColor: props.appColors.mono1,
+        },
+        doneButton: {
+            // paddingTop: 8,
+            // paddingBottom: 8,
+            height: 36,
+            justifyContent: 'center',
+            paddingLeft: 15,
+            paddingRight: 15,
+            backgroundColor: props.appColors.darkAccent,
+            borderRadius: 18
+        },
+        doneButtonText: {
+            color: props.appColors.mono1,
+            fontWeight: 700,
         }
     });
 
@@ -70,24 +144,60 @@ export default function SubTask(props) {
         // console.log("Changed task state.");
     }, [complete]);
 
+    const [taskEditing, setTaskEditing] = useState(false);
+
+
+
     return (
         <TouchableOpacity
             style={basicStyle.taskContainer}
-            activeOpacity={0.7}
-            onPress={onSubtaskPress}
+            activeOpacity={0.8}
             onLongPress={onLongSubtaskPress}
         >
-            <View style={basicStyle.checkBox}>
-                {
-                    complete ?
-                        <View style={[basicStyle.checkBoxShape, basicStyle.checked]}>
-                            <Image style={basicStyle.tick} source={require("../../assets/tick_light_green.png")} />
+            {
+                taskEditing ?
+                <View style={basicStyle.subTaskEditContainer}>
+                    <TextInput
+                        style={[basicStyle.subTaskTextContainer, basicStyle.textInputContainer]}
+                        multiline
+                        autoFocus
+                    >
+                        <Text style={basicStyle.editSubTaskText}>{props.title}</Text>
+                    </TextInput>
+                    <View style={basicStyle.editWeightContainer}>
+                        <View style={basicStyle.editWeight}>
+                            <Text style={basicStyle.weightLabelText}>Weight</Text>
+                            <TouchableOpacity style={basicStyle.weight}>
+                                <TextInput style={basicStyle.weightInput} keyboardType='numeric' maxLength={2} >
+                                    <Text style={basicStyle.weightInputText}>{props.weight}</Text>
+                                </TextInput>
+                            </TouchableOpacity>
                         </View>
-                    :
-                        <View style={basicStyle.checkBoxShape}></View>
-                }
-            </View>
-            <Text style={basicStyle.subTaskText}>{props.title}</Text>
+                        <TouchableOpacity style={basicStyle.doneButton} onPress={() => setTaskEditing(prevState => !prevState)}>
+                            <Text style={basicStyle.doneButtonText}>SAVE</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                :
+                <>
+                    <TouchableOpacity
+                        style={basicStyle.checkBox}
+                        onPress={onSubtaskPress}
+                    >
+                        {
+                            complete ?
+                                <View style={[basicStyle.checkBoxShape, basicStyle.checked]}>
+                                    <Image style={basicStyle.tick} source={require("../../assets/tick_light_green.png")} />
+                                </View>
+                            :
+                                <View style={basicStyle.checkBoxShape}></View>
+                        }
+                    </TouchableOpacity>
+                    <TouchableOpacity style={basicStyle.subTaskTextContainer} onPress={() => setTaskEditing(prevState => !prevState)} >
+                        <Text style={basicStyle.subTaskText}>{props.title}</Text>
+                    </TouchableOpacity>
+                </>
+            }
         </TouchableOpacity>
     )
 }
