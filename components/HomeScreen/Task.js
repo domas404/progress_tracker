@@ -76,8 +76,8 @@ export default function Task(props) {
             textDecorationLine: 'underline',
         },
         pinIcon: {
-            width: 20,
-            height: 20,
+            width: 24,
+            height: 24,
             marginRight: 5,
         },
         pinAndTitle: {

@@ -63,6 +63,10 @@ export default function HomeScreen(props) {
         }, 30);
     }
 
+    // sorting orders: date, title, progress, deadline
+    const [sortingOrder, setSortingOrder] = useState('date');
+    const [sortAsc, setSortAsc] = useState('false');
+
     const styles = StyleSheet.create({
         container: {
             height: '100%',
@@ -125,8 +129,8 @@ export default function HomeScreen(props) {
         },
         sortMenuContainer: {
             position: 'absolute',
-            top: sortMenuPosition.y,
-            right: 65,
+            top: sortMenuPosition.y + 10,
+            right: 20,
             backgroundColor: appColors.mono1,
             width: 200,
             borderRadius: 24,
@@ -139,6 +143,13 @@ export default function HomeScreen(props) {
             marginRight: 5,
             borderBottomColor: appColors.mono2,
             borderBottomWidth: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        lastSortMenuOption: {
+            padding: 16,
+            marginLeft: 5,
+            marginRight: 5,
             flexDirection: 'row',
             alignItems: 'center',
         },
@@ -191,16 +202,60 @@ export default function HomeScreen(props) {
 
         const readTasks = await setTaskObject(allKeys);
         for(var i=0; i<readTasks.length; i++){
+            // console.log("Task", i, readTasks[i]);
             savePromises.push(await promisedSetTasks({
                 id: allKeys[i],
                 title: readTasks[i].title,
                 description: readTasks[i].description,
                 percent: readTasks[i].completeTaskCount === 0 ? 0: Math.round(readTasks[i].completeWeightSum/readTasks[i].weightSum*100),
                 pinned: readTasks[i].pinned,
-                labels: readTasks[i].labels
+                labels: readTasks[i].labels,
+                dateCreated: readTasks[i].dateCreated,
+                dueDate: readTasks[i].dueDate,
             }));
         }
         return savePromises;
+    }
+
+    const sortTasks = (tasksToSort) => {
+        let sortedTasks;
+        // console.log("tasksToSort:", tasksToSort);
+        
+        switch(sortingOrder){
+            case 'date':
+                if(sortAsc)
+                    sortedTasks = tasksToSort.sort((a, b) => Date.parse(a.dateCreated) - Date.parse(b.dateCreated));
+                else
+                    sortedTasks = tasksToSort.sort((a, b) => Date.parse(b.dateCreated) - Date.parse(a.dateCreated));
+                break;
+            case 'title':
+                if(sortAsc){
+                    sortedTasks = tasksToSort.sort((a, b) => {
+                        if(a.title.toLowerCase() < b.title.toLowerCase()) return -1;
+                        if(a.title.toLowerCase() > b.title.toLowerCase()) return 1;
+                    });
+                }
+                else{
+                    sortedTasks = tasksToSort.sort((a, b) => {
+                        if(a.title.toLowerCase() > b.title.toLowerCase()) return -1;
+                        if(a.title.toLowerCase() < b.title.toLowerCase()) return 1;
+                    });
+                }
+                break;
+            case 'progress':
+                if(sortAsc)
+                    sortedTasks = tasksToSort.sort((a, b) => a.percent - b.percent);
+                else
+                    sortedTasks = tasksToSort.sort((a, b) => b.percent - a.percent);
+                break;
+            case 'deadline':
+                if(sortAsc)
+                    sortedTasks = tasksToSort.sort((a, b) => Date.parse(a.dueDate) - Date.parse(b.dueDate));
+                else
+                    sortedTasks = tasksToSort.sort((a, b) => Date.parse(b.dueDate) - Date.parse(a.dueDate));
+                break;
+        }
+        return sortedTasks;
     }
 
     // maps task list to Task components and updates displayed task list (when new task is added to local storage)
@@ -210,7 +265,7 @@ export default function HomeScreen(props) {
             // console.log("TASKS in UpdateTasks():", ta);
             pinnedTasks = ta.filter((e) => e.pinned);
             restOfTasks = ta.filter((e) => !e.pinned);
-            const sortedTasks = restOfTasks.sort((a, b) => b.id - a.id);
+            const sortedTasks = sortTasks(restOfTasks);
             // console.log(sortedTasks);
             // all tasks
             setMappedTasks(() => sortedTasks.map((task) => {
@@ -310,7 +365,8 @@ export default function HomeScreen(props) {
     useEffect(() => {
         updateTasks();
         // const isFocused = useIsFocused();
-    }, [isFocused]);
+        console.log("rerendered.");
+    }, [isFocused, sortingOrder, sortAsc]);
 
     const pinSelectedTask = async () => {
         // console.log(selectedTask);
@@ -350,7 +406,14 @@ export default function HomeScreen(props) {
         ToastAndroid.show("Task archived", ToastAndroid.SHORT);
     }
 
-    
+    const manageSorting = (order) => {
+        setSortingOrder(order);
+        setSortMenuVisible(prevState => !prevState);
+    }
+
+    const changeSortingOrder = () => {
+        setSortAsc(prevState => !prevState);
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -362,8 +425,19 @@ export default function HomeScreen(props) {
                     // console.log("Scroll position:", scrollPosition, "Menu Position:", optionsMenuPosition.y);
                 }}
             >
-                <MainHead navigation={navigation} mappedTasks={mappedPinnedTasks} appColors={appColors} />
-                <MainTasks navigation={navigation} mappedTasks={mappedTasks} appColors={appColors} openSortMenu={toggleSortMenu} />
+                <MainHead
+                    navigation={navigation}
+                    mappedTasks={mappedPinnedTasks}
+                    appColors={appColors}
+                />
+                <MainTasks
+                    navigation={navigation}
+                    mappedTasks={mappedTasks}
+                    appColors={appColors}
+                    openSortMenu={toggleSortMenu}
+                    changeSortingOrder={changeSortingOrder}
+                    sortingOrder={sortingOrder}
+                />
                 { modalVisible && <MenuComponent /> }
                 <Modal
                     style={styles.modal}
@@ -374,19 +448,19 @@ export default function HomeScreen(props) {
                 >
                     <Pressable style={styles.modalBackground} onPress={() => setSortMenuVisible(prevState => !prevState)} />
                     <View style={styles.sortMenuContainer}>
-                        <TouchableOpacity style={styles.sortMenuOption} >
+                        <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('date')} >
                             <Image style={styles.sortMenuIcon} source={require("../../assets/calendar_green.png")} resizeMode='contain' />
                             <Text style={styles.option}>Date created</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.sortMenuOption} >
+                        <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('title')} >
                             <Image style={styles.sortMenuIcon} source={require("../../assets/text_green.png")} resizeMode='contain' />
                             <Text style={styles.option}>Title</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.sortMenuOption} >
+                        <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('progress')} >
                             <Image style={styles.sortMenuIcon} source={require("../../assets/bar_chart_green.png")} resizeMode='contain' />
                             <Text style={styles.option}>Progress</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.sortMenuOption} >
+                        <TouchableOpacity style={styles.lastSortMenuOption} onPress={() => manageSorting('deadline')} >
                             <Image style={styles.sortMenuIcon} source={require("../../assets/deadline_green.png")} resizeMode='contain' />
                             <Text style={styles.option}>Due date</Text>
                         </TouchableOpacity>

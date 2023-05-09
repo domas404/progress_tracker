@@ -16,7 +16,7 @@ export default function MainHead(props) {
             margin: '5%'
         },
         pinnedTextContainer: {
-            width: "80%",
+            width: "90%",
             flexDirection: 'row',
         },
         mainText: {
@@ -28,7 +28,8 @@ export default function MainHead(props) {
         pinnedLabelText: {
             color: props.appColors.lightAccent,
             fontWeight: 700,
-            fontSize: 16
+            fontSize: 16,
+            marginLeft: 20,
         },
         dateContainer: {
             width: '90%',

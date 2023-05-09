@@ -3,7 +3,21 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 export default function MainTasks(props) {
     // Determines how to sort tasks
-    const sortingOrder = 'Date';
+    let sortingOrder;
+    switch (props.sortingOrder){
+        case 'date':
+            sortingOrder = 'Date created'
+            break;
+        case 'title':
+            sortingOrder = 'Title'
+            break;
+        case 'progress':
+            sortingOrder = 'Progress'
+            break;
+        case 'deadline':
+            sortingOrder = 'Due date'
+            break;
+    }
 
     const styles = StyleSheet.create({
         mainTasksContainer: {
@@ -17,21 +31,29 @@ export default function MainTasks(props) {
         },
         sortByContainer: {
             // height: 25,
-            width: '80%',
+            width: '90%',
             alignItems: 'center',
-            marginTop: 10,
+            marginTop: 15,
             justifyContent: "space-between",
             flexDirection: 'row',
+            
         },
         all: {
             fontWeight: 700,
             color: props.appColors.darkAccent,
-            fontSize: 16
+            fontSize: 16,
+            marginLeft: 20,
         },
         sortBy: {
             fontWeight: 700,
             color: props.appColors.darkAccent,
-            fontSize: 16
+            fontSize: 16,
+            // paddingTop: 5,
+            // paddingBottom: 5,
+            paddingRight: 10,
+            borderRightWidth: 1,
+            borderRightColor: props.appColors.lightAccent,
+            
         },
         noTasksContainer: {
             width: '100%',
@@ -46,16 +68,33 @@ export default function MainTasks(props) {
         sortButton: {
             flexDirection: 'row',
             alignItems: 'center',
-            paddingTop: 5,
-            paddingBottom: 5,
-            paddingLeft: 10,
-            paddingRight: 10,
-            borderRadius: 10,
+            borderRadius: 18,
+            // backgroundColor: props.appColors.mono1,
+            height: 36,
         },
         sortIcon: {
-            height: 20,
-            width: 20,
+            height: 24,
+            width: 24,
             marginRight: 5,
+        },
+        sortOrderContainer: {
+            // backgroundColor: 'orange',
+            height: 36,
+            borderTopRightRadius: 18,
+            borderBottomRightRadius: 18,
+            justifyContent: 'center',
+            // paddingLeft: 10,
+            paddingRight: 10,
+        },
+        sortingTextContainer: {
+            justifyContent: 'center',
+            alignItems: 'center',
+            // backgroundColor: 'green',
+            borderTopLeftRadius: 18,
+            borderBottomLeftRadius: 18,
+            height: 36,
+            paddingLeft: 15,
+            paddingRight: 10,
         }
     })
 
@@ -90,20 +129,47 @@ export default function MainTasks(props) {
 
     // console.log("Tasks", props.mappedTasks);
 
+    const [sortAsc, setSortAsc] = useState(false);
+
     return (
         <View style={styles.mainTasksContainer}>
             <View style={styles.sortByContainer}>
                 <Text style={styles.all}>All</Text>
-                <TouchableOpacity 
+                <View 
                     style={styles.sortButton}
-                    onPress={async () => {
-                        getPosition();
-                    }}
                     ref={myRef}
                 >
-                    <Image style={styles.sortIcon} source={require("../../assets/sort_descending_green.png")} resizeMode='contain' />
-                    <Text style={styles.sortBy}>{sortingOrder}</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.sortingTextContainer}
+                        onPress={async () => {
+                            getPosition();
+                        }}
+                    >
+                        <Text style={styles.sortBy}>{sortingOrder}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.sortOrderContainer}
+                        onPress={() => {
+                            setSortAsc(prevState => !prevState);
+                            props.changeSortingOrder();
+                        }}
+                    >
+                        {
+                            sortAsc ?   <Image
+                                            style={styles.sortIcon}
+                                            source={require("../../assets/sort_ascending_green.png")}
+                                            resizeMode='contain'
+                                        />
+                            :           <Image
+                                            style={styles.sortIcon}
+                                            source={require("../../assets/sort_descending_green.png")}
+                                            resizeMode='contain'
+                                        />
+
+                        }
+                    </TouchableOpacity>
+                    
+                </View>
             </View>
             {/* {props.mappedTasks} */}
             {props.mappedTasks.length != 0 ? tasks : <View style={styles.noTasksContainer}><Text style={styles.noTasksText}>Nothing to display &#128542;</Text></View>}
