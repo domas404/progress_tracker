@@ -141,7 +141,7 @@ export default function TaskHead(props) {
                 <Text style={styles.mainText}>{props.name}</Text>
             </View>
             <View style={styles.pinnedTextContainer}>
-                <Text style={styles.pinnedLabelText}>{props.description}</Text>
+                {props.description !== "" && <Text style={styles.pinnedLabelText}>{props.description}</Text>}
             </View>
             <View style={styles.taskTags}>
                 <View style={styles.tag}>

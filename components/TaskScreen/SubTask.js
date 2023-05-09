@@ -41,7 +41,8 @@ export default function SubTask(props) {
             width: '75%',
         },
         checked: {
-            backgroundColor: props.appColors.lightAccent,
+            backgroundColor: props.appColors.darkAccent,
+            borderWidth: 0,
             justifyContent: 'center',
             alignItems: 'center',
         },
@@ -80,7 +81,7 @@ export default function SubTask(props) {
                 {
                     complete ?
                         <View style={[basicStyle.checkBoxShape, basicStyle.checked]}>
-                            <Image style={basicStyle.tick} source={require("../../assets/tick_green.png")} />
+                            <Image style={basicStyle.tick} source={require("../../assets/tick_light_green.png")} />
                         </View>
                     :
                         <View style={basicStyle.checkBoxShape}></View>

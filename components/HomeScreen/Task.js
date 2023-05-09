@@ -32,14 +32,15 @@ export default function Task(props) {
             alignItems: 'center',
         },
         titleAndMenu: {
-            width: '85%',
+            width: '90%',
             flexDirection: 'row',
-            justifyContent: 'flex-start',
+            justifyContent: 'space-between',
             overflow: 'visible',
+            alignItems: 'center',
         },
         taskTitle: {
             fontWeight: 700,
-            width: '90%',
+            // width: '80%',
             fontSize: 18,
         },
         progressBarWhole: {
@@ -72,6 +73,16 @@ export default function Task(props) {
         labelText: {
             marginRight: 10,
             color: props.appColors.lightAccent,
+            textDecorationLine: 'underline',
+        },
+        pinIcon: {
+            width: 20,
+            height: 20,
+            marginRight: 5,
+        },
+        pinAndTitle: {
+            flexDirection: 'row',
+            alignItems: 'center',
         }
     })
 
@@ -82,6 +93,7 @@ export default function Task(props) {
         },
         taskTitle: {
             color: props.appColors.darkAccent,
+            marginLeft: 10,
         },
         progressBarWhole: {
             backgroundColor: props.appColors.lightAccent,
@@ -127,17 +139,13 @@ export default function Task(props) {
     const styles = props.pinned ? styles2 : styles1;
 
     const myRef = useRef();
-    const [position, setPosition] = useState({});
+    const [position, setPosition] = useState({ px: 0, py: 0 });
 
     const getPosition = () => {
         myRef.current.measure((fx, fy, width, height, px, py) => {
             const location = {
-                fx: fx,
-                fy: fy,
-                width: width,
-                height: height,
-                px: px,
-                py: py,
+                px: Math.round(px),
+                py: Math.round(py),
             };
             setPosition(location);
         });
@@ -149,6 +157,11 @@ export default function Task(props) {
             getPosition();
         }, 10);
     }, []);
+
+    useEffect(() => {
+        // console.log(props.id, position);
+        props.optionsMenu(props.id, position);
+    }, [position]);
 
 
     return (
@@ -163,16 +176,19 @@ export default function Task(props) {
         >
             <View style={[basicStyle.taskTitleContainer, styles.taskTitleContainer]}>
                 <View style={basicStyle.titleAndMenu}>
-                    <Text style={[basicStyle.taskTitle, styles.taskTitle]}>{props.title}</Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                getPosition();
-                                props.optionsMenu(props.id, position);
-                            }}
-                            ref={myRef}
-                        >
-                            <Image style={basicStyle.taskMenu} source={require("../../assets/dots_light_green.png")} resizeMode='contain' />
-                        </TouchableOpacity>
+                    <View style={basicStyle.pinAndTitle}>
+                        { props.pinned && <Image style={basicStyle.pinIcon} source={require("../../assets/thumbtacks_light_green.png")} resizeMode='contain' />}
+                        <Text style={[basicStyle.taskTitle, styles.taskTitle]}>{props.title}</Text>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            getPosition();
+                            // props.optionsMenu(props.id, position);
+                        }}
+                        ref={myRef}
+                    >
+                        <Image style={basicStyle.taskMenu} source={require("../../assets/dots_light_green.png")} resizeMode='contain' />
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={[basicStyle.progressBar, styles.progressBar]}>

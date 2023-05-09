@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 export default function MainHead(props) {
 
@@ -8,7 +8,7 @@ export default function MainHead(props) {
             width: '100%',
             alignItems: 'center',
             height: 'auto',
-            paddingTop: '15%',
+            paddingTop: '10%',
             marginBottom: '5%'
         },
         mainTextContainer: {
@@ -17,6 +17,7 @@ export default function MainHead(props) {
         },
         pinnedTextContainer: {
             width: "80%",
+            flexDirection: 'row',
         },
         mainText: {
             color: 'white',
@@ -28,11 +29,35 @@ export default function MainHead(props) {
             color: props.appColors.lightAccent,
             fontWeight: 700,
             fontSize: 16
-        }
+        },
+        dateContainer: {
+            width: '90%',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'row'
+        },
+        goBack: {
+            width: 24,
+            height: 24,
+            
+        },
+        goBackContainer: {
+            // backgroundColor: props.appColors.lightAccent,
+            padding: 8,
+
+        },
     });
 
     return (
         <View style={styles.header}>
+            <View style={styles.dateContainer}>
+                <TouchableOpacity
+                    // onPress={() => props.navigation.navigate('home')}
+                    style={styles.goBackContainer}
+                >
+                    <Image style={styles.goBack} source={require("../../assets/menu_light_green.png")} resizeMode='contain' />
+                </TouchableOpacity>
+            </View>
             <View style={styles.mainTextContainer}>
                 <Text style={styles.mainText}>My tasks</Text>
             </View>

@@ -48,6 +48,21 @@ export default function HomeScreen(props) {
         }, 30);
     }
 
+    const [sortMenuVisible, setSortMenuVisible] = useState(false);
+    const [sortMenuPosition, setSortMenuPosiiton] = useState({ x: 100, y: 100 })
+
+    const toggleSortMenu = (measurements) => {
+        // setSortMenuVisible(prevState => !prevState);
+        let newPosition = { x: Math.round(measurements.px), y: Math.round(measurements.py)};
+        setSortMenuPosiiton(newPosition);
+
+        // console.log("Sort menu posiiton:", newPosition);
+
+        setTimeout(() => {
+            setSortMenuVisible(prevState => !prevState);
+        }, 30);
+    }
+
     const styles = StyleSheet.create({
         container: {
             height: '100%',
@@ -64,30 +79,17 @@ export default function HomeScreen(props) {
             position: 'absolute',
             bottom: 30,
             right: 20,
-            padding: 20
+            padding: 20,
+            shadowColor: appColors.mono4,
+            elevation: 2,
         },
         addTask: {
             height: 30,
             width: 30,
         },
-        removeTasksContainer: {
-            backgroundColor: appColors.darkAccent,
-            borderRadius: 35,
-            position: 'absolute',
-            bottom: 30,
-            left: 20,
-            padding: 15
-        },
-        delete: {
-            color: appColors.mono1,
-            fontSize: 16,
-            fontWeight: 700,
-            paddingRight: 10,
-            paddingLeft: 10,
-        },
         optionsMenuContainer: {
             position: 'absolute',
-            top: optionsMenuPosition.y - scrollPosition,
+            top: optionsMenuPosition.y,
             right: 65,
             backgroundColor: appColors.mono1,
             width: 180,
@@ -120,6 +122,30 @@ export default function HomeScreen(props) {
         modalBackground: {
             height: '100%',
             width: '100%'
+        },
+        sortMenuContainer: {
+            position: 'absolute',
+            top: sortMenuPosition.y,
+            right: 65,
+            backgroundColor: appColors.mono1,
+            width: 200,
+            borderRadius: 24,
+            shadowColor: appColors.mono4,
+            elevation: 4,
+        },
+        sortMenuOption: {
+            padding: 16,
+            marginLeft: 5,
+            marginRight: 5,
+            borderBottomColor: appColors.mono2,
+            borderBottomWidth: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        sortMenuIcon: {
+            height: 20,
+            width: 20,
+            marginRight: 7,
         }
     });
 
@@ -180,11 +206,14 @@ export default function HomeScreen(props) {
     // maps task list to Task components and updates displayed task list (when new task is added to local storage)
     const updateTasks = async () => {
         await manageTasks().then((ta) => {
+            // console.log(ta);
             // console.log("TASKS in UpdateTasks():", ta);
             pinnedTasks = ta.filter((e) => e.pinned);
             restOfTasks = ta.filter((e) => !e.pinned);
+            const sortedTasks = restOfTasks.sort((a, b) => b.id - a.id);
+            // console.log(sortedTasks);
             // all tasks
-            setMappedTasks(() => restOfTasks.map((task) => {
+            setMappedTasks(() => sortedTasks.map((task) => {
                 return (
                     <Task
                         id={task.id}
@@ -259,7 +288,7 @@ export default function HomeScreen(props) {
                     <TouchableOpacity style={styles.optionsMenuOption}>
                         <Text style={styles.option}>Edit</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.optionsMenuOption}>
+                    <TouchableOpacity style={styles.optionsMenuOption} onPress={() => archiveSelectedTask()}>
                         <Text style={styles.option}>Archive</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.deleteOptionsMenuOption} onPress={() => deleteSelectedTask()}>
@@ -294,12 +323,8 @@ export default function HomeScreen(props) {
 
     const deleteSelectedTask = async () => {
         const taskToDelete = await getValuesByKey(selectedTask);
-        console.log(taskToDelete);
-        Alert.alert(`Delete ${taskToDelete.title}?`, 'This action permanetly deletes task with all of its contents.', [
-            {
-                text: 'Cancel',
-                onPress: () => setModalVisible(prevState => !prevState),
-            },
+        // console.log(taskToDelete);
+        Alert.alert(`Delete '${taskToDelete.title}'?`, 'This action permanetly deletes task with all of its contents.', [
             {
                 text: 'Delete',
                 onPress: () => {
@@ -309,8 +334,23 @@ export default function HomeScreen(props) {
                     ToastAndroid.show("Task deleted", ToastAndroid.SHORT);
                 }
             },
+            {
+                text: 'Cancel',
+                onPress: () => setModalVisible(prevState => !prevState),
+            },
         ]);
     }
+
+    const archiveSelectedTask = async () => {
+        const taskToArchive = await getValuesByKey(selectedTask);
+        // console.log(taskToArchive.archived);
+        setModalVisible(prevState => !prevState);
+        AsyncStorage.mergeItem(selectedTask, JSON.stringify({ archived: !taskToArchive.archived }));
+        updateTasks();
+        ToastAndroid.show("Task archived", ToastAndroid.SHORT);
+    }
+
+    
 
     return (
         <SafeAreaView style={styles.container}>
@@ -323,8 +363,35 @@ export default function HomeScreen(props) {
                 }}
             >
                 <MainHead navigation={navigation} mappedTasks={mappedPinnedTasks} appColors={appColors} />
-                <MainTasks navigation={navigation} mappedTasks={mappedTasks} appColors={appColors} />
+                <MainTasks navigation={navigation} mappedTasks={mappedTasks} appColors={appColors} openSortMenu={toggleSortMenu} />
                 { modalVisible && <MenuComponent /> }
+                <Modal
+                    style={styles.modal}
+                    transparent
+                    visible={sortMenuVisible}
+                    onRequestClose={() => setSortMenuVisible(prevState => !prevState)}
+                    animationType="fade"
+                >
+                    <Pressable style={styles.modalBackground} onPress={() => setSortMenuVisible(prevState => !prevState)} />
+                    <View style={styles.sortMenuContainer}>
+                        <TouchableOpacity style={styles.sortMenuOption} >
+                            <Image style={styles.sortMenuIcon} source={require("../../assets/calendar_green.png")} resizeMode='contain' />
+                            <Text style={styles.option}>Date created</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.sortMenuOption} >
+                            <Image style={styles.sortMenuIcon} source={require("../../assets/text_green.png")} resizeMode='contain' />
+                            <Text style={styles.option}>Title</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.sortMenuOption} >
+                            <Image style={styles.sortMenuIcon} source={require("../../assets/bar_chart_green.png")} resizeMode='contain' />
+                            <Text style={styles.option}>Progress</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.sortMenuOption} >
+                            <Image style={styles.sortMenuIcon} source={require("../../assets/deadline_green.png")} resizeMode='contain' />
+                            <Text style={styles.option}>Due date</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
             </ScrollView>
             <TouchableOpacity
                 style={styles.addTaskContainer}
@@ -333,24 +400,7 @@ export default function HomeScreen(props) {
             >
                 <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
             </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.removeTasksContainer}
-                activeOpacity={0.8}
-                onPress={ () => {
-                    Alert.alert('Delete', 'Delete everything fr?', [
-                        {
-                          text: 'Cancel',
-                          onPress: () => console.log("Cancel"),
-                        },
-                        {
-                            text: 'OK',
-                            onPress: () => clearAll()
-                        },
-                      ]);
-                }}
-            >
-                <Text style={styles.delete}>DELETE ALL</Text>
-            </TouchableOpacity>
+            
             
         </SafeAreaView>
     );

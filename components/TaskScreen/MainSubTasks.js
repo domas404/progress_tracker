@@ -42,8 +42,8 @@ export default function MainTasks(props) {
     return (
         <View style={styles.mainTasksContainer}>
             <View style={styles.sortByContainer}>
-                <Text style={styles.all}>All</Text>
-                <Text style={styles.sortBy}>Sort By: {sortingOrder}</Text>
+                <Text style={styles.all}>To do</Text>
+                {/* <Text style={styles.sortBy}>Sort By: {sortingOrder}</Text> */}
             </View>
             {/* <SubTask title="Sukurti setting lango dizainą" percent={80} pinned={false} ></SubTask> */}
             {props.taskList}
