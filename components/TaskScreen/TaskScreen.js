@@ -13,7 +13,7 @@ export default function TaskScreen(props) {
     const styles = StyleSheet.create({
         container: {
             height: '100%',
-            backgroundColor: props.route.params.appColors.darkAccent,
+            backgroundColor: props.route.params.appColors.header_background,
             alignContent: 'stretch',
         },
         scroll: {
@@ -21,7 +21,7 @@ export default function TaskScreen(props) {
             minHeight: '100%',
         },
         addTaskContainer: {
-            backgroundColor: props.route.params.appColors.darkAccent,
+            backgroundColor: props.route.params.appColors.button_background,
             borderRadius: 35,
             position: 'absolute',
             bottom: 30,

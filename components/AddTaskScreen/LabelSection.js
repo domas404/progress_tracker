@@ -9,7 +9,6 @@ export default function LabelSection(props) {
     const styles = StyleSheet.create({
         container: {
             width: '95%',
-            // height: '40%',
             minHeight: 200,
             marginLeft: '2.5%',
         },
@@ -18,21 +17,21 @@ export default function LabelSection(props) {
             flexWrap: 'wrap',
         },
         chosenLabel: {
-            backgroundColor: props.appColors.lightAccent,
+            backgroundColor: props.appColors.body_emptyBar,
             margin: 5,
             paddingTop: 5,
             paddingBottom: 5,
             paddingLeft: 15,
             paddingRight: 15,
             borderRadius: 15,
-            color:  props.appColors.darkAccent,
+            color:  props.appColors.body_text,
             fontWeight: 700,
             fontSize: 16,
         },
         allLabelContainer: {
             marginTop: 10,
             width: '100%',
-            backgroundColor:  props.appColors.mono1,
+            backgroundColor:  props.appColors.body_taskBackground,
             padding: 10,
             borderRadius: 24,
             maxHeight: 250,
@@ -56,14 +55,14 @@ export default function LabelSection(props) {
             height: 20,
             width: 20,
             borderWidth: 1,
-            borderColor:  props.appColors.darkAccent,
+            borderColor:  props.appColors.body_outline,
             borderRadius: 6,
             alignItems: 'center',
             justifyContent: 'center',
             marginTop: 3,
         },
         checkedCheckBox: {
-            backgroundColor:  props.appColors.darkAccent,
+            backgroundColor:  props.appColors.body_completeBar,
             borderWidth: 0,
         },
         labelOption: {
@@ -85,19 +84,16 @@ export default function LabelSection(props) {
             width: 14,
         },
         noLabels: {
-            // backgroundColor: '#AED3C5',
             margin: 5,
             paddingTop: 5,
             paddingBottom: 5,
             paddingLeft: 5,
             paddingRight: 15,
-            color:  props.appColors.mono4,
+            color:  props.appColors.otherText,
             fontSize: 16,
-            // fontWeight: 500,
         },
         createLabelOption: {
             marginLeft: 10,
-            // backgroundColor: 'red',
             paddingTop: 8,
             paddingBottom: 8,
             flexDirection: 'row',
@@ -109,15 +105,6 @@ export default function LabelSection(props) {
         }
     });
 
-    
-
-    // const initialLabels = getInitialLabels() == undefined ? [] : getInitialLabels();
-    // console.log(getInitialLabels());
-    // const initialLabels = [];
-
-    // let initialChosenLabels = initialLabels.filter((label) => label.checked);
-    // console.log(initialChosenLabels);
-
     const [chosenLabels, setChosenLabels] = useState([]);
     const [labels, setLabels] = useState([]);
     const [filteredLabels, setFilteredLabels] = useState([]);
@@ -127,7 +114,6 @@ export default function LabelSection(props) {
         storedLabels = await AsyncStorage.getItem('labels');
         storedLabels = JSON.parse(storedLabels);
         storedLabels.map(label => label.checked = false);
-        // console.log("storedLabels",storedLabels);
         setLabels(storedLabels);
         setFilteredLabels(storedLabels);
     }
@@ -173,7 +159,6 @@ export default function LabelSection(props) {
         }
     }
 
-    
     const handleSearch = (input) => {
         // console.log("Input:", input);
         setSearchInput(input);
@@ -220,8 +205,6 @@ export default function LabelSection(props) {
                         )
                     })
                 }
-                {/* <Text style={styles.chosenLabel}>univeras</Text>
-                <Text style={styles.chosenLabel}>karo studijos</Text> */}
             </View>
             <View style={styles.allLabelContainer}>
                 <TouchableOpacity style={styles.searchContainer}>

@@ -38,7 +38,7 @@ export default function AddTaskScreen(props) {
         headerContainer: {
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: appColors.darkAccent,
+            backgroundColor: appColors.header_background,
             height: '15%',
             marginTop: 20,
             minHeight: 100,
@@ -46,7 +46,7 @@ export default function AddTaskScreen(props) {
         scrollContainer: {
             borderTopLeftRadius: 40,
             borderTopRightRadius: 40,
-            backgroundColor: appColors.mono2,
+            backgroundColor: appColors.body_background,
             flex: 1,
         },
         scroll: {
@@ -61,7 +61,7 @@ export default function AddTaskScreen(props) {
         formContainer: {
             borderTopLeftRadius: 40,
             borderTopRightRadius: 40,
-            backgroundColor: appColors.mono2,
+            backgroundColor: appColors.body_background,
             flex: 4,
             paddingTop: 10,
         },
@@ -82,12 +82,12 @@ export default function AddTaskScreen(props) {
         },
         container: {
             flex: 1,
-            backgroundColor: appColors.darkAccent,
+            backgroundColor: appColors.header_background,
         },
         addButton: {
             width: '35%',
             height: 60,
-            backgroundColor: appColors.darkAccent,
+            backgroundColor: appColors.button_background,
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 30,
@@ -99,13 +99,13 @@ export default function AddTaskScreen(props) {
         },
         inputLabel: {
             fontWeight: 700,
-            color: appColors.darkAccent,
+            color: appColors.body_labelText,
             fontSize: 16,
             // marginLeft: 10,
             // marginTop: 15,
         },
         dateContainer: {
-            backgroundColor: appColors.lightAccent,
+            backgroundColor: appColors.body_emptyBar,
             // width: 140,
             height: 40,
             justifyContent: 'center',
@@ -119,7 +119,7 @@ export default function AddTaskScreen(props) {
         date: {
             fontSize: 16,
             fontWeight: 700,
-            color: appColors.darkAccent
+            color: appColors.body_text
         },
         datetimeContainer: {
             flexDirection: 'row',

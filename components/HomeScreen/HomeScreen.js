@@ -15,13 +15,50 @@ initializeStorageElement = async (key, value) => {
 initializeStorageElement('taskCount', JSON.stringify(0));
 initializeStorageElement('labels', JSON.stringify([]));
 
+const colors = {
+    light_green: '#AED3C5',
+    dark_green: '#13573F',
+    white: '#FFF',
+    light_gray: '#EEE',
+    gray: '#666',
+    dark_gray: '#333',
+    black: '#000',
+    red: '#DE3F3F',
+}
+
 const appColors = {
-    lightAccent: '#AED3C5',
-    darkAccent: '#13573F',
-    mono1: '#FFF',
-    mono2: '#EEE',
-    mono3: '#AEAEAE',
-    mono4: '#444',
+    header_background: colors.dark_green,
+    header_taskBackground: colors.dark_green,
+    header_completeBar: colors.light_green,
+    header_emptyBar: colors.dark_green,
+    header_outline: colors.light_green,
+    header_labelText: colors.light_green,
+    header_labels: colors.light_green,
+    header_text: colors.white,
+    header_percentage: colors.dark_green,
+
+    body_background: colors.light_gray,
+    body_taskBackground: colors.white,
+    body_completeBar: colors.dark_green,
+    body_emptyBar: colors.light_green,
+    body_labelText: colors.dark_green,
+    body_labels: colors.light_green,
+    body_text: colors.dark_green,
+    body_percentage: colors.white,
+    body_outline: colors.dark_green,
+
+    button_background: colors.dark_green,
+    button_text: colors.white,
+
+    options_background: colors.white,
+    options_option: colors.dark_green,
+    options_deleteOption: colors.red,
+    options_border: colors.light_gray,
+
+    shadow: colors.gray,
+    border: colors.light_green,
+
+    otherText: colors.dark_gray,
 }
 
 clearAll = async () => {
@@ -70,7 +107,7 @@ export default function HomeScreen(props) {
     const styles = StyleSheet.create({
         container: {
             height: '100%',
-            backgroundColor: appColors.darkAccent,
+            backgroundColor: appColors.header_background,
             alignContent: 'stretch',
         },
         scroll: {
@@ -78,13 +115,13 @@ export default function HomeScreen(props) {
             minHeight: '100%',
         },
         addTaskContainer: {
-            backgroundColor: appColors.darkAccent,
+            backgroundColor: appColors.button_background,
             borderRadius: 35,
             position: 'absolute',
             bottom: 30,
             right: 20,
             padding: 20,
-            shadowColor: appColors.mono4,
+            shadowColor: appColors.shadow,
             elevation: 2,
         },
         addTask: {
@@ -95,17 +132,17 @@ export default function HomeScreen(props) {
             position: 'absolute',
             top: optionsMenuPosition.y,
             right: 65,
-            backgroundColor: appColors.mono1,
+            backgroundColor: appColors.options_background,
             width: 180,
             borderRadius: 24,
-            shadowColor: appColors.mono4,
+            shadowColor: '#666',
             elevation: 4,
         },
         optionsMenuOption: {
             padding: 16,
             marginLeft: 10,
             marginRight: 10,
-            borderBottomColor: appColors.mono2,
+            borderBottomColor: appColors.options_border,
             borderBottomWidth: 1,
         },
         deleteOptionsMenuOption: {
@@ -114,12 +151,12 @@ export default function HomeScreen(props) {
             marginRight: 10,
         },
         option: {
-            color: appColors.darkAccent,
+            color: appColors.options_option,
             fontWeight: 700,
             fontSize: 16,
         },
         deleteOption: {
-            color: '#DE3F3F',
+            color: appColors.options_deleteOption,
             fontWeight: 700,
             fontSize: 16,
         },
@@ -131,17 +168,17 @@ export default function HomeScreen(props) {
             position: 'absolute',
             top: sortMenuPosition.y + 10,
             right: 20,
-            backgroundColor: appColors.mono1,
+            backgroundColor: appColors.options_background,
             width: 200,
             borderRadius: 24,
-            shadowColor: appColors.mono4,
+            shadowColor: appColors.shadow,
             elevation: 4,
         },
         sortMenuOption: {
             padding: 16,
             marginLeft: 5,
             marginRight: 5,
-            borderBottomColor: appColors.mono2,
+            borderBottomColor: appColors.options_border,
             borderBottomWidth: 1,
             flexDirection: 'row',
             alignItems: 'center',
@@ -474,10 +511,6 @@ export default function HomeScreen(props) {
             >
                 <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
             </TouchableOpacity>
-            
-            
         </SafeAreaView>
     );
 }
-
-

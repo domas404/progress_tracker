@@ -22,7 +22,7 @@ export default function MainTasks(props) {
     const styles = StyleSheet.create({
         mainTasksContainer: {
             width: '100%',
-            backgroundColor: props.appColors.mono2,
+            backgroundColor: props.appColors.body_background,
             alignItems: 'center',
             flexGrow: 1,
             borderTopLeftRadius: 40,
@@ -40,19 +40,19 @@ export default function MainTasks(props) {
         },
         all: {
             fontWeight: 700,
-            color: props.appColors.darkAccent,
+            color: props.appColors.body_labelText,
             fontSize: 16,
             marginLeft: 20,
         },
         sortBy: {
             fontWeight: 700,
-            color: props.appColors.darkAccent,
+            color: props.appColors.body_labelText,
             fontSize: 16,
             // paddingTop: 5,
             // paddingBottom: 5,
             paddingRight: 10,
             borderRightWidth: 1,
-            borderRightColor: props.appColors.lightAccent,
+            borderRightColor: props.appColors.border,
             
         },
         noTasksContainer: {
@@ -63,7 +63,7 @@ export default function MainTasks(props) {
         },
         noTasksText: {
             fontSize: 16,
-            color: props.appColors.mono4,
+            color: props.appColors.otherText,
         },
         sortButton: {
             flexDirection: 'row',

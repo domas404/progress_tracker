@@ -6,14 +6,11 @@ export default function MainTasks(props) {
 
     // console.log(props);
 
-    const sortingOrder = 'Date';
-
     const styles = StyleSheet.create({
         mainTasksContainer: {
             width: '100%',
-            backgroundColor: props.appColors.mono2,
+            backgroundColor: props.appColors.body_background,
             alignItems: 'center',
-            // justifyContent: 'center',
             flex: 2,
             borderTopLeftRadius: 40,
             borderTopRightRadius: 40,
@@ -29,23 +26,16 @@ export default function MainTasks(props) {
         },
         all: {
             fontWeight: 700,
-            color: props.appColors.darkAccent,
+            color: props.appColors.body_text,
             fontSize: 16
         },
-        sortBy: {
-            fontWeight: 700,
-            color: props.appColors.darkAccent,
-            fontSize: 16
-        }
     })
 
     return (
         <View style={styles.mainTasksContainer}>
             <View style={styles.sortByContainer}>
                 <Text style={styles.all}>To do</Text>
-                {/* <Text style={styles.sortBy}>Sort By: {sortingOrder}</Text> */}
             </View>
-            {/* <SubTask title="Sukurti setting lango dizainą" percent={80} pinned={false} ></SubTask> */}
             {props.taskList}
         </View>
     )

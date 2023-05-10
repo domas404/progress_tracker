@@ -10,7 +10,7 @@ export default function Task(props) {
             borderRadius: 24,
             flexDirection: 'column',
             marginTop: 15,
-            shadowColor: props.appColors.mono3,
+            shadowColor: props.appColors.shadow,
             elevation: 3,
             paddingBottom: 10,
         },
@@ -76,7 +76,7 @@ export default function Task(props) {
         },
         labelText: {
             marginRight: 10,
-            color: props.appColors.lightAccent,
+            color: props.appColors.body_labels,
             textDecorationLine: 'underline',
         },
         pinIcon: {
@@ -90,57 +90,56 @@ export default function Task(props) {
         }
     })
 
-    const styles1 = StyleSheet.create({
+    const headerStyle = StyleSheet.create({
         taskContainer: {
-            backgroundColor: props.appColors.mono1,
-            color: props.appColors.darkAccent,
+            backgroundColor: props.appColors.header_taskBackground,
+            borderWidth: 1,
+            borderColor: props.appColors.header_outline,
         },
         taskTitle: {
-            color: props.appColors.darkAccent,
+            color: props.appColors.header_text,
             marginLeft: 10,
         },
         progressBarWhole: {
-            backgroundColor: props.appColors.lightAccent,
+            backgroundColor: props.appColors.header_emptyBar,
+            borderWidth: 1,
+            borderColor: props.appColors.header_outline,
         },
         progressBarComplete: {
-            backgroundColor: props.appColors.darkAccent,
-        },
-        progressPercent: {
-            color: props.appColors.mono1,
-        },
-        tag: {
-            color: props.appColors.lightAccent,
-        }
-    });
-
-    const styles2 = StyleSheet.create({
-        taskContainer: {
-            borderWidth: 1,
-            borderColor: props.appColors.lightAccent,
-            backgroundColor: props.appColors.darkAccent,
-        },
-        taskTitle: {
-            color: props.appColors.mono1,
-        },
-        progressBarWhole: {
-            backgroundColor: props.appColors.darkAccent,
-            borderWidth: 1,
-            borderColor: props.appColors.lightAccent,
-        },
-        progressBarComplete: {
-            backgroundColor: props.appColors.lightAccent,
+            backgroundColor: props.appColors.header_completeBar,
             marginLeft: -1,
             marginTop: -1,
         },
         progressPercent: {
-            color: props.appColors.darkAccent,
+            color: props.appColors.header_percentage,
         },
         tag: {
-            color: props.appColors.lightAccent,
+            color: props.appColors.header_labels,
+        }
+    });
+
+    const bodyStyle = StyleSheet.create({
+        taskContainer: {
+            backgroundColor: props.appColors.body_taskBackground,
+        },
+        taskTitle: {
+            color: props.appColors.body_text,
+        },
+        progressBarWhole: {
+            backgroundColor: props.appColors.body_emptyBar,
+        },
+        progressBarComplete: {
+            backgroundColor: props.appColors.body_completeBar,
+        },
+        progressPercent: {
+            color: props.appColors.body_percentage,
+        },
+        tag: {
+            color: props.appColors.body_labels,
         },
     });
 
-    const styles = props.pinned ? styles2 : styles1;
+    const styles = props.pinned ? headerStyle : bodyStyle;
 
     const myRef = useRef();
     const [position, setPosition] = useState({ px: 0, py: 0 });

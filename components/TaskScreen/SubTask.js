@@ -8,17 +8,14 @@ export default function SubTask(props) {
     const basicStyle = StyleSheet.create({
         taskContainer: {
             width: '90%',
-            // height: 80,
             paddingTop: 15,
             paddingBottom: 15,
             borderRadius: 28,
-            // flexDirection: 'column',
             marginTop: 10,
-            backgroundColor: props.appColors.mono1,
-            color: props.appColors.darkAccent,
+            backgroundColor: props.appColors.body_taskBackground,
             flexDirection: 'row',
             alignItems: 'center',
-            shadowColor: props.appColors.mono3,
+            shadowColor: props.appColors.shadow,
             elevation: 3
         },
         checkBox: {
@@ -30,18 +27,18 @@ export default function SubTask(props) {
         checkBoxShape: {
             width: '100%',
             borderWidth: 1,
-            borderColor: props.appColors.darkAccent,
+            borderColor: props.appColors.body_outline,
             height: '100%',
             borderRadius: 15,
         },
         subTaskText: {
             fontSize: 20,
-            color: props.appColors.darkAccent,
+            color: props.appColors.body_text,
             fontWeight: 500,
             width: '84%',
         },
         checked: {
-            backgroundColor: props.appColors.darkAccent,
+            backgroundColor: props.appColors.body_completeBar,
             borderWidth: 0,
             justifyContent: 'center',
             alignItems: 'center',
@@ -49,8 +46,6 @@ export default function SubTask(props) {
         tick: {
             height: 18,
             width: 18,
-            // borderWidth: 1,
-            // borderColor: colors.accentDark,
         },
         subTaskTextContainer: {
             width: '90%',
@@ -68,7 +63,7 @@ export default function SubTask(props) {
         editWeight: {
             flexDirection: 'row',
             alignItems: 'center',
-            backgroundColor: props.appColors.mono2,
+            backgroundColor: props.appColors.body_background,
             borderRadius: 18,
             paddingLeft: 15,
             paddingRight: 15,
@@ -77,18 +72,16 @@ export default function SubTask(props) {
         },
         editSubTaskText: {
             fontSize: 20,
-            color: props.appColors.darkAccent,
+            color: props.appColors.body_text,
             fontWeight: '500',
             width: '90%',
         },
         weight: {
             paddingLeft: 10,
-            // paddingRight: 10,
             paddingTop: 2,
             paddingBottom: 2,
             borderRadius: 20,
             minWidth: 50,
-            // backgroundColor: props.appColors.lightAccent,
             alignItems: 'center',
         },
         weightInput: {
@@ -96,34 +89,32 @@ export default function SubTask(props) {
         },
         textInputContainer: {
             borderBottomWidth: 1,
-            borderColor: props.appColors.mono2,
+            borderColor: props.appColors.options_border,
             paddingBottom: 10,
         },
         weightInputText: {
             fontSize: 16,
             fontWeight: 700,
-            color: props.appColors.darkAccent,
+            color: props.appColors.body_text,
         },
         weightLabelText: {
             fontSize: 14,
             fontWeight: 700,
-            color: props.appColors.darkAccent,
+            color: props.appColors.body_text,
             paddingRight: 10,
             borderRightWidth: 1,
-            borderColor: props.appColors.mono1,
+            borderColor: props.appColors.otherText,
         },
         doneButton: {
-            // paddingTop: 8,
-            // paddingBottom: 8,
             height: 36,
             justifyContent: 'center',
             paddingLeft: 15,
             paddingRight: 15,
-            backgroundColor: props.appColors.darkAccent,
+            backgroundColor: props.appColors.button_background,
             borderRadius: 18
         },
         doneButtonText: {
-            color: props.appColors.mono1,
+            color: props.appColors.button_text,
             fontWeight: 700,
         }
     });
@@ -168,9 +159,7 @@ export default function SubTask(props) {
                         placeholderTextColor='rgba(0,0,0,0.4)'
                         multiline
                         autoFocus
-                    >
-                        {/* <Text style={basicStyle.editSubTaskText}>{props.title}</Text> */}
-                    </TextInput>
+                    />
                     <View style={basicStyle.editWeightContainer}>
                         <View style={basicStyle.editWeight}>
                             <Text style={basicStyle.weightLabelText}>Weight</Text>
@@ -181,9 +170,7 @@ export default function SubTask(props) {
                                     defaultValue={JSON.stringify(props.weight)}
                                     keyboardType='numeric'
                                     maxLength={2}
-                                >
-                                    {/* <Text style={basicStyle.weightInputText}>{props.weight}</Text> */}
-                                </TextInput>
+                                />
                             </TouchableOpacity>
                         </View>
                         <TouchableOpacity

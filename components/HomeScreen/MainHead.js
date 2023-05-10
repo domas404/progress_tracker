@@ -26,7 +26,7 @@ export default function MainHead(props) {
             textAlign: 'center'
         },
         pinnedLabelText: {
-            color: props.appColors.lightAccent,
+            color: props.appColors.header_labelText,
             fontWeight: 700,
             fontSize: 16,
             marginLeft: 20,
@@ -43,9 +43,7 @@ export default function MainHead(props) {
             
         },
         goBackContainer: {
-            // backgroundColor: props.appColors.lightAccent,
             padding: 8,
-
         },
     });
 

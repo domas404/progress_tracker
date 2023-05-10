@@ -9,7 +9,6 @@ export default function TaskHead(props) {
         header: {
             width: '100%',
             alignItems: 'center',
-            // flex: 1,
             height: 'auto',
             paddingTop: '10%',
             marginBottom: '5%'
@@ -28,7 +27,7 @@ export default function TaskHead(props) {
             textAlign: 'center'
         },
         pinnedLabelText: {
-            color: props.appColors.lightAccent,
+            color: props.appColors.header_labelText,
             fontWeight: 700,
             fontSize: 16
         },
@@ -43,17 +42,16 @@ export default function TaskHead(props) {
         progressBarWhole: {
             height: 30,
             borderRadius: 15,
-            backgroundColor: props.appColors.darkAccent,
+            backgroundColor: props.appColors.header_emptyBar,
             borderWidth: 1,
-            borderColor: props.appColors.lightAccent,
+            borderColor: props.appColors.header_outline,
         },
         progressBarComplete: {
             width: `${props.percent}%`,
             minWidth: '15%',
             height: 30,
             borderRadius: 15,
-            backgroundColor: props.appColors.lightAccent,
-            // marginLeft: -1,
+            backgroundColor: props.appColors.header_completeBar,
             marginTop: -1,
         },
         progressPercent: {
@@ -62,7 +60,7 @@ export default function TaskHead(props) {
             lineHeight: 30,
             paddingRight: 10,
             fontWeight: 700,
-            color: props.appColors.darkAccent,
+            color: props.appColors.header_percentage,
         },
         taskTags: {
             width: '80%',
@@ -81,12 +79,9 @@ export default function TaskHead(props) {
             paddingTop: 3,
             paddingBottom: 3,
             borderRadius: 15,
-            color: props.appColors.lightAccent,
-            // backgroundColor: colors.accentLight,
+            color: props.appColors.header_labels,
             borderWidth: 1,
-            borderColor: props.appColors.lightAccent,
-            // fontWeight: 700,
-            // fontSize: 16,
+            borderColor: props.appColors.header_outline,
         },
         dateContainer: {
             width: '90%',
@@ -95,7 +90,7 @@ export default function TaskHead(props) {
             flexDirection: 'row'
         },
         dueDate: {
-            color: props.appColors.lightAccent,
+            color: props.appColors.header_labelText,
             fontWeight: 700,
         },
         goBack: {
@@ -104,19 +99,9 @@ export default function TaskHead(props) {
             
         },
         goBackContainer: {
-            // backgroundColor: props.appColors.lightAccent,
             padding: 8,
-
         }
     })
-
-    // console.log(props.labels);
-
-    // const taskLabels = props.labels;
-
-    // const mappedLabels = taskLabels.map((label) => {
-    //     return <Text style={styles.labelText}>{label.labelName}</Text>
-    // })
 
     const dateToDisplay = new Date(Date.parse(props.dueDate));
 
@@ -167,8 +152,6 @@ export default function TaskHead(props) {
                     </View>
                 </View>
             </View>
-            {/* <Task title="Unit testai" percent={65}  pinned={true} /> */}
-            {/* <Task title="Selenium užd. #1" percent={95}  pinned={true} /> */}
         </View>
     )
 }
