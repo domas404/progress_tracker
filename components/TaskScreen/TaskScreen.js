@@ -32,8 +32,6 @@ export default function TaskScreen(props) {
         }
     });
 
-    // console.log(props.route.params);
-
     const [subTasks, setSubTasks] = useState([]); // task objects
     const [mappedSubTasks, setMappedSubTasks] = useState([]); // task objects mapped to Task components
     const [taskProps, setTaskProps] = useState({});
@@ -45,8 +43,6 @@ export default function TaskScreen(props) {
         // console.log(values);
         return JSON.parse(values);
     }
-
-
 
     promisedSetSubTasks = (newSubTask) => new Promise(resolve => {
         setSubTasks((prevSubTasks) => prevSubTasks.find(e => e.id == newSubTask.id) ? prevSubTasks : [...prevSubTasks, newSubTask])
@@ -96,9 +92,26 @@ export default function TaskScreen(props) {
         // console.log("Task properties after:", taskProperties);
     }
 
+    const [newSubTaskAdded, setNewSubTaskAdded] = useState(false);
+    const [newSubTaskToAdd, setNewSubTaskToAdd] = useState({});
+
     // updates task list to display (when new task is added to local storage)
     const updateTasks = async () => {
         await manageTasks().then((ta) => {
+            
+            if(newSubTaskAdded){
+                // console.log("taskProps:",taskProps);
+                taskToAdd = ({
+                    complete: false,
+                    id: taskProps.taskLog + 1,
+                    title: '',
+                    weight: 1,
+                });
+                setNewSubTaskToAdd(taskToAdd);
+                ta.push(taskToAdd);
+            }
+            // console.log("ta:", ta);
+            ta.sort((a, b) => b.id - a.id);
             setMappedSubTasks(() => ta.map((task) => {
                 return (
                     <SubTask
@@ -136,7 +149,7 @@ export default function TaskScreen(props) {
     // rerenders tasks every 0.5 sec
     useEffect(() => {
         updateTasks();
-    }, []);
+    }, [newSubTaskAdded]);
 
     const navigation = props.navigation;
 
@@ -160,7 +173,11 @@ export default function TaskScreen(props) {
             <TouchableOpacity
                 style={styles.addTaskContainer}
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate('add_subtask', { id: props.route.params.id, appColors: props.route.params.appColors })}
+                onPress={() => {
+                    setNewSubTaskAdded(prevState => !prevState);
+                    // updateTasks();
+                    // navigation.navigate('add_subtask', { id: props.route.params.id, appColors: props.route.params.appColors });
+                }}
             >
                 <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
             </TouchableOpacity>

@@ -53,7 +53,7 @@ export default function SubTask(props) {
             // borderColor: colors.accentDark,
         },
         subTaskTextContainer: {
-            width: '100%',
+            width: '90%',
         },
         subTaskEditContainer: {
             width: '95%',
@@ -158,7 +158,7 @@ export default function SubTask(props) {
                 taskEditing ?
                 <View style={basicStyle.subTaskEditContainer}>
                     <TextInput
-                        style={[basicStyle.subTaskTextContainer, basicStyle.textInputContainer]}
+                        style={basicStyle.textInputContainer}
                         multiline
                         autoFocus
                     >

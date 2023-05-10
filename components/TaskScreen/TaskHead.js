@@ -15,7 +15,7 @@ export default function TaskHead(props) {
             marginBottom: '5%'
         },
         mainTextContainer: {
-            width: '90%',
+            width: '80%',
             margin: '5%'
         },
         pinnedTextContainer: {
@@ -23,7 +23,7 @@ export default function TaskHead(props) {
         },
         mainText: {
             color: 'white',
-            fontSize: 32,
+            fontSize: 24,
             fontWeight: 700,
             textAlign: 'center'
         },

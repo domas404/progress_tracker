@@ -365,7 +365,7 @@ export default function HomeScreen(props) {
     useEffect(() => {
         updateTasks();
         // const isFocused = useIsFocused();
-        console.log("rerendered.");
+        // console.log("rerendered.");
     }, [isFocused, sortingOrder, sortAsc]);
 
     const pinSelectedTask = async () => {
