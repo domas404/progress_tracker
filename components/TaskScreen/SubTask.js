@@ -78,7 +78,7 @@ export default function SubTask(props) {
         editSubTaskText: {
             fontSize: 20,
             color: props.appColors.darkAccent,
-            fontWeight: 500,
+            fontWeight: '500',
             width: '90%',
         },
         weight: {
@@ -144,9 +144,12 @@ export default function SubTask(props) {
         // console.log("Changed task state.");
     }, [complete]);
 
-    const [taskEditing, setTaskEditing] = useState(false);
+    const [taskEditing, setTaskEditing] = useState(props.autoFocus);
 
+    const [title, setTitle] = useState(props.title);
+    const [weight, setWeight] = useState(props.weight);
 
+    // console.log(props);
 
     return (
         <TouchableOpacity
@@ -158,22 +161,38 @@ export default function SubTask(props) {
                 taskEditing ?
                 <View style={basicStyle.subTaskEditContainer}>
                     <TextInput
-                        style={basicStyle.textInputContainer}
+                        style={[basicStyle.textInputContainer, basicStyle.editSubTaskText]}
+                        onChangeText={value => setTitle(value)}
+                        defaultValue={props.title}
+                        placeholder='Add subtask title...'
+                        placeholderTextColor='rgba(0,0,0,0.4)'
                         multiline
                         autoFocus
                     >
-                        <Text style={basicStyle.editSubTaskText}>{props.title}</Text>
+                        {/* <Text style={basicStyle.editSubTaskText}>{props.title}</Text> */}
                     </TextInput>
                     <View style={basicStyle.editWeightContainer}>
                         <View style={basicStyle.editWeight}>
                             <Text style={basicStyle.weightLabelText}>Weight</Text>
                             <TouchableOpacity style={basicStyle.weight}>
-                                <TextInput style={basicStyle.weightInput} keyboardType='numeric' maxLength={2} >
-                                    <Text style={basicStyle.weightInputText}>{props.weight}</Text>
+                                <TextInput
+                                    style={basicStyle.weightInput}
+                                    onChangeText={value => setWeight(value)}
+                                    defaultValue={JSON.stringify(props.weight)}
+                                    keyboardType='numeric'
+                                    maxLength={2}
+                                >
+                                    {/* <Text style={basicStyle.weightInputText}>{props.weight}</Text> */}
                                 </TextInput>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={basicStyle.doneButton} onPress={() => setTaskEditing(prevState => !prevState)}>
+                        <TouchableOpacity
+                            style={basicStyle.doneButton}
+                            onPress={() => {
+                                setTaskEditing(prevState => !prevState);
+                                props.addNewSubtask(props.id, title, parseInt(weight));
+                            }}
+                        >
                             <Text style={basicStyle.doneButtonText}>SAVE</Text>
                         </TouchableOpacity>
                     </View>

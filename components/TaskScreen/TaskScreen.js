@@ -32,44 +32,26 @@ export default function TaskScreen(props) {
         }
     });
 
-    const [subTasks, setSubTasks] = useState([]); // task objects
+    const [subTasks, setSubTasks] = useState([]);             // subtask objects
     const [mappedSubTasks, setMappedSubTasks] = useState([]); // task objects mapped to Task components
     const [taskProps, setTaskProps] = useState({});
-    // const [mappedPinnedTasks, setMappedPinnedTasks] = useState([]); // task objects that are pinned mapped to Task components
 
     // Returns value by key
     const getValuesByKey = async (key) => {
         values = await AsyncStorage.getItem(key);
-        // console.log(values);
         return JSON.parse(values);
     }
 
-    promisedSetSubTasks = (newSubTask) => new Promise(resolve => {
-        setSubTasks((prevSubTasks) => prevSubTasks.find(e => e.id == newSubTask.id) ? prevSubTasks : [...prevSubTasks, newSubTask])
-        resolve(newSubTask);
-    })
-
     // reads all tasks from local storage
     const manageTasks = async () => {
-        let key = props.route.params.id;
-        taskInfo = await getValuesByKey(key);
-        setTaskProps(taskInfo);
-        let allSubtasks = taskInfo.taskList;
-        // console.log("Subtasks", allSubtasks);
-
-        const savePromises = [];
-
-        for(var i=0; i<allSubtasks.length; i++){
-            savePromises.push({
-                id: allSubtasks[i].id,
-                title: allSubtasks[i].title,
-                weight: allSubtasks[i].weight,
-                complete: allSubtasks[i].complete,
-            });
-        }
-        return savePromises;
+        let key = props.route.params.id;       // task key
+        taskInfo = await getValuesByKey(key);  // task info
+        setTaskProps(taskInfo);                // task info stored in state
+        let allSubtasks = taskInfo.taskList;   // extract subtasks
+        setSubTasks(allSubtasks);              // subtasks stored in state
     }
 
+    // when subtask is checked/unchecked
     const onCheckSubTask = async (subTaskId) => {
         let key = props.route.params.id;
         taskProperties = await getValuesByKey(key);
@@ -92,42 +74,62 @@ export default function TaskScreen(props) {
         // console.log("Task properties after:", taskProperties);
     }
 
+    // add button sets to true, save button sets to false
     const [newSubTaskAdded, setNewSubTaskAdded] = useState(false);
+
+    // values of the new task
     const [newSubTaskToAdd, setNewSubTaskToAdd] = useState({});
 
     // updates task list to display (when new task is added to local storage)
+
     const updateTasks = async () => {
-        await manageTasks().then((ta) => {
-            
-            if(newSubTaskAdded){
-                // console.log("taskProps:",taskProps);
-                taskToAdd = ({
-                    complete: false,
-                    id: taskProps.taskLog + 1,
-                    title: '',
-                    weight: 1,
-                });
-                setNewSubTaskToAdd(taskToAdd);
-                ta.push(taskToAdd);
-            }
-            // console.log("ta:", ta);
-            ta.sort((a, b) => b.id - a.id);
-            setMappedSubTasks(() => ta.map((task) => {
-                return (
-                    <SubTask
-                        id={task.id}
-                        title={task.title}
-                        key={task.id}
-                        complete={task.complete}
-                        weight={task.weight}
-                        parentId={props.route.params.id}
-                        onCheckSubTask={onCheckSubTask}
-                        appColors={props.route.params.appColors}
-                        // navigation={navigation}
-                    />
-                )
-            }));
-        })
+        const ta = [...subTasks];
+        let taskToAdd = 0;
+        if(newSubTaskAdded){
+            taskToAdd = ({
+                complete: false,
+                id: taskProps.taskLog + 1,
+                title: '',
+                weight: 1,
+            });
+            mappedTaskToAdd = <SubTask
+                id={taskToAdd.id}
+                title={taskToAdd.title}
+                key={taskToAdd.id}
+                complete={taskToAdd.complete}
+                weight={taskToAdd.weight}
+                parentId={props.route.params.id}
+                onCheckSubTask={onCheckSubTask}
+                appColors={props.route.params.appColors}
+                addNewSubtask={addNewSubtask}
+                autoFocus={true}
+            />
+            setNewSubTaskToAdd(taskToAdd);
+            // ta.push(taskToAdd);
+        }
+        // console.log("ta:", ta);
+        ta.sort((a, b) => b.id - a.id);
+        newTa = ta.map((task) => {
+            return (
+                <SubTask
+                    id={task.id}
+                    title={task.title}
+                    key={task.id}
+                    complete={task.complete}
+                    weight={task.weight}
+                    parentId={props.route.params.id}
+                    onCheckSubTask={onCheckSubTask}
+                    appColors={props.route.params.appColors}
+                    addNewSubtask={addNewSubtask}
+                    autoFocus={false}
+                    // navigation={navigation}
+                />
+            )
+        });
+        if(taskToAdd !== 0)
+            newTa = [mappedTaskToAdd, ...newTa];
+        // console.log("newTa:", newTa);
+        setMappedSubTasks(newTa);
     };
 
     const onSubTaskAdded = () => {
@@ -141,15 +143,61 @@ export default function TaskScreen(props) {
         }
     }
 
+
+    const storeNewSubTask = async (value) => {
+        // console.log(props);
+        key = props.route.params.id;
+        let taskCount = taskProps.subTaskCount + 1;   // increment task count
+        newListOfSubTasks = [...subTasks, value];
+        const propsToUpdate = {
+            taskList: newListOfSubTasks,
+            subTaskCount: taskCount,
+            taskLog: value.id,
+            weightSum: taskProps.weightSum + value.weight,
+        };
+        const jsonValue = JSON.stringify(propsToUpdate);
+        await AsyncStorage.mergeItem(key, jsonValue);
+    }
+
+    const addNewSubtask = (id, title, weight) => {
+        // console.log("Subtask added/updated with:");
+        // console.log("Id:", id, "Title:", title, "Weight:", weight);
+        // create or update?
+        const subtaskExists = subTasks.some((task) => task.id == id);
+        console.log(subtaskExists);
+
+        const valueToAdd = {
+            complete: false,
+            id: id,
+            title: title,
+            weight: weight
+        }
+
+        if(subtaskExists){
+            // merge
+        } else {
+            storeNewSubTask(valueToAdd);
+            setNewSubTaskAdded(prevState => !prevState);
+            setSubTasks(prevState => {
+                return [...prevState, valueToAdd];
+            })
+        }
+        // manageTasks();
+    }
+
     useEffect(() => {
-        // console.log("TASK ID:", props.route.params.id);
         onSubTaskAdded();
     }, [props.route.params.addedSubTask]);
 
-    // rerenders tasks every 0.5 sec
+    // renders when new subtask is initiated or added
     useEffect(() => {
         updateTasks();
-    }, [newSubTaskAdded]);
+    }, [subTasks, newSubTaskAdded]);
+
+    // initial run
+    useEffect(() => {
+        manageTasks();
+    }, []);
 
     const navigation = props.navigation;
 
@@ -175,7 +223,6 @@ export default function TaskScreen(props) {
                 activeOpacity={0.8}
                 onPress={() => {
                     setNewSubTaskAdded(prevState => !prevState);
-                    // updateTasks();
                     // navigation.navigate('add_subtask', { id: props.route.params.id, appColors: props.route.params.appColors });
                 }}
             >
