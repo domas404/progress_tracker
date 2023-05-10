@@ -190,7 +190,7 @@ export default function SubTask(props) {
                             style={basicStyle.doneButton}
                             onPress={() => {
                                 setTaskEditing(prevState => !prevState);
-                                props.addNewSubtask(props.id, title, parseInt(weight));
+                                props.addNewSubtask(props.complete, props.id, title, parseInt(weight));
                             }}
                         >
                             <Text style={basicStyle.doneButtonText}>SAVE</Text>

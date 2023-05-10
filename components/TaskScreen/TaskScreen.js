@@ -51,6 +51,7 @@ export default function TaskScreen(props) {
         setTaskProps(taskInfo);                // task info stored in state
         let allSubtasks = taskInfo.taskList;   // extract subtasks
         setSubTasks(allSubtasks);              // subtasks stored in state
+        // console.log("manageTasks called.");
     }
 
     // when subtask is checked or unchecked
@@ -138,6 +139,7 @@ export default function TaskScreen(props) {
         };
         const jsonValue = JSON.stringify(propsToUpdate);
         await AsyncStorage.mergeItem(key, jsonValue);
+        manageTasks();
     }
 
     // updates existing subtask
@@ -150,18 +152,23 @@ export default function TaskScreen(props) {
 
         const propsToUpdate = {
             taskList: subTasksCopy,
-            weightSum: taskProps.weightSum - subTasksCopy[subTaskToUpdateIndex].weight + value.weight,
+            completeWeightSum: subTaskToUpdate.complete ?
+                taskProps.completeWeightSum - subTasks[subTaskToUpdateIndex].weight + value.weight
+                :
+                taskProps.completeWeightSum,
+            weightSum: taskProps.weightSum - subTasks[subTaskToUpdateIndex].weight + value.weight,
         };
 
         const jsonValue = JSON.stringify(propsToUpdate);
         await AsyncStorage.mergeItem(key, jsonValue);
+        manageTasks();
     }
 
     // if subtask exists - updates, else - creates
-    const addNewSubtask = (id, title, weight) => {
+    const addNewSubtask = (complete, id, title, weight) => {
         const subtaskExists = subTasks.some((task) => task.id == id);
         const valueToAdd = {
-            complete: false,
+            complete: complete,
             id: id,
             title: title,
             weight: weight
@@ -172,7 +179,6 @@ export default function TaskScreen(props) {
             storeNewSubTask(valueToAdd);
             setNewSubTaskAdded(prevState => !prevState);
         }
-        manageTasks();
     }
 
     // renders when new subtask is initiated or added
