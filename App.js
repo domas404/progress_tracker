@@ -3,8 +3,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from "./components/HomeScreen/HomeScreen"
 import TaskScreen from "./components/TaskScreen/TaskScreen"
 import AddTaskScreen from './components/AddTaskScreen/AddTaskScreen';
-import AddSubTaskScreen from './components/AddSubTaskScreen/AddSubTaskScreen';
-import { MenuProvider } from 'react-native-popup-menu';
+// import AddSubTaskScreen from './components/AddSubTaskScreen/AddSubTaskScreen';
+// import { MenuProvider } from 'react-native-popup-menu';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,10 +30,10 @@ export default function App() {
               name="add_task"
               component={AddTaskScreen}
             />
-            <Stack.Screen
+            {/* <Stack.Screen
               name="add_subtask"
               component={AddSubTaskScreen}
-            />
+            /> */}
           </Stack.Navigator>
         </NavigationContainer>
       

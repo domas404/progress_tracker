@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SubTask from "./SubTask"
 
 export default function TaskScreen(props) {
+
+    const navigation = props.navigation;
     // console.log(props.route.params);
 
     const styles = StyleSheet.create({
@@ -33,8 +35,8 @@ export default function TaskScreen(props) {
     });
 
     const [subTasks, setSubTasks] = useState([]);             // subtask objects
-    const [mappedSubTasks, setMappedSubTasks] = useState([]); // task objects mapped to Task components
-    const [taskProps, setTaskProps] = useState({});
+    const [mappedSubTasks, setMappedSubTasks] = useState([]); // subtask objects mapped to SubTask components
+    const [taskProps, setTaskProps] = useState({});           // task properties
 
     // Returns value by key
     const getValuesByKey = async (key) => {
@@ -42,7 +44,7 @@ export default function TaskScreen(props) {
         return JSON.parse(values);
     }
 
-    // reads all tasks from local storage
+    // reads task values and all its subtasks from local storage
     const manageTasks = async () => {
         let key = props.route.params.id;       // task key
         taskInfo = await getValuesByKey(key);  // task info
@@ -51,47 +53,43 @@ export default function TaskScreen(props) {
         setSubTasks(allSubtasks);              // subtasks stored in state
     }
 
-    // when subtask is checked/unchecked
+    // when subtask is checked or unchecked
     const onCheckSubTask = async (subTaskId) => {
-        let key = props.route.params.id;
-        taskProperties = await getValuesByKey(key);
-        // console.log("Task properties before:", taskProperties);
-        const index = taskProperties.taskList.findIndex((e) => e.id == subTaskId);
-        taskProperties.taskList[index].complete = !taskProperties.taskList[index].complete;
-
+        let key = props.route.params.id;      // task key
+        let taskProperties = {...taskProps};  // copy of all task properties
+        const subTasksCopy = [...subTasks];   // copy of all subTasks
+        const index = subTasksCopy.findIndex((e) => e.id == subTaskId); // find changed subtask index in subtasks
+        const subTaskChanged = subTasksCopy[index]; // assign values of subtask
+        
+        subTaskChanged.complete = !subTaskChanged.complete; // update subtask's state of completion
         taskProperties.completeTaskCount = taskProperties.completeTaskCount +
-            (taskProperties.taskList[index].complete ? 1 : -1);
+            (subTaskChanged.complete ? 1 : -1); // update task's complete task count
 
-        taskProperties.completeWeightSum = taskProperties.taskList[index].complete ?
-            taskProperties.completeWeightSum + taskProperties.taskList[index].weight
+        taskProperties.completeWeightSum = subTaskChanged.complete ?
+            taskProperties.completeWeightSum + subTaskChanged.weight
             :
-            taskProperties.completeWeightSum - taskProperties.taskList[index].weight;
+            taskProperties.completeWeightSum - subTaskChanged.weight; // update task's complete task weight sum
 
         const jsonObject = JSON.stringify(taskProperties);
-        setTaskProps(taskProperties);
         await AsyncStorage.mergeItem(key, jsonObject);
-
-        // console.log("Task properties after:", taskProperties);
+        manageTasks();
     }
 
     // add button sets to true, save button sets to false
     const [newSubTaskAdded, setNewSubTaskAdded] = useState(false);
 
-    // values of the new task
-    const [newSubTaskToAdd, setNewSubTaskToAdd] = useState({});
-
-    // updates task list to display (when new task is added to local storage)
-
-    const updateTasks = async () => {
-        const ta = [...subTasks];
-        let taskToAdd = 0;
-        if(newSubTaskAdded){
-            taskToAdd = ({
+    // updates subtask list to display
+    const updateTasks = () => {
+        const ta = [...subTasks]; // copy of all subtasks
+        let taskToAdd = 0;        // subtask to add (defaults to 0)
+        if(newSubTaskAdded){      // if new subtask is being added
+            taskToAdd = ({        // initialize taskToAdd default values
                 complete: false,
                 id: taskProps.taskLog + 1,
                 title: '',
                 weight: 1,
             });
+            // create new subtask's component to display
             mappedTaskToAdd = <SubTask
                 id={taskToAdd.id}
                 title={taskToAdd.title}
@@ -104,12 +102,9 @@ export default function TaskScreen(props) {
                 addNewSubtask={addNewSubtask}
                 autoFocus={true}
             />
-            setNewSubTaskToAdd(taskToAdd);
-            // ta.push(taskToAdd);
         }
-        // console.log("ta:", ta);
-        ta.sort((a, b) => b.id - a.id);
-        newTa = ta.map((task) => {
+        ta.sort((a, b) => b.id - a.id); // sort subtasks from newest to oldest
+        newTa = ta.map((task) => {      // map all existing subtasks to components to display
             return (
                 <SubTask
                     id={task.id}
@@ -122,30 +117,16 @@ export default function TaskScreen(props) {
                     appColors={props.route.params.appColors}
                     addNewSubtask={addNewSubtask}
                     autoFocus={false}
-                    // navigation={navigation}
                 />
             )
         });
-        if(taskToAdd !== 0)
-            newTa = [mappedTaskToAdd, ...newTa];
-        // console.log("newTa:", newTa);
-        setMappedSubTasks(newTa);
+        if(taskToAdd !== 0) // if new subtask is being added
+            newTa = [mappedTaskToAdd, ...newTa]; // put the new subtask's component at the start of the list
+        setMappedSubTasks(newTa); // save all mapped subtasks to state
     };
 
-    const onSubTaskAdded = () => {
-        console.log("New task added?", props.route.params.addedSubTask);
-        if(props.route.params.addedSubTask){
-            console.log("Rerendering...");
-            setTimeout(() => {
-                updateTasks();
-                props.route.params.addedSubTask = false;
-            }, 100);
-        }
-    }
-
-
+    // stores a new subtask
     const storeNewSubTask = async (value) => {
-        // console.log(props);
         key = props.route.params.id;
         let taskCount = taskProps.subTaskCount + 1;   // increment task count
         newListOfSubTasks = [...subTasks, value];
@@ -159,54 +140,57 @@ export default function TaskScreen(props) {
         await AsyncStorage.mergeItem(key, jsonValue);
     }
 
-    const addNewSubtask = (id, title, weight) => {
-        // console.log("Subtask added/updated with:");
-        // console.log("Id:", id, "Title:", title, "Weight:", weight);
-        // create or update?
-        const subtaskExists = subTasks.some((task) => task.id == id);
-        console.log(subtaskExists);
+    // updates existing subtask
+    const updateOldSubTask = async (value) => {
+        key = props.route.params.id;
+        let subTasksCopy = [...subTasks];
+        let subTaskToUpdateIndex = subTasksCopy.findIndex((task) => task.id == value.id);
+        let subTaskToUpdate = {...subTasksCopy[subTaskToUpdateIndex], ...value};
+        subTasksCopy[subTaskToUpdateIndex] = subTaskToUpdate;
 
+        const propsToUpdate = {
+            taskList: subTasksCopy,
+            weightSum: taskProps.weightSum - subTasksCopy[subTaskToUpdateIndex].weight + value.weight,
+        };
+
+        const jsonValue = JSON.stringify(propsToUpdate);
+        await AsyncStorage.mergeItem(key, jsonValue);
+    }
+
+    // if subtask exists - updates, else - creates
+    const addNewSubtask = (id, title, weight) => {
+        const subtaskExists = subTasks.some((task) => task.id == id);
         const valueToAdd = {
             complete: false,
             id: id,
             title: title,
             weight: weight
         }
-
         if(subtaskExists){
-            // merge
+            updateOldSubTask(valueToAdd);
         } else {
             storeNewSubTask(valueToAdd);
             setNewSubTaskAdded(prevState => !prevState);
-            setSubTasks(prevState => {
-                return [...prevState, valueToAdd];
-            })
         }
-        // manageTasks();
+        manageTasks();
     }
-
-    useEffect(() => {
-        onSubTaskAdded();
-    }, [props.route.params.addedSubTask]);
 
     // renders when new subtask is initiated or added
     useEffect(() => {
         updateTasks();
     }, [subTasks, newSubTaskAdded]);
 
-    // initial run
+    // initial render
     useEffect(() => {
         manageTasks();
     }, []);
-
-    const navigation = props.navigation;
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps='handled' >
                 <TaskHead
                     name={taskProps.title}
-                    percent={taskProps.completeTaskCount === 0 ? 0: Math.round(taskProps.completeWeightSum/taskProps.weightSum*100)}
+                    percent={taskProps.completeTaskCount === 0 ? 0 : Math.round(taskProps.completeWeightSum/taskProps.weightSum*100)}
                     description={taskProps.description}
                     labels={taskProps.labels}
                     appColors={props.route.params.appColors}
@@ -223,7 +207,6 @@ export default function TaskScreen(props) {
                 activeOpacity={0.8}
                 onPress={() => {
                     setNewSubTaskAdded(prevState => !prevState);
-                    // navigation.navigate('add_subtask', { id: props.route.params.id, appColors: props.route.params.appColors });
                 }}
             >
                 <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
