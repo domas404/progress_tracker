@@ -78,6 +78,7 @@ export default function TaskScreen(props) {
 
     // add button sets to true, save button sets to false
     const [newSubTaskAdded, setNewSubTaskAdded] = useState(false);
+    const [addButtonVisible, setAddButtonVisible] = useState(true);
 
     // updates subtask list to display
     const updateTasks = () => {
@@ -102,6 +103,7 @@ export default function TaskScreen(props) {
                 appColors={props.route.params.appColors}
                 addNewSubtask={addNewSubtask}
                 autoFocus={true}
+                toggleAddButtonVisibility={toggleAddButtonVisibility}
             />
         }
         ta.sort((a, b) => b.id - a.id); // sort subtasks from newest to oldest
@@ -118,6 +120,7 @@ export default function TaskScreen(props) {
                     appColors={props.route.params.appColors}
                     addNewSubtask={addNewSubtask}
                     autoFocus={false}
+                    toggleAddButtonVisibility={toggleAddButtonVisibility}
                 />
             )
         });
@@ -179,6 +182,11 @@ export default function TaskScreen(props) {
             storeNewSubTask(valueToAdd);
             setNewSubTaskAdded(prevState => !prevState);
         }
+        toggleAddButtonVisibility();
+    }
+
+    const toggleAddButtonVisibility = () => {
+        setAddButtonVisible(prevState => !prevState);
     }
 
     // renders when new subtask is initiated or added
@@ -208,15 +216,18 @@ export default function TaskScreen(props) {
                     appColors={props.route.params.appColors}
                 />
             </ScrollView>
-            <TouchableOpacity
-                style={styles.addTaskContainer}
-                activeOpacity={0.8}
-                onPress={() => {
-                    setNewSubTaskAdded(prevState => !prevState);
-                }}
-            >
-                <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
-            </TouchableOpacity>
+            {
+                addButtonVisible && <TouchableOpacity
+                    style={styles.addTaskContainer}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setNewSubTaskAdded(prevState => !prevState);
+                        toggleAddButtonVisibility();
+                    }}
+                >
+                    <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
+                </TouchableOpacity>
+            }
         </SafeAreaView>
     )
 }

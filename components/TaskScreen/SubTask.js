@@ -212,7 +212,13 @@ export default function SubTask(props) {
                                 <View style={basicStyle.checkBoxShape}></View>
                         }
                     </TouchableOpacity>
-                    <TouchableOpacity style={basicStyle.subTaskTextContainer} onPress={() => setTaskEditing(prevState => !prevState)} >
+                    <TouchableOpacity
+                        style={basicStyle.subTaskTextContainer}
+                        onPress={() => {
+                            setTaskEditing(prevState => !prevState);
+                            props.toggleAddButtonVisibility();
+                        }}
+                    >
                         <Text style={basicStyle.subTaskText}>{props.title}</Text>
                     </TouchableOpacity>
                 </>
