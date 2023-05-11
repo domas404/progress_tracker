@@ -105,7 +105,7 @@ export default function MainTasks(props) {
     }, [props.mappedTasks]);
 
     const myRef = useRef();
-    const [position, setPosition] = useState({ px: 0, py: 0 });
+    const [position, setPosition] = useState({ px: -1, py: -1 });
 
     const getPosition = async () => {
         myRef.current.measure((fx, fy, width, height, px, py) => {
@@ -118,13 +118,8 @@ export default function MainTasks(props) {
     };
 
     useEffect(() => {
-        setTimeout(() => {
-            getPosition();
-        }, 100);
-    }, []);
-
-    useEffect(() => {
-        props.openSortMenu(position);
+        if(position.px != -1)
+            props.openSortMenu(position);
     }, [position]);
 
     // console.log("Tasks", props.mappedTasks);
@@ -141,9 +136,7 @@ export default function MainTasks(props) {
                 >
                     <TouchableOpacity
                         style={styles.sortingTextContainer}
-                        onPress={async () => {
-                            getPosition();
-                        }}
+                        onPress={() => getPosition()}
                     >
                         <Text style={styles.sortBy}>{sortingOrder}</Text>
                     </TouchableOpacity>

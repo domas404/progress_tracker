@@ -64,15 +64,15 @@ const appColors = {
 export default function HomeScreen(props) {
 
     const [optionsMenuPosition, setOptionsMenuPosition] = useState({ x: 100, y: 100 });
-    const [selectedTask, setSelectedTask] = useState();
+    const [selectedTask, setSelectedTask] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
 
     const onOptionsMenuPress = (id, measurements) => {
-        // console.log(measurements);
         let newPosition = { x: Math.round(measurements.px), y: Math.round(measurements.py)};
         setOptionsMenuPosition(newPosition);
         setSelectedTask(id);
         checkIfPinned(id);
-        setModalVisible(prevState => !prevState);
+        setModalVisible(true);
     }
 
     const [sortMenuVisible, setSortMenuVisible] = useState(false);
@@ -82,12 +82,7 @@ export default function HomeScreen(props) {
         // setSortMenuVisible(prevState => !prevState);
         let newPosition = { x: Math.round(measurements.px), y: Math.round(measurements.py)};
         setSortMenuPosiiton(newPosition);
-
-        // console.log("Sort menu posiiton:", newPosition);
-
-        setTimeout(() => {
-            setSortMenuVisible(prevState => !prevState);
-        }, 30);
+        setSortMenuVisible(prevState => !prevState);
     }
 
     // sorting orders: date, title, progress, deadline
@@ -328,12 +323,11 @@ export default function HomeScreen(props) {
 
     const [isTaskPinned, setIsTaskPinned] = useState({});
 
-    const checkIfPinned = async (id) => {
-        const taskToCheck = await getValuesByKey(id);
+    const checkIfPinned = (id) => {
+        const index = tasks.findIndex((t) => t.id == id);
+        const taskToCheck = tasks[index];
         setIsTaskPinned({ taskId: id, isPinned: taskToCheck.pinned })
     }
-
-    const [modalVisible, setModalVisible] = useState(false);
 
     const MenuComponent = () => {
         return (
@@ -341,11 +335,11 @@ export default function HomeScreen(props) {
                 style={styles.modal}
                 transparent
                 visible={modalVisible}
-                onRequestClose={() => setModalVisible(prevState => !prevState)}
+                onRequestClose={() => setModalVisible(false)}
                 animationType="fade"
             >
-                <Pressable style={styles.modalBackground} onPress={() => setModalVisible(prevState => !prevState)} />
-                <View style={[styles.optionsMenuContainer]}>
+                <Pressable style={styles.modalBackground} onPress={() => setModalVisible(false)} />
+                <View style={styles.optionsMenuContainer}>
                     <TouchableOpacity style={styles.optionsMenuOption} onPress={() => pinSelectedTask()}>
                         <Text style={styles.option}>{isTaskPinned.isPinned ? "Unpin" : "Pin"}</Text>
                     </TouchableOpacity>
@@ -361,6 +355,38 @@ export default function HomeScreen(props) {
                 </View>
             </Modal>
         )
+    };
+
+    const SortMenuComponent = () => {
+        return (
+            <Modal
+                style={styles.modal}
+                transparent
+                visible={sortMenuVisible}
+                onRequestClose={() => setSortMenuVisible(prevState => !prevState)}
+                animationType="fade"
+            >
+                <Pressable style={styles.modalBackground} onPress={() => setSortMenuVisible(prevState => !prevState)} />
+                <View style={styles.sortMenuContainer}>
+                    <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('date')} >
+                        <Image style={styles.sortMenuIcon} source={require("../../assets/calendar_green.png")} resizeMode='contain' />
+                        <Text style={styles.option}>Date created</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('title')} >
+                        <Image style={styles.sortMenuIcon} source={require("../../assets/text_green.png")} resizeMode='contain' />
+                        <Text style={styles.option}>Title</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('progress')} >
+                        <Image style={styles.sortMenuIcon} source={require("../../assets/bar_chart_green.png")} resizeMode='contain' />
+                        <Text style={styles.option}>Progress</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.lastSortMenuOption} onPress={() => manageSorting('deadline')} >
+                        <Image style={styles.sortMenuIcon} source={require("../../assets/deadline_green.png")} resizeMode='contain' />
+                        <Text style={styles.option}>Due date</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
+        )
     }
 
     useEffect(() => {
@@ -372,19 +398,19 @@ export default function HomeScreen(props) {
     useEffect(() => {
         updateTasks();
         // const isFocused = useIsFocused();
-        // console.log("rerendered.");
+        // console.log(sortAsc);
     }, [isFocused, sortingOrder, sortAsc, tasks]);
 
     useEffect(() => {
         manageTasks();
-    }, [tasks]);
+    }, []);
 
     const pinSelectedTask = async () => {
         // console.log(selectedTask);
         const taskToPin = await getValuesByKey(selectedTask);
         // const taskToPin = getValuesByKey(id);
         AsyncStorage.mergeItem(selectedTask, JSON.stringify({ pinned: !taskToPin.pinned }));
-        setModalVisible(prevState => !prevState);
+        setModalVisible(false);
         updateTasks();
     }
 
@@ -395,7 +421,7 @@ export default function HomeScreen(props) {
             {
                 text: 'Delete',
                 onPress: () => {
-                    setModalVisible(prevState => !prevState);
+                    setModalVisible(false);
                     AsyncStorage.removeItem(selectedTask);
                     updateTasks();
                     ToastAndroid.show("Task deleted", ToastAndroid.SHORT);
@@ -403,15 +429,15 @@ export default function HomeScreen(props) {
             },
             {
                 text: 'Cancel',
-                onPress: () => setModalVisible(prevState => !prevState),
+                onPress: () => setModalVisible(false),
             },
         ]);
     }
 
     const archiveSelectedTask = async () => {
         const taskToArchive = await getValuesByKey(selectedTask);
-        // console.log(taskToArchive.archived);
-        setModalVisible(prevState => !prevState);
+        // console.log("Archive");
+        setModalVisible(false);
         AsyncStorage.mergeItem(selectedTask, JSON.stringify({ archived: !taskToArchive.archived }));
         updateTasks();
         ToastAndroid.show("Task archived", ToastAndroid.SHORT);
@@ -443,33 +469,7 @@ export default function HomeScreen(props) {
                     sortingOrder={sortingOrder}
                 />
                 { modalVisible && <MenuComponent /> }
-                <Modal
-                    style={styles.modal}
-                    transparent
-                    visible={sortMenuVisible}
-                    onRequestClose={() => setSortMenuVisible(prevState => !prevState)}
-                    animationType="fade"
-                >
-                    <Pressable style={styles.modalBackground} onPress={() => setSortMenuVisible(prevState => !prevState)} />
-                    <View style={styles.sortMenuContainer}>
-                        <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('date')} >
-                            <Image style={styles.sortMenuIcon} source={require("../../assets/calendar_green.png")} resizeMode='contain' />
-                            <Text style={styles.option}>Date created</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('title')} >
-                            <Image style={styles.sortMenuIcon} source={require("../../assets/text_green.png")} resizeMode='contain' />
-                            <Text style={styles.option}>Title</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('progress')} >
-                            <Image style={styles.sortMenuIcon} source={require("../../assets/bar_chart_green.png")} resizeMode='contain' />
-                            <Text style={styles.option}>Progress</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.lastSortMenuOption} onPress={() => manageSorting('deadline')} >
-                            <Image style={styles.sortMenuIcon} source={require("../../assets/deadline_green.png")} resizeMode='contain' />
-                            <Text style={styles.option}>Due date</Text>
-                        </TouchableOpacity>
-                    </View>
-                </Modal>
+                { sortMenuVisible && <SortMenuComponent /> }
             </ScrollView>
             <TouchableOpacity
                 style={styles.addTaskContainer}
