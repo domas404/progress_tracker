@@ -61,17 +61,9 @@ const appColors = {
     otherText: colors.dark_gray,
 }
 
-clearAll = async () => {
-    await AsyncStorage.clear()
-    console.log('Cleared.')
-}
-
-// clearAll();
-
 export default function HomeScreen(props) {
 
     const [optionsMenuPosition, setOptionsMenuPosition] = useState({ x: 100, y: 100 });
-    const [scrollPosition, setScrollPosition] = useState(0);
     const [selectedTask, setSelectedTask] = useState();
 
     const onOptionsMenuPress = (id, measurements) => {
@@ -80,9 +72,7 @@ export default function HomeScreen(props) {
         setOptionsMenuPosition(newPosition);
         setSelectedTask(id);
         checkIfPinned(id);
-        setTimeout(() => {
-            setModalVisible(prevState => !prevState);
-        }, 30);
+        setModalVisible(prevState => !prevState);
     }
 
     const [sortMenuVisible, setSortMenuVisible] = useState(false);
@@ -218,40 +208,32 @@ export default function HomeScreen(props) {
     }
 
     const setTaskObject = async (allKeys) => {
-        const results = []
+        const results = [];
+        let task;
         for (let key of allKeys) {
-            results.push(await getValuesByKey(key));
+            task = await getValuesByKey(key);
+            results.push({
+                id: key,
+                title: task.title,
+                description: task.description,
+                percent: task.completeTaskCount === 0 ? 0: Math.round(task.completeWeightSum/task.weightSum*100),
+                pinned: task.pinned,
+                labels: task.labels,
+                dateCreated: task.dateCreated,
+                dueDate: task.dueDate,
+            });
         }
         return results;
     }
-
-    promisedSetTasks = (newTask) => new Promise(resolve => {
-        setTasks((prevTasks) => prevTasks.find(e => e.id == newTask.id) ? prevTasks : [...prevTasks, newTask]);
-        resolve(newTask);
-    })
 
     // reads all tasks from local storage
     const manageTasks = async () => {
         let allKeys = await getAllKeys(); // get all keys from local storage
         allKeys = allKeys.filter(element => element !== 'taskCount'); // remove taskCount key from array
         allKeys = allKeys.filter(element => element !== 'labels'); // remove labels key from array
-        const savePromises = [];
 
         const readTasks = await setTaskObject(allKeys);
-        for(var i=0; i<readTasks.length; i++){
-            // console.log("Task", i, readTasks[i]);
-            savePromises.push(await promisedSetTasks({
-                id: allKeys[i],
-                title: readTasks[i].title,
-                description: readTasks[i].description,
-                percent: readTasks[i].completeTaskCount === 0 ? 0: Math.round(readTasks[i].completeWeightSum/readTasks[i].weightSum*100),
-                pinned: readTasks[i].pinned,
-                labels: readTasks[i].labels,
-                dateCreated: readTasks[i].dateCreated,
-                dueDate: readTasks[i].dueDate,
-            }));
-        }
-        return savePromises;
+        setTasks(readTasks);
     }
 
     const sortTasks = (tasksToSort) => {
@@ -297,59 +279,50 @@ export default function HomeScreen(props) {
 
     // maps task list to Task components and updates displayed task list (when new task is added to local storage)
     const updateTasks = async () => {
-        await manageTasks().then((ta) => {
-            // console.log(ta);
-            // console.log("TASKS in UpdateTasks():", ta);
-            pinnedTasks = ta.filter((e) => e.pinned);
-            restOfTasks = ta.filter((e) => !e.pinned);
-            const sortedTasks = sortTasks(restOfTasks);
-            // console.log(sortedTasks);
-            // all tasks
-            setMappedTasks(() => sortedTasks.map((task) => {
-                return (
-                    <Task
-                        id={task.id}
-                        title={task.title}
-                        percent={task.percent}
-                        description={task.description}
-                        pinned={task.pinned}
-                        key={task.id}
-                        labels={task.labels}
-                        navigation={navigation}
-                        appColors={appColors}
-                        optionsMenu={onOptionsMenuPress}
-                    />
-                )
-            }));
-            // pinned tasks
-            setMappedPinnedTasks(() => pinnedTasks.map((task) => {
-                return (
-                    <Task
-                        id={task.id}
-                        title={task.title}
-                        percent={task.percent}
-                        description={task.description}
-                        pinned={task.pinned}
-                        key={task.id}
-                        labels={task.labels}
-                        navigation={navigation}
-                        appColors={appColors}
-                        optionsMenu={onOptionsMenuPress}
-                    />
-                )
-            }));
-        })
+        ta = [...tasks];
 
+        pinnedTasks = ta.filter((e) => e.pinned);
+        restOfTasks = ta.filter((e) => !e.pinned);
+        const sortedTasks = sortTasks(restOfTasks);
+
+        setMappedTasks(() => sortedTasks.map((task) => {
+            return (
+                <Task
+                    id={task.id}
+                    title={task.title}
+                    percent={task.percent}
+                    description={task.description}
+                    pinned={task.pinned}
+                    key={task.id}
+                    labels={task.labels}
+                    navigation={navigation}
+                    appColors={appColors}
+                    optionsMenu={onOptionsMenuPress}
+                />
+            )
+        }));
+        setMappedPinnedTasks(() => pinnedTasks.map((task) => {
+            return (
+                <Task
+                    id={task.id}
+                    title={task.title}
+                    percent={task.percent}
+                    description={task.description}
+                    pinned={task.pinned}
+                    key={task.id}
+                    labels={task.labels}
+                    navigation={navigation}
+                    appColors={appColors}
+                    optionsMenu={onOptionsMenuPress}
+                />
+            )
+        }));
     };
 
     const onTaskAdded = () => {
-        console.log("New task added?", props.route.params.addedTask);
         if(props.route.params.addedTask){
-            console.log("Rerendering...");
-            setTimeout(() => {
-                updateTasks();
-                props.route.params.addedTask = false;
-            }, 100);
+            updateTasks();
+            props.route.params.addedTask = false;
         }
     }
 
@@ -357,7 +330,6 @@ export default function HomeScreen(props) {
 
     const checkIfPinned = async (id) => {
         const taskToCheck = await getValuesByKey(id);
-        // console.log(taskToCheck.pinned);
         setIsTaskPinned({ taskId: id, isPinned: taskToCheck.pinned })
     }
 
@@ -391,19 +363,21 @@ export default function HomeScreen(props) {
         )
     }
 
-
     useEffect(() => {
         onTaskAdded();
     }, [props.route.params.addedTask]);
 
     const isFocused = useIsFocused();
 
-    // rerenders tasks every 0.5 sec
     useEffect(() => {
         updateTasks();
         // const isFocused = useIsFocused();
         // console.log("rerendered.");
-    }, [isFocused, sortingOrder, sortAsc]);
+    }, [isFocused, sortingOrder, sortAsc, tasks]);
+
+    useEffect(() => {
+        manageTasks();
+    }, [tasks]);
 
     const pinSelectedTask = async () => {
         // console.log(selectedTask);
@@ -454,14 +428,7 @@ export default function HomeScreen(props) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView
-                contentContainerStyle={styles.scroll}
-                onMomentumScrollEnd={(event) => {
-                    let newPosition = event.nativeEvent.contentOffset.y
-                    setScrollPosition(newPosition);
-                    // console.log("Scroll position:", scrollPosition, "Menu Position:", optionsMenuPosition.y);
-                }}
-            >
+            <ScrollView contentContainerStyle={styles.scroll}>
                 <MainHead
                     navigation={navigation}
                     mappedTasks={mappedPinnedTasks}

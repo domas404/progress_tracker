@@ -142,7 +142,7 @@ export default function Task(props) {
     const styles = props.pinned ? headerStyle : bodyStyle;
 
     const myRef = useRef();
-    const [position, setPosition] = useState({ px: 0, py: 0 });
+    const [position, setPosition] = useState({ px: -1, py: -1 });
 
     const getPosition = () => {
         myRef.current.measure((fx, fy, width, height, px, py) => {
@@ -152,18 +152,11 @@ export default function Task(props) {
             };
             setPosition(location);
         });
-        // console.log("Updated task positions.");
     };
 
     useEffect(() => {
-        setTimeout(() => {
-            getPosition();
-        }, 10);
-    }, []);
-
-    useEffect(() => {
-        // console.log(props.id, position);
-        props.optionsMenu(props.id, position);
+        if(position.px != -1)
+            props.optionsMenu(props.id, position);
     }, [position]);
 
 
@@ -184,10 +177,7 @@ export default function Task(props) {
                         <Text style={[basicStyle.taskTitle, styles.taskTitle]}>{props.title}</Text>
                     </View>
                     <TouchableOpacity
-                        onPress={() => {
-                            getPosition();
-                            // props.optionsMenu(props.id, position);
-                        }}
+                        onPress={() => getPosition() }
                         ref={myRef}
                     >
                         <Image style={basicStyle.taskMenu} source={require("../../assets/dots_light_green.png")} resizeMode='contain' />
