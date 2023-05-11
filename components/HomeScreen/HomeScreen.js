@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Text, Alert, View, Modal, Pressable, ToastAndroid } from 'react-native';
+import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Alert, ToastAndroid } from 'react-native';
 import MainTasks from "./MainTasks"
 import MainHead from "./MainHead"
 import Task from "./Task"
 import SortMenu from "./SortMenu"
 import OptionsMenu from "./OptionsMenu"
+import SortTasks from "./SortTasks"
+import AppColors from "./AppColors"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -17,55 +19,39 @@ initializeStorageElement = async (key, value) => {
 initializeStorageElement('taskCount', JSON.stringify(0));
 initializeStorageElement('labels', JSON.stringify([]));
 
-const colors = {
-    light_green: '#AED3C5',
-    dark_green: '#13573F',
-    white: '#FFF',
-    light_gray: '#EEE',
-    gray: '#666',
-    dark_gray: '#333',
-    black: '#000',
-    red: '#DE3F3F',
-}
+const appColors = AppColors();
 
-const appColors = {
-    header_background: colors.dark_green,
-    header_taskBackground: colors.dark_green,
-    header_completeBar: colors.light_green,
-    header_emptyBar: colors.dark_green,
-    header_outline: colors.light_green,
-    header_labelText: colors.light_green,
-    header_labels: colors.light_green,
-    header_text: colors.white,
-    header_percentage: colors.dark_green,
-
-    body_background: colors.light_gray,
-    body_taskBackground: colors.white,
-    body_completeBar: colors.dark_green,
-    body_emptyBar: colors.light_green,
-    body_labelText: colors.dark_green,
-    body_labels: colors.light_green,
-    body_text: colors.dark_green,
-    body_percentage: colors.white,
-    body_outline: colors.dark_green,
-
-    button_background: colors.dark_green,
-    button_text: colors.white,
-
-    options_background: colors.white,
-    options_option: colors.dark_green,
-    options_deleteOption: colors.red,
-    options_border: colors.light_gray,
-
-    shadow: colors.gray,
-    border: colors.light_green,
-
-    otherText: colors.dark_gray,
-}
+// style
+const styles = StyleSheet.create({
+    container: {
+        height: '100%',
+        backgroundColor: appColors.header_background,
+        alignContent: 'stretch',
+    },
+    scroll: {
+        justifyContent: 'center',
+        minHeight: '100%',
+    },
+    addTaskContainer: {
+        backgroundColor: appColors.button_background,
+        borderRadius: 35,
+        position: 'absolute',
+        bottom: 30,
+        right: 20,
+        padding: 20,
+        shadowColor: appColors.shadow,
+        elevation: 2,
+    },
+    addTask: {
+        height: 30,
+        width: 30,
+    },
+});
 
 export default function HomeScreen(props) {
 
     const navigation = props.navigation;
+    const isFocused = useIsFocused();
 
     // options menu handling
     const [optionsMenuPosition, setOptionsMenuPosition] = useState({ x: 100, y: 100 });
@@ -93,33 +79,6 @@ export default function HomeScreen(props) {
     // sorting orders: date, title, progress, deadline
     const [sortingOrder, setSortingOrder] = useState('date');
     const [sortAsc, setSortAsc] = useState(true);
-
-    // style
-    const styles = StyleSheet.create({
-        container: {
-            height: '100%',
-            backgroundColor: appColors.header_background,
-            alignContent: 'stretch',
-        },
-        scroll: {
-            justifyContent: 'center',
-            minHeight: '100%',
-        },
-        addTaskContainer: {
-            backgroundColor: appColors.button_background,
-            borderRadius: 35,
-            position: 'absolute',
-            bottom: 30,
-            right: 20,
-            padding: 20,
-            shadowColor: appColors.shadow,
-            elevation: 2,
-        },
-        addTask: {
-            height: 30,
-            width: 30,
-        },
-    });
 
     // tasks
     const [tasks, setTasks] = useState([]); // task objects
@@ -169,52 +128,13 @@ export default function HomeScreen(props) {
         setTasks(readTasks);
     }
 
-    const sortTasks = (tasksToSort) => {
-        let sortedTasks;        
-        switch(sortingOrder){
-            case 'date':
-                if(sortAsc)
-                    sortedTasks = tasksToSort.sort((a, b) => Date.parse(a.dateCreated) - Date.parse(b.dateCreated));
-                else
-                    sortedTasks = tasksToSort.sort((a, b) => Date.parse(b.dateCreated) - Date.parse(a.dateCreated));
-                break;
-            case 'title':
-                if(sortAsc){
-                    sortedTasks = tasksToSort.sort((a, b) => {
-                        if(a.title.toLowerCase() < b.title.toLowerCase()) return -1;
-                        if(a.title.toLowerCase() > b.title.toLowerCase()) return 1;
-                    });
-                }
-                else{
-                    sortedTasks = tasksToSort.sort((a, b) => {
-                        if(a.title.toLowerCase() > b.title.toLowerCase()) return -1;
-                        if(a.title.toLowerCase() < b.title.toLowerCase()) return 1;
-                    });
-                }
-                break;
-            case 'progress':
-                if(sortAsc)
-                    sortedTasks = tasksToSort.sort((a, b) => a.percent - b.percent);
-                else
-                    sortedTasks = tasksToSort.sort((a, b) => b.percent - a.percent);
-                break;
-            case 'deadline':
-                if(sortAsc)
-                    sortedTasks = tasksToSort.sort((a, b) => Date.parse(a.dueDate) - Date.parse(b.dueDate));
-                else
-                    sortedTasks = tasksToSort.sort((a, b) => Date.parse(b.dueDate) - Date.parse(a.dueDate));
-                break;
-        }
-        return sortedTasks;
-    }
-
     // maps task list to Task components and updates displayed task list
     const updateTasks = async () => {
         ta = [...tasks];
         pinnedTasks = ta.filter((e) => e.pinned);
         restOfTasks = ta.filter((e) => !e.pinned);
 
-        const sortedTasks = sortTasks(restOfTasks);
+        const sortedTasks = SortTasks(restOfTasks, sortingOrder, sortAsc);
         setMappedTasks(() => sortedTasks.map((task) => {
             return (
                 <Task
@@ -264,7 +184,6 @@ export default function HomeScreen(props) {
             manageTasks();
     }, [props.route.params.addedTask]);
 
-    const isFocused = useIsFocused();
     // rerender when: navigating back from other screens, sorting conditions or order change, tasks are updated
     useEffect(() => {
         updateTasks();
@@ -273,7 +192,7 @@ export default function HomeScreen(props) {
     // read tasks from local storage when loaded
     useEffect(() => {
         manageTasks();
-    }, []);
+    }, [isFocused]);
 
     // pin selected task
     const pinSelectedTask = async () => {
@@ -323,10 +242,12 @@ export default function HomeScreen(props) {
         setSortAsc(prevState => !prevState);
     }
 
+    // toggle sort menu visibility from SortTasks
     const updateSortMenuVisibility = () => {
         setSortMenuVisible(prevState => !prevState);
     }
 
+    // toggle options menu visibility from OptionsMenu
     const updateOptionsMenuVisibility = () => {
         setModalVisible(prevState => !prevState);
     }
