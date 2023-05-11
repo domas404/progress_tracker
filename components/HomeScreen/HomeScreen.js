@@ -3,6 +3,8 @@ import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Text, Al
 import MainTasks from "./MainTasks"
 import MainHead from "./MainHead"
 import Task from "./Task"
+import SortMenu from "./SortMenu"
+import OptionsMenu from "./OptionsMenu"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -63,6 +65,9 @@ const appColors = {
 
 export default function HomeScreen(props) {
 
+    const navigation = props.navigation;
+
+    // options menu handling
     const [optionsMenuPosition, setOptionsMenuPosition] = useState({ x: 100, y: 100 });
     const [selectedTask, setSelectedTask] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
@@ -75,11 +80,11 @@ export default function HomeScreen(props) {
         setModalVisible(true);
     }
 
+    // sort menu handling
     const [sortMenuVisible, setSortMenuVisible] = useState(false);
     const [sortMenuPosition, setSortMenuPosiiton] = useState({ x: 100, y: 100 })
 
     const toggleSortMenu = (measurements) => {
-        // setSortMenuVisible(prevState => !prevState);
         let newPosition = { x: Math.round(measurements.px), y: Math.round(measurements.py)};
         setSortMenuPosiiton(newPosition);
         setSortMenuVisible(prevState => !prevState);
@@ -89,6 +94,7 @@ export default function HomeScreen(props) {
     const [sortingOrder, setSortingOrder] = useState('date');
     const [sortAsc, setSortAsc] = useState(true);
 
+    // style
     const styles = StyleSheet.create({
         container: {
             height: '100%',
@@ -113,77 +119,9 @@ export default function HomeScreen(props) {
             height: 30,
             width: 30,
         },
-        optionsMenuContainer: {
-            position: 'absolute',
-            top: optionsMenuPosition.y,
-            right: 65,
-            backgroundColor: appColors.options_background,
-            width: 180,
-            borderRadius: 24,
-            shadowColor: '#666',
-            elevation: 4,
-        },
-        optionsMenuOption: {
-            padding: 16,
-            marginLeft: 10,
-            marginRight: 10,
-            borderBottomColor: appColors.options_border,
-            borderBottomWidth: 1,
-        },
-        deleteOptionsMenuOption: {
-            padding: 16,
-            marginLeft: 10,
-            marginRight: 10,
-        },
-        option: {
-            color: appColors.options_option,
-            fontWeight: 700,
-            fontSize: 16,
-        },
-        deleteOption: {
-            color: appColors.options_deleteOption,
-            fontWeight: 700,
-            fontSize: 16,
-        },
-        modalBackground: {
-            height: '100%',
-            width: '100%'
-        },
-        sortMenuContainer: {
-            position: 'absolute',
-            top: sortMenuPosition.y + 10,
-            right: 20,
-            backgroundColor: appColors.options_background,
-            width: 200,
-            borderRadius: 24,
-            shadowColor: appColors.shadow,
-            elevation: 4,
-        },
-        sortMenuOption: {
-            padding: 16,
-            marginLeft: 5,
-            marginRight: 5,
-            borderBottomColor: appColors.options_border,
-            borderBottomWidth: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-        },
-        lastSortMenuOption: {
-            padding: 16,
-            marginLeft: 5,
-            marginRight: 5,
-            flexDirection: 'row',
-            alignItems: 'center',
-        },
-        sortMenuIcon: {
-            height: 20,
-            width: 20,
-            marginRight: 7,
-        }
     });
 
-    const navigation = props.navigation;
-
+    // tasks
     const [tasks, setTasks] = useState([]); // task objects
     const [mappedTasks, setMappedTasks] = useState([]); // task objects mapped to Task components
     const [mappedPinnedTasks, setMappedPinnedTasks] = useState([]); // pinned task objects mapped to Task components
@@ -198,10 +136,10 @@ export default function HomeScreen(props) {
     // Returns value by key
     const getValuesByKey = async (key) => {
         values = await AsyncStorage.getItem(key);
-        // console.log(values);
         return JSON.parse(values);
     }
 
+    // Reads all tasks from local storage
     const setTaskObject = async (allKeys) => {
         const results = [];
         let task;
@@ -221,7 +159,7 @@ export default function HomeScreen(props) {
         return results;
     }
 
-    // reads all tasks from local storage
+    // Reads all relevant task keys from local storage & updates tasks state
     const manageTasks = async () => {
         let allKeys = await getAllKeys(); // get all keys from local storage
         allKeys = allKeys.filter(element => element !== 'taskCount'); // remove taskCount key from array
@@ -232,9 +170,7 @@ export default function HomeScreen(props) {
     }
 
     const sortTasks = (tasksToSort) => {
-        let sortedTasks;
-        // console.log("tasksToSort:", tasksToSort);
-        
+        let sortedTasks;        
         switch(sortingOrder){
             case 'date':
                 if(sortAsc)
@@ -272,14 +208,13 @@ export default function HomeScreen(props) {
         return sortedTasks;
     }
 
-    // maps task list to Task components and updates displayed task list (when new task is added to local storage)
+    // maps task list to Task components and updates displayed task list
     const updateTasks = async () => {
         ta = [...tasks];
-
         pinnedTasks = ta.filter((e) => e.pinned);
         restOfTasks = ta.filter((e) => !e.pinned);
-        const sortedTasks = sortTasks(restOfTasks);
 
+        const sortedTasks = sortTasks(restOfTasks);
         setMappedTasks(() => sortedTasks.map((task) => {
             return (
                 <Task
@@ -314,13 +249,7 @@ export default function HomeScreen(props) {
         }));
     };
 
-    const onTaskAdded = () => {
-        if(props.route.params.addedTask){
-            updateTasks();
-            props.route.params.addedTask = false;
-        }
-    }
-
+    // checks if task is pinned (in order to display 'pin' or 'unpin' option in options menu, depending if task is pinned)
     const [isTaskPinned, setIsTaskPinned] = useState({});
 
     const checkIfPinned = (id) => {
@@ -329,101 +258,41 @@ export default function HomeScreen(props) {
         setIsTaskPinned({ taskId: id, isPinned: taskToCheck.pinned })
     }
 
-    const MenuComponent = () => {
-        return (
-            <Modal
-                style={styles.modal}
-                transparent
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-                animationType="fade"
-            >
-                <Pressable style={styles.modalBackground} onPress={() => setModalVisible(false)} />
-                <View style={styles.optionsMenuContainer}>
-                    <TouchableOpacity style={styles.optionsMenuOption} onPress={() => pinSelectedTask()}>
-                        <Text style={styles.option}>{isTaskPinned.isPinned ? "Unpin" : "Pin"}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.optionsMenuOption}>
-                        <Text style={styles.option}>Edit</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.optionsMenuOption} onPress={() => archiveSelectedTask()}>
-                        <Text style={styles.option}>Archive</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.deleteOptionsMenuOption} onPress={() => deleteSelectedTask()}>
-                        <Text style={styles.deleteOption}>Delete</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
-        )
-    };
-
-    const SortMenuComponent = () => {
-        return (
-            <Modal
-                style={styles.modal}
-                transparent
-                visible={sortMenuVisible}
-                onRequestClose={() => setSortMenuVisible(prevState => !prevState)}
-                animationType="fade"
-            >
-                <Pressable style={styles.modalBackground} onPress={() => setSortMenuVisible(prevState => !prevState)} />
-                <View style={styles.sortMenuContainer}>
-                    <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('date')} >
-                        <Image style={styles.sortMenuIcon} source={require("../../assets/calendar_green.png")} resizeMode='contain' />
-                        <Text style={styles.option}>Date created</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('title')} >
-                        <Image style={styles.sortMenuIcon} source={require("../../assets/text_green.png")} resizeMode='contain' />
-                        <Text style={styles.option}>Title</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.sortMenuOption} onPress={() => manageSorting('progress')} >
-                        <Image style={styles.sortMenuIcon} source={require("../../assets/bar_chart_green.png")} resizeMode='contain' />
-                        <Text style={styles.option}>Progress</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.lastSortMenuOption} onPress={() => manageSorting('deadline')} >
-                        <Image style={styles.sortMenuIcon} source={require("../../assets/deadline_green.png")} resizeMode='contain' />
-                        <Text style={styles.option}>Due date</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
-        )
-    }
-
+    // rerender when new task is added
     useEffect(() => {
-        onTaskAdded();
+        if(props.route.params.addedTask)
+            manageTasks();
     }, [props.route.params.addedTask]);
 
     const isFocused = useIsFocused();
-
+    // rerender when: navigating back from other screens, sorting conditions or order change, tasks are updated
     useEffect(() => {
         updateTasks();
-        // const isFocused = useIsFocused();
-        // console.log(sortAsc);
     }, [isFocused, sortingOrder, sortAsc, tasks]);
 
+    // read tasks from local storage when loaded
     useEffect(() => {
         manageTasks();
     }, []);
 
+    // pin selected task
     const pinSelectedTask = async () => {
-        // console.log(selectedTask);
         const taskToPin = await getValuesByKey(selectedTask);
-        // const taskToPin = getValuesByKey(id);
         AsyncStorage.mergeItem(selectedTask, JSON.stringify({ pinned: !taskToPin.pinned }));
         setModalVisible(false);
-        updateTasks();
+        manageTasks();
     }
 
+    // delete selected task
     const deleteSelectedTask = async () => {
         const taskToDelete = await getValuesByKey(selectedTask);
-        // console.log(taskToDelete);
         Alert.alert(`Delete '${taskToDelete.title}'?`, 'This action permanetly deletes task with all of its contents.', [
             {
                 text: 'Delete',
                 onPress: () => {
                     setModalVisible(false);
                     AsyncStorage.removeItem(selectedTask);
-                    updateTasks();
+                    manageTasks();
                     ToastAndroid.show("Task deleted", ToastAndroid.SHORT);
                 }
             },
@@ -434,22 +303,32 @@ export default function HomeScreen(props) {
         ]);
     }
 
+    // archive selected task
     const archiveSelectedTask = async () => {
         const taskToArchive = await getValuesByKey(selectedTask);
-        // console.log("Archive");
         setModalVisible(false);
         AsyncStorage.mergeItem(selectedTask, JSON.stringify({ archived: !taskToArchive.archived }));
         updateTasks();
         ToastAndroid.show("Task archived", ToastAndroid.SHORT);
     }
 
+    // manage sorting order and menu visibility
     const manageSorting = (order) => {
         setSortingOrder(order);
         setSortMenuVisible(prevState => !prevState);
     }
 
+    // change sorting direction
     const changeSortingOrder = () => {
         setSortAsc(prevState => !prevState);
+    }
+
+    const updateSortMenuVisibility = () => {
+        setSortMenuVisible(prevState => !prevState);
+    }
+
+    const updateOptionsMenuVisibility = () => {
+        setModalVisible(prevState => !prevState);
     }
 
     return (
@@ -468,8 +347,27 @@ export default function HomeScreen(props) {
                     changeSortingOrder={changeSortingOrder}
                     sortingOrder={sortingOrder}
                 />
-                { modalVisible && <MenuComponent /> }
-                { sortMenuVisible && <SortMenuComponent /> }
+                {
+                    modalVisible && <OptionsMenu
+                        appColors={appColors}
+                        modalVisible={modalVisible}
+                        optionsMenuPosition={optionsMenuPosition}
+                        updateOptionsMenuVisibility={updateOptionsMenuVisibility}
+                        isTaskPinned={isTaskPinned}
+                        pinSelectedTask={pinSelectedTask}
+                        archiveSelectedTask={archiveSelectedTask}
+                        deleteSelectedTask={deleteSelectedTask}
+                    />
+                }
+                {
+                    sortMenuVisible && <SortMenu
+                        appColors={appColors}
+                        manageSorting={manageSorting}
+                        sortMenuPosition={sortMenuPosition}
+                        sortMenuVisible={sortMenuVisible}
+                        updateSortMenuVisibility={updateSortMenuVisibility}
+                    />
+                }
             </ScrollView>
             <TouchableOpacity
                 style={styles.addTaskContainer}

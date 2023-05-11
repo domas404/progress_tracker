@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView, ToastAndroid, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LabelSection from './LabelSection';
@@ -150,29 +150,23 @@ export default function AddTaskScreen(props) {
 
     const [selected, setSelected] = useState("");
 
-    const data = [
-        { key:'1', value:'Karo studijos' },
-        { key:'2', value:'Univeras' },
-        { key:'3', value:'Humanoidai' },
-    ]
+    const [newTaskAdded, setNewTaskAdded] = useState(false);
 
     const storeNewTask = async (value) => {
         key = JSON.parse(await AsyncStorage.getItem('taskCount'));
-        // console.log(key);
-        try {
-            const jsonValue = JSON.stringify(value)
-            await AsyncStorage.setItem(JSON.stringify(key+1), jsonValue)
-            await AsyncStorage.setItem('taskCount', JSON.stringify(key+1));
-        } catch (e) {
-            // saving error
-        }
+        const jsonValue = JSON.stringify(value)
+        await AsyncStorage.setItem(JSON.stringify(key+1), jsonValue)
+        await AsyncStorage.setItem('taskCount', JSON.stringify(key+1));
+        setNewTaskAdded(true);
     }
 
+    useEffect(() => {
+        if(newTaskAdded)
+            props.navigation.navigate('home', { addedTask: true });
+    }, [newTaskAdded])
+
     const storeLabels = async (newLabels) => {
-        // console.log("newLabels", newLabels);
         let storedLabels = JSON.parse(await AsyncStorage.getItem('labels'));
-        // console.log("storedLabels", storedLabels);
-        // console.log("aaa");
         let labelsToStore = [...storedLabels];
         for(let label of newLabels){
             if(storedLabels.find((e) => e.id == label.id)){
@@ -181,7 +175,6 @@ export default function AddTaskScreen(props) {
                 labelsToStore.push(label);
             }
         }
-        // console.log("labelsToStore", labelsToStore);
         await AsyncStorage.setItem('labels', JSON.stringify(labelsToStore));
     }
 
@@ -194,8 +187,6 @@ export default function AddTaskScreen(props) {
     }
 
     const date_time = new Date().getTime();
-
-    // console.log("new date", new Date(new Date().getTime()));
     
 
     const [date, setDate] = useState(new Date(date_time));
@@ -303,7 +294,6 @@ export default function AddTaskScreen(props) {
                                     "dateCreated": new Date(new Date().getTime()),
                                 });
                                 storeLabels(labels);
-                                props.navigation.navigate('home', { addedTask: true });
                                 ToastAndroid.show("Task added", ToastAndroid.SHORT);
                             }}
                         >
