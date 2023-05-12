@@ -8,9 +8,9 @@ export default function LabelSection(props) {
 
     const styles = StyleSheet.create({
         container: {
-            width: '95%',
+            width: '90%',
             minHeight: 200,
-            marginLeft: '2.5%',
+            marginLeft: '5%',
         },
         chosenLabelsContainer: {
             flexDirection: 'row',

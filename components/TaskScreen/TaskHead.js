@@ -10,7 +10,7 @@ export default function TaskHead(props) {
             width: '100%',
             alignItems: 'center',
             height: 'auto',
-            paddingTop: '10%',
+            paddingTop: '5%',
             marginBottom: '5%'
         },
         mainTextContainer: {
@@ -96,7 +96,6 @@ export default function TaskHead(props) {
         goBack: {
             width: 24,
             height: 24,
-            
         },
         goBackContainer: {
             padding: 8,

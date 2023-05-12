@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Alert, ToastAndroid } from 'react-native';
+import { StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity, Alert, ToastAndroid, StatusBar, View } from 'react-native';
 import MainTasks from "./MainTasks"
 import MainHead from "./MainHead"
 import Task from "./Task"
@@ -28,9 +28,21 @@ const styles = StyleSheet.create({
         backgroundColor: appColors.header_background,
         alignContent: 'stretch',
     },
+    topNavContainer: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+        backgroundColor: appColors.header_background,
+        borderBottomWidth: 1,
+        borderBottomColor: appColors.header_outline,
+        // top: 40,
+        height: 60,
+    },
     scroll: {
         justifyContent: 'center',
         minHeight: '100%',
+        // top: '10%',
     },
     addTaskContainer: {
         backgroundColor: appColors.button_background,
@@ -45,6 +57,25 @@ const styles = StyleSheet.create({
     addTask: {
         height: 30,
         width: 30,
+    },
+    dateContainer: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        padding: '5%',
+        // backgroundColor: appColors.header_background,
+        // position: 'absolute',
+        // top: 20,
+    },
+    goBack: {
+        width: 28,
+        height: 28,
+        
+    },
+    goBackContainer: {
+        padding: 8,
     },
 });
 
@@ -254,6 +285,27 @@ export default function HomeScreen(props) {
 
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar
+                barStyle={appColors.header_text}
+                backgroundColor={appColors.header_background}
+                // translucent
+            />
+            <View style={styles.topNavContainer}>
+                <View style={styles.dateContainer}>
+                    <TouchableOpacity
+                        // onPress={() => props.navigation.navigate('home')}
+                        style={styles.goBackContainer}
+                    >
+                        <Image style={styles.goBack} source={require("../../assets/setting_light_green.png")} resizeMode='contain' />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        // onPress={() => props.navigation.navigate('home')}
+                        style={styles.goBackContainer}
+                    >
+                        <Image style={styles.goBack} source={require("../../assets/filters_light_green.png")} resizeMode='contain' />
+                    </TouchableOpacity>
+                </View>
+            </View>
             <ScrollView contentContainerStyle={styles.scroll}>
                 <MainHead
                     navigation={navigation}

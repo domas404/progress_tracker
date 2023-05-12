@@ -8,7 +8,7 @@ export default function MainHead(props) {
             width: '100%',
             alignItems: 'center',
             height: 'auto',
-            paddingTop: '10%',
+            // paddingTop: '10%',
             marginBottom: '5%'
         },
         mainTextContainer: {
@@ -35,7 +35,9 @@ export default function MainHead(props) {
             width: '90%',
             justifyContent: 'space-between',
             alignItems: 'center',
-            flexDirection: 'row'
+            flexDirection: 'row',
+            position: 'absolute',
+            top: 20,
         },
         goBack: {
             width: 24,
@@ -49,14 +51,14 @@ export default function MainHead(props) {
 
     return (
         <View style={styles.header}>
-            <View style={styles.dateContainer}>
+            {/* <View style={styles.dateContainer}>
                 <TouchableOpacity
                     // onPress={() => props.navigation.navigate('home')}
                     style={styles.goBackContainer}
                 >
                     <Image style={styles.goBack} source={require("../../assets/menu_light_green.png")} resizeMode='contain' />
                 </TouchableOpacity>
-            </View>
+            </View> */}
             <View style={styles.mainTextContainer}>
                 <Text style={styles.mainText}>My tasks</Text>
             </View>

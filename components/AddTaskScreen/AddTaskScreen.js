@@ -4,44 +4,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LabelSection from './LabelSection';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
-getAllKeys = async () => {
-    let keys = []
-    try {
-      keys = await AsyncStorage.getAllKeys()
-    } catch(e) {
-      // read key error
-    }
-  
-    console.log(keys);
-}
-
-// getAllKeys();
-
-getMyStringValue = async () => {
-    // console.log(await AsyncStorage.getItem('36'));
-    
-}
-
-
-clearAll = async () => {
-    await AsyncStorage.clear()
-    console.log('Cleared.')
-}
-
-// clearAll();
-
 export default function AddTaskScreen(props) {
 
-    appColors = props.route.params.appColors;
+    const appColors = props.route.params.appColors;
 
     const styles = StyleSheet.create({
         headerContainer: {
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: appColors.header_background,
-            height: '15%',
-            marginTop: 20,
-            minHeight: 100,
+            // height: '15%',
+            // marginTop: 10,
+            marginBottom: 10,
+            maxHeight: 150,
         },
         scrollContainer: {
             borderTopLeftRadius: 40,
@@ -55,8 +30,10 @@ export default function AddTaskScreen(props) {
             // minHeight: '100%',
         },
         header: {
-            fontSize: 32,
-            color: 'white',
+            fontSize: 24,
+            color: props.route.params.appColors.body_text,
+            marginTop: 10,
+            width: '100%',
         },
         formContainer: {
             borderTopLeftRadius: 40,
@@ -66,9 +43,9 @@ export default function AddTaskScreen(props) {
             paddingTop: 10,
         },
         input: {
-            height: 50,
-            marginLeft: '2.5%',
-            width: '95%',
+            // height: 50,
+            marginLeft: '5%',
+            width: '90%',
             backgroundColor: 'white',
             padding: 10,
             borderRadius: 25,
@@ -76,7 +53,8 @@ export default function AddTaskScreen(props) {
             fontSize: 16,
         },
         descriptionInput: {
-            minHeight: 80,
+            minHeight: 70,
+            maxHeight: 150,
             textAlignVertical: 'top',
             fontSize: 16,
         },
@@ -85,7 +63,9 @@ export default function AddTaskScreen(props) {
             backgroundColor: appColors.header_background,
         },
         addButton: {
-            width: '35%',
+            // width: '35%',
+            paddingLeft: 40,
+            paddingRight: 40,
             height: 60,
             backgroundColor: appColors.button_background,
             justifyContent: 'center',
@@ -94,7 +74,7 @@ export default function AddTaskScreen(props) {
         },
         buttonText: {
             color: 'white',
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: 700,
         },
         inputLabel: {
@@ -123,11 +103,13 @@ export default function AddTaskScreen(props) {
         },
         datetimeContainer: {
             flexDirection: 'row',
+            width: '90%',
+            marginLeft: '5%',
         },
         buttonContainer: {
             width: '100%',
             alignItems: 'flex-end',
-            padding: '2.5%',
+            padding: '5%',
         },
         labelImage: {
             width: 20,
@@ -137,6 +119,7 @@ export default function AddTaskScreen(props) {
         },
         labelLabelContainer: {
             flexDirection: 'row',
+            marginLeft: '5%',
             width: '90%',
             alignItems: 'center',
             marginTop: 20,
@@ -145,6 +128,55 @@ export default function AddTaskScreen(props) {
         titleInput: {
             padding: '2.5%',
             textAlign: 'center',
+        },
+        addTask: {
+            height: 30,
+            width: 30,
+        },
+        topNavContainer: {
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // elevation: 1,
+            backgroundColor: appColors.header_background,
+            // borderBottomWidth: 1,
+            // borderBottomColor: appColors.header_outline,
+            marginTop: '5%',
+            // backgroundColor: 'yellow',
+            // height: 50,
+        },
+        topNav: {
+            width: '100%',
+            // height: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'row',
+            paddingLeft: '5%',
+            paddingRight: '5%',
+            // backgroundColor: appColors.header_background,
+            // position: 'absolute',
+            // top: 20,
+        },
+        goBack: {
+            width: 24,
+            height: 24,
+        },
+        goBackContainer: {
+            padding: 8,
+        },
+        add_edit: {
+            color: appColors.header_labelText,
+            fontWeight: 700,
+            fontSize: 18,
+        },
+        taskTitleContainer: {
+            width: '90%',
+            marginLeft: '5%',
+            paddingTop: 10,
+            paddingBottom: 10,
+            borderBottomWidth: 1,
+            borderBottomColor: appColors.header_outline,
+            maxHeight: 200,
         }
     });
 
@@ -215,22 +247,65 @@ export default function AddTaskScreen(props) {
 
     // console.log(date);
 
+    const handleTaskAdded = () => {
+        storeNewTask({
+            "title": title,
+            "description": description,
+            "pinned": false,
+            "subTaskCount": 0,
+            "completeTaskCount": 0,
+            "archived": false,
+            "taskList": [],
+            "taskLog": 0, // how many tasks were added in total (including deleted)
+            "weightSum": 0,
+            "completeWeightSum": 0,
+            "labels": labels,
+            "dueDate": date,
+            "dateCreated": new Date(new Date().getTime()),
+        });
+        storeLabels(labels);
+        ToastAndroid.show("Task added", ToastAndroid.SHORT);
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-                <View style={styles.headerContainer}>
-                    {/* <Text style={styles.header}>Add a new task</Text> */}
+            <View style={styles.topNavContainer}>
+                <View style={styles.topNav}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            props.navigation.navigate('home', { addedTask: true });
+                            ToastAndroid.show("Task discarded", ToastAndroid.SHORT);
+                        }}
+                        style={styles.goBackContainer}
+                    >
+                        <Image style={styles.goBack} source={require("../../assets/cancel_light_green.png")} resizeMode='contain' />
+                    </TouchableOpacity>
+                    <Text style={styles.add_edit}>Create</Text>
+                    <TouchableOpacity
+                        onPress={() => handleTaskAdded()}
+                        style={styles.goBackContainer}
+                    >
+                        <Image style={styles.goBack} source={require("../../assets/tick_light_green.png")} resizeMode='contain' />
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View style={styles.headerContainer}>
+                {/* <Text style={styles.header}>Add a new task</Text> */}
+                
+            </View>
+            <View style={styles.scrollContainer}>
+            <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps='handled'>
+                <View style={styles.taskTitleContainer}>
                     <TextInput
                         style={[styles.titleInput, styles.header]}
                         onChangeText={newTitle => setTitle(newTitle)}
                         defaultValue={title}
                         placeholder='Add task title...'
-                        placeholderTextColor='rgba(255,255,255,0.7)'
+                        placeholderTextColor='rgba(0,0,0,0.6)'
                         multiline={true}
                         autoFocus={true}
                     />
                 </View>
-            <View style={styles.scrollContainer}>
-            <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps='handled'>
                 <View style={styles.formContainer}>
                     <View style={styles.labelLabelContainer}>
                         <Image style={styles.labelImage} source={require("../../assets/calendar_green.png")} resizeMode='contain' />
@@ -257,7 +332,7 @@ export default function AddTaskScreen(props) {
                     </View>
                     <View style={styles.labelLabelContainer}>
                         <Image style={styles.labelImage} source={require("../../assets/notes_green.png")} resizeMode='contain' />
-                        <Text style={styles.inputLabel}>Notes</Text>
+                        <Text style={styles.inputLabel}>Description</Text>
                     </View>
                     <TextInput
                         style={[styles.input, styles.descriptionInput]}
@@ -278,23 +353,7 @@ export default function AddTaskScreen(props) {
                         <TouchableOpacity
                             style={styles.addButton}
                             onPress={() => {
-                                storeNewTask({
-                                    "title": title,
-                                    "description": description,
-                                    "pinned": false,
-                                    "subTaskCount": 0,
-                                    "completeTaskCount": 0,
-                                    "archived": false,
-                                    "taskList": [],
-                                    "taskLog": 0, // how many tasks were added in total (including deleted)
-                                    "weightSum": 0,
-                                    "completeWeightSum": 0,
-                                    "labels": labels,
-                                    "dueDate": date,
-                                    "dateCreated": new Date(new Date().getTime()),
-                                });
-                                storeLabels(labels);
-                                ToastAndroid.show("Task added", ToastAndroid.SHORT);
+                                handleTaskAdded();
                             }}
                         >
                             <Text style={styles.buttonText}>ADD</Text>
