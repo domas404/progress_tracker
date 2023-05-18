@@ -6,6 +6,10 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 export default function AddTaskScreen(props) {
 
+    // console.log(props.route.params);
+
+    // console.log(props);
+
     const appColors = props.route.params.appColors;
 
     const styles = StyleSheet.create({
@@ -13,8 +17,6 @@ export default function AddTaskScreen(props) {
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: appColors.header_background,
-            // height: '15%',
-            // marginTop: 10,
             marginBottom: 10,
             maxHeight: 150,
         },
@@ -27,7 +29,6 @@ export default function AddTaskScreen(props) {
         scroll: {
             justifyContent: 'center',
             paddingBottom: 20,
-            // minHeight: '100%',
         },
         header: {
             fontSize: 24,
@@ -43,7 +44,6 @@ export default function AddTaskScreen(props) {
             paddingTop: 10,
         },
         input: {
-            // height: 50,
             marginLeft: '5%',
             width: '90%',
             backgroundColor: 'white',
@@ -63,7 +63,6 @@ export default function AddTaskScreen(props) {
             backgroundColor: appColors.header_background,
         },
         addButton: {
-            // width: '35%',
             paddingLeft: 40,
             paddingRight: 40,
             height: 60,
@@ -81,18 +80,14 @@ export default function AddTaskScreen(props) {
             fontWeight: 700,
             color: appColors.body_labelText,
             fontSize: 16,
-            // marginLeft: 10,
-            // marginTop: 15,
         },
         dateContainer: {
             backgroundColor: appColors.body_emptyBar,
-            // width: 140,
             height: 40,
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 20,
             marginLeft: '2.5%',
-            // marginTop: 10,
             paddingLeft: 20,
             paddingRight: 20
         },
@@ -137,25 +132,16 @@ export default function AddTaskScreen(props) {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            // elevation: 1,
             backgroundColor: appColors.header_background,
-            // borderBottomWidth: 1,
-            // borderBottomColor: appColors.header_outline,
             marginTop: '5%',
-            // backgroundColor: 'yellow',
-            // height: 50,
         },
         topNav: {
             width: '100%',
-            // height: '100%',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexDirection: 'row',
             paddingLeft: '5%',
             paddingRight: '5%',
-            // backgroundColor: appColors.header_background,
-            // position: 'absolute',
-            // top: 20,
         },
         goBack: {
             width: 24,
@@ -180,10 +166,10 @@ export default function AddTaskScreen(props) {
         }
     });
 
-    const [selected, setSelected] = useState("");
-
+    // sets to true when new task info is saved to storage
     const [newTaskAdded, setNewTaskAdded] = useState(false);
 
+    // stores new task
     const storeNewTask = async (value) => {
         key = JSON.parse(await AsyncStorage.getItem('taskCount'));
         const jsonValue = JSON.stringify(value)
@@ -192,11 +178,21 @@ export default function AddTaskScreen(props) {
         setNewTaskAdded(true);
     }
 
+    // updates existing task
+    const updateExistingTask = async (value) => {
+        console.log("value", value);
+        key = props.route.params.taskId; // task that's being edited
+        const jsonValue = JSON.stringify(value); // updated values
+        await AsyncStorage.mergeItem(key, jsonValue); // write to storage
+        setNewTaskAdded(true);
+    }
+
     useEffect(() => {
         if(newTaskAdded)
             props.navigation.navigate('home', { addedTask: true });
     }, [newTaskAdded])
 
+    // updates label list in storage
     const storeLabels = async (newLabels) => {
         let storedLabels = JSON.parse(await AsyncStorage.getItem('labels'));
         let labelsToStore = [...storedLabels];
@@ -210,24 +206,33 @@ export default function AddTaskScreen(props) {
         await AsyncStorage.setItem('labels', JSON.stringify(labelsToStore));
     }
 
-    const [title, setTitle] = React.useState('');
-    const [description, setDescription] = React.useState('');
-    const [labels, setLabels] = React.useState([]);
+    const [title, setTitle] = React.useState(''); // title value
+    const [description, setDescription] = React.useState(''); // description value
+    const [labels, setLabels] = React.useState([]); // labels value
 
+    // if existing task is being edited, assign current values
+    useEffect(() => {
+        // console.log("Labels:", props.route.params.taskInfo.labels);
+        if(props.route.params.editTask){
+            setTitle(props.route.params.taskInfo.title);
+            setDescription(props.route.params.taskInfo.description);
+            setLabels(props.route.params.taskInfo.labels);
+        }
+    }, []);
+
+    // set new labels
     const updateLabels = (newLabels) => {
         setLabels(newLabels);
     }
 
+    // date and time
     const date_time = new Date().getTime();
-    
-
     const [date, setDate] = useState(new Date(date_time));
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
         setDate(currentDate);
-      };
-
+    };
     const showMode = (currentMode) => {
         DateTimePickerAndroid.open({
           value: date,
@@ -236,35 +241,43 @@ export default function AddTaskScreen(props) {
           is24Hour: true,
         });
     };
-
     const showTimepicker = () => {
         showMode('time');
     };
-    
     const showDatepicker = () => {
         showMode('date');
     };
 
-    // console.log(date);
-
+    // 
     const handleTaskAdded = () => {
-        storeNewTask({
-            "title": title,
-            "description": description,
-            "pinned": false,
-            "subTaskCount": 0,
-            "completeTaskCount": 0,
-            "archived": false,
-            "taskList": [],
-            "taskLog": 0, // how many tasks were added in total (including deleted)
-            "weightSum": 0,
-            "completeWeightSum": 0,
-            "labels": labels,
-            "dueDate": date,
-            "dateCreated": new Date(new Date().getTime()),
-        });
+
+        if(props.route.params.editTask) {
+            updateExistingTask({
+                "title": title,
+                "description": description,
+                "labels": labels,
+                "dueDate": date,
+            });
+            ToastAndroid.show("Task updated", ToastAndroid.SHORT);
+        } else {
+            storeNewTask({
+                "title": title,
+                "description": description,
+                "pinned": false,
+                "subTaskCount": 0,
+                "completeTaskCount": 0,
+                "archived": false,
+                "taskList": [],
+                "taskLog": 0, // how many tasks were added in total (including deleted)
+                "weightSum": 0,
+                "completeWeightSum": 0,
+                "labels": labels,
+                "dueDate": date,
+                "dateCreated": new Date(new Date().getTime()),
+            });
+            ToastAndroid.show("Task added", ToastAndroid.SHORT);
+        }
         storeLabels(labels);
-        ToastAndroid.show("Task added", ToastAndroid.SHORT);
     }
 
     return (
@@ -280,7 +293,9 @@ export default function AddTaskScreen(props) {
                     >
                         <Image style={styles.goBack} source={require("../../assets/cancel_light_green.png")} resizeMode='contain' />
                     </TouchableOpacity>
-                    <Text style={styles.add_edit}>Create</Text>
+                    {
+                        props.route.params.editTask ? <Text style={styles.add_edit} >Edit</Text> : <Text style={styles.add_edit} >Create</Text>
+                    }
                     <TouchableOpacity
                         onPress={() => handleTaskAdded()}
                         style={styles.goBackContainer}
@@ -348,6 +363,11 @@ export default function AddTaskScreen(props) {
                     <LabelSection
                         updateLabels={updateLabels}
                         appColors={appColors}
+                        taskLabels={
+                            props.route.params.editTask ?
+                                props.route.params.taskInfo.labels
+                            : 0
+                        }
                     />
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity

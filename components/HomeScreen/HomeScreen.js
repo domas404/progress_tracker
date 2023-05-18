@@ -125,7 +125,7 @@ export default function HomeScreen(props) {
 
     // Returns value by key
     const getValuesByKey = async (key) => {
-        values = await AsyncStorage.getItem(key);
+        const values = await AsyncStorage.getItem(key);
         return JSON.parse(values);
     }
 
@@ -233,6 +233,23 @@ export default function HomeScreen(props) {
         manageTasks();
     }
 
+    const editSelectedTask = async () => {
+        // console.log("selectedTask", selectedTask);
+        const index = tasks.findIndex((e) => e.id == selectedTask);
+        const taskToEdit = tasks[index];
+        // console.log(taskToEdit);
+        navigation.navigate(
+            'add_task',
+            {
+                appColors: appColors,
+                editTask: true,
+                taskId: selectedTask,
+                taskInfo: taskToEdit
+            }
+        );
+        setModalVisible(false);
+    }
+
     // delete selected task
     const deleteSelectedTask = async () => {
         const taskToDelete = await getValuesByKey(selectedTask);
@@ -328,6 +345,7 @@ export default function HomeScreen(props) {
                         updateOptionsMenuVisibility={updateOptionsMenuVisibility}
                         isTaskPinned={isTaskPinned}
                         pinSelectedTask={pinSelectedTask}
+                        editSelectedTask={editSelectedTask}
                         archiveSelectedTask={archiveSelectedTask}
                         deleteSelectedTask={deleteSelectedTask}
                     />
@@ -345,7 +363,17 @@ export default function HomeScreen(props) {
             <TouchableOpacity
                 style={styles.addTaskContainer}
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate('add_task', { appColors: appColors })}
+                onPress={() => {
+                    navigation.navigate(
+                        'add_task',
+                        {
+                            appColors: appColors,
+                            editTask: false,
+                            taskId: undefined,
+                            taskInfo: undefined
+                        }
+                    )
+                }}
             >
                 <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
             </TouchableOpacity>

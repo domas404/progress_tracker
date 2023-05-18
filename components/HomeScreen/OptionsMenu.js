@@ -61,7 +61,7 @@ export default function OptionsMenu(props) {
                 <TouchableOpacity style={styles.optionsMenuOption} onPress={() => props.pinSelectedTask()}>
                     <Text style={styles.option}>{props.isTaskPinned.isPinned ? "Unpin" : "Pin"}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.optionsMenuOption}>
+                <TouchableOpacity style={styles.optionsMenuOption} onPress={() => props.editSelectedTask()}>
                     <Text style={styles.option}>Edit</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.optionsMenuOption} onPress={() => props.archiveSelectedTask()}>

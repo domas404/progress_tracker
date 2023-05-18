@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LabelSection(props) {
 
-    // console.log(props);
+    // console.log("Label props:", props);
 
     const styles = StyleSheet.create({
         container: {
@@ -104,17 +104,29 @@ export default function LabelSection(props) {
             marginRight: 10,
         }
     });
+    // label: { checked, id, labelName }
+    const [chosenLabels, setChosenLabels] = useState([]);     // labels that are displayed on top of the list
+    const [labels, setLabels] = useState([]);                 // ALL labels from local storage (+ new labels added when editing/creating task)
+    const [filteredLabels, setFilteredLabels] = useState([]); // labels that fit search pattern
+    const [searchInput, setSearchInput] = useState("");       // label search input
 
-    const [chosenLabels, setChosenLabels] = useState([]);
-    const [labels, setLabels] = useState([]);
-    const [filteredLabels, setFilteredLabels] = useState([]);
-    const [searchInput, setSearchInput] = useState("");
-
+    // set initial labels to display
     const getInitialLabels = async () => {
-        storedLabels = await AsyncStorage.getItem('labels');
-        storedLabels = JSON.parse(storedLabels);
-        storedLabels.map(label => label.checked = false);
-        setLabels(storedLabels);
+        let storedLabels = await AsyncStorage.getItem('labels'); // get from storage
+        storedLabels = JSON.parse(storedLabels); // convert to object
+        storedLabels.map(label => label.checked = false); // make sure all are unchecked
+        if(props.taskLabels != 0) { // if task is being edited
+            setChosenLabels(props.taskLabels); // set labels to display
+            storedLabels = storedLabels.map(label => {
+                var newLabel = {...label};
+                var index = props.taskLabels.findIndex(e => e.id == label.id);
+                if(index > -1) {
+                    newLabel.checked = !newLabel.checked;
+                }
+                return newLabel;
+            })
+        }
+        setLabels(storedLabels); // set to labels state variable
         setFilteredLabels(storedLabels);
     }
     useEffect(() => {
@@ -128,44 +140,28 @@ export default function LabelSection(props) {
     const onLabelCheck = (option) => {
 
         let isChecked = !option.checked;
+        var newLabel = [...labels];
+        const labelIndex = labels.findIndex((label) => label.id == option.id);
+        newLabel[labelIndex].checked = !labels[labelIndex].checked;
+        setLabels(newLabel);
         
-        setLabels((prevLabels) => {
-            newLabel = prevLabels;
-            labelIndex = prevLabels.findIndex((label) => label.id == option.id);
-            newLabel[labelIndex].checked = !prevLabels[labelIndex].checked;
-            return newLabel;
-        });
-        // console.log(isChecked);
         if(isChecked) {
             setChosenLabels((prevLabels) => {
-                console.log("Update tasks when checked is true");
-                newLabelList = [...prevLabels, option];
-                // props.updateLabels(() => newLabelList);
+                const newLabelList = [...prevLabels, option];
                 return newLabelList;
             });
         } else {
             let labelToRemove = chosenLabels.findIndex((label) => label.id == option.id);
-            // console.log("Labels", chosenLabels);
-            // console.log("Label to remove", labelToRemove);
-            setChosenLabels((prevChosenLabels) => {
-                console.log("Update tasks when checked is false");
-                let newLabelList = [...prevChosenLabels];
-                newLabelList.splice(labelToRemove, 1);
-                // console.log("NewLabelList after splicing:", newLabelList);
-                // props.updateLabels(() => newLabelList);
-                return newLabelList;
-            });
-            console.log(chosenLabels);
+            let newLabelList = [...chosenLabels];
+            newLabelList.splice(labelToRemove, 1);
+            setChosenLabels(newLabelList);
         }
     }
 
     const handleSearch = (input) => {
-        // console.log("Input:", input);
         setSearchInput(input);
         filterResults(input);
     };
-
-    // console.log(searchInput);
 
     const filterResults = (input) => {
         results = labels.filter((label) => {
@@ -173,11 +169,9 @@ export default function LabelSection(props) {
             return label.labelName.startsWith(input.toLowerCase());
         })
         setFilteredLabels(results);
-        // console.log("Results:", results);
     }
 
     const handleNewLabel = (name) => {
-        // console.log("New label:", name);
         let newLabelObject = {
             id: labels.length,
             checked: false,
