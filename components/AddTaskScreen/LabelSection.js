@@ -138,9 +138,11 @@ export default function LabelSection(props) {
     }, [chosenLabels]);
 
     const onLabelCheck = (option) => {
+        // console.log("option: ", option);
 
         let isChecked = !option.checked;
         var newLabel = [...labels];
+        // console.log("all labels: ", newLabel);
         const labelIndex = labels.findIndex((label) => label.id == option.id);
         newLabel[labelIndex].checked = !labels[labelIndex].checked;
         setLabels(newLabel);
@@ -172,19 +174,33 @@ export default function LabelSection(props) {
     }
 
     const handleNewLabel = (name) => {
+        // console.log("searchInput: ", searchInput);
         let newLabelObject = {
             id: labels.length,
             checked: false,
-            labelName: name,
+            labelName: searchInput,
         }
         newLabelList = [...labels, newLabelObject];
         setLabels((prevLabels) => {
             return [...prevLabels, newLabelObject];
         })
-        setSearchInput("");
-        onLabelCheck(newLabelObject);
         setFilteredLabels(newLabelList);
+        setNewLabelCreated(true);
     }
+
+    const [newLabelCreated, setNewLabelCreated] = useState(false);
+
+    useEffect(() => {
+        if(newLabelCreated){
+            onLabelCheck({
+                id: labels.length-1,
+                checked: false,
+                labelName: searchInput,
+            });
+            setSearchInput("");
+            setNewLabelCreated(false);
+        }
+    }, [labels]);
 
     return (
         <View style={styles.container}>
