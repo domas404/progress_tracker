@@ -82,6 +82,7 @@ export default function LabelSection(props) {
         tickIcon: {
             height: 14,
             width: 14,
+            tintColor: props.appColors.icon
         },
         noLabels: {
             margin: 5,

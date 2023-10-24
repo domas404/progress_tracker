@@ -76,6 +76,8 @@ export default function MainTasks(props) {
             height: 24,
             width: 24,
             marginRight: 5,
+            tintColor: props.appColors.icon_dark,
+
         },
         sortOrderContainer: {
             // backgroundColor: 'orange',
@@ -95,6 +97,28 @@ export default function MainTasks(props) {
             height: 36,
             paddingLeft: 15,
             paddingRight: 10,
+        },
+        sortIconContainer: {
+            flexDirection: "row",
+            justifyContent: 'flex-end',
+            marginLeft: 5,
+            height: 24,
+            width: 24,
+        },
+        sortIconAsc: {
+            height: 24,
+            width: 24,
+            left: 12,
+        },
+        sortIconDesc: {
+            height: 24,
+            width: 24,
+        },
+        sortIconDarkColor: {
+            tintColor: props.appColors.icon_dark
+        },
+        sortIconLightColor: {
+            tintColor: props.appColors.icon
         }
     })
 
@@ -129,7 +153,7 @@ export default function MainTasks(props) {
     return (
         <View style={styles.mainTasksContainer}>
             <View style={styles.sortByContainer}>
-                <Text style={styles.all}>All</Text>
+                <Text style={styles.all}>Other</Text>
                 <View 
                     style={styles.sortButton}
                     ref={myRef}
@@ -148,16 +172,30 @@ export default function MainTasks(props) {
                         }}
                     >
                         {
-                            sortAsc ?   <Image
-                                            style={styles.sortIcon}
-                                            source={require("../../assets/sort_ascending_green.png")}
-                                            resizeMode='contain'
-                                        />
-                            :           <Image
-                                            style={styles.sortIcon}
-                                            source={require("../../assets/sort_descending_green.png")}
-                                            resizeMode='contain'
-                                        />
+                            sortAsc ?   <View style={styles.sortIconContainer}>
+                                            <Image
+                                                style={[styles.sortIconAsc, styles.sortIconDarkColor]}
+                                                source={require("../../assets/sort_asc.png")}
+                                                resizeMode='contain'
+                                            />
+                                            <Image
+                                                style={[styles.sortIconDesc, styles.sortIconLightColor]}
+                                                source={require("../../assets/sort_desc.png")}
+                                                resizeMode='contain'
+                                            />
+                                        </View>
+                            :           <View style={styles.sortIconContainer}>
+                                            <Image
+                                                style={[styles.sortIconAsc, styles.sortIconLightColor]}
+                                                source={require("../../assets/sort_asc.png")}
+                                                resizeMode='contain'
+                                            />
+                                            <Image
+                                                style={[styles.sortIconDesc, styles.sortIconDarkColor]}
+                                                source={require("../../assets/sort_desc.png")}
+                                                resizeMode='contain'
+                                            />
+                                        </View>
 
                         }
                     </TouchableOpacity>

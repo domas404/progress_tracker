@@ -38,6 +38,7 @@ export default function SortMenuComponent(props) {
             height: 20,
             width: 20,
             marginRight: 7,
+            tintColor: props.appColors.icon_dark
         }
     });
 

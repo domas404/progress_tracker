@@ -73,6 +73,7 @@ export default function Task(props) {
             width: 28,
             marginLeft: 15,
             overflow:'visible',
+            tintColor: props.appColors.icon
         },
         labelText: {
             marginRight: 10,
@@ -83,6 +84,7 @@ export default function Task(props) {
             width: 24,
             height: 24,
             marginRight: 5,
+            tintColor: props.appColors.icon
         },
         pinAndTitle: {
             flexDirection: 'row',

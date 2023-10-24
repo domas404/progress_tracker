@@ -96,6 +96,7 @@ export default function TaskHead(props) {
         goBack: {
             width: 24,
             height: 24,
+            tintColor: props.appColors.icon
         },
         goBackContainer: {
             padding: 8,

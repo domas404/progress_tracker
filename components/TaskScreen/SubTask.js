@@ -46,6 +46,7 @@ export default function SubTask(props) {
         tick: {
             height: 18,
             width: 18,
+            tintColor: props.appColors.icon
         },
         subTaskTextContainer: {
             width: '90%',

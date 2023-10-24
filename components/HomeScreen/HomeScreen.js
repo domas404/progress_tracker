@@ -19,6 +19,10 @@ initializeStorageElement = async (key, value) => {
 initializeStorageElement('taskCount', JSON.stringify(0));
 initializeStorageElement('labels', JSON.stringify([]));
 
+clearAsyncStorage = async() => {
+    AsyncStorage.clear();
+}
+
 const appColors = AppColors();
 
 // style
@@ -69,14 +73,18 @@ const styles = StyleSheet.create({
         // position: 'absolute',
         // top: 20,
     },
-    goBack: {
+    icon: {
         width: 28,
         height: 28,
-        
+        tintColor: appColors.icon
     },
-    goBackContainer: {
+    iconContainer: {
         padding: 8,
     },
+    logo: {
+        height: 46,
+        width: 46,
+    }
 });
 
 export default function HomeScreen(props) {
@@ -310,16 +318,22 @@ export default function HomeScreen(props) {
             <View style={styles.topNavContainer}>
                 <View style={styles.dateContainer}>
                     <TouchableOpacity
-                        // onPress={() => props.navigation.navigate('home')}
-                        style={styles.goBackContainer}
+                        // onPress={() => clearAsyncStorage()}
+                        style={styles.iconContainer}
                     >
-                        <Image style={styles.goBack} source={require("../../assets/setting_light_green.png")} resizeMode='contain' />
+                        <Image style={styles.icon} source={require("../../assets/setting_light_green.png")} resizeMode='contain' />
                     </TouchableOpacity>
                     <TouchableOpacity
                         // onPress={() => props.navigation.navigate('home')}
-                        style={styles.goBackContainer}
+                        style={styles.iconContainer}
                     >
-                        <Image style={styles.goBack} source={require("../../assets/filters_light_green.png")} resizeMode='contain' />
+                        <Image style={styles.logo} source={require("../../assets/astronaut.png")} resizeMode='contain' />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        // onPress={() => props.navigation.navigate('home')}
+                        style={styles.iconContainer}
+                    >
+                        <Image style={styles.icon} source={require("../../assets/filters_light_green.png")} resizeMode='contain' />
                     </TouchableOpacity>
                 </View>
             </View>

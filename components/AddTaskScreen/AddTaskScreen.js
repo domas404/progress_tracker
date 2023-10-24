@@ -107,10 +107,11 @@ export default function AddTaskScreen(props) {
             padding: '5%',
         },
         labelImage: {
+            tintColor: appColors.icon_dark,
             width: 20,
             height: 20,
             marginLeft: '5%',
-            marginRight: 5
+            marginRight: 5,
         },
         labelLabelContainer: {
             flexDirection: 'row',
@@ -143,11 +144,12 @@ export default function AddTaskScreen(props) {
             paddingLeft: '5%',
             paddingRight: '5%',
         },
-        goBack: {
+        icon: {
             width: 24,
             height: 24,
+            tintColor: appColors.icon
         },
-        goBackContainer: {
+        iconContainer: {
             padding: 8,
         },
         add_edit: {
@@ -289,18 +291,18 @@ export default function AddTaskScreen(props) {
                             props.navigation.navigate('home', { addedTask: true });
                             ToastAndroid.show("Task discarded", ToastAndroid.SHORT);
                         }}
-                        style={styles.goBackContainer}
+                        style={styles.iconContainer}
                     >
-                        <Image style={styles.goBack} source={require("../../assets/cancel_light_green.png")} resizeMode='contain' />
+                        <Image style={styles.icon} source={require("../../assets/cancel_light_green.png")} resizeMode='contain' />
                     </TouchableOpacity>
                     {
                         props.route.params.editTask ? <Text style={styles.add_edit} >Edit</Text> : <Text style={styles.add_edit} >Create</Text>
                     }
                     <TouchableOpacity
                         onPress={() => handleTaskAdded()}
-                        style={styles.goBackContainer}
+                        style={styles.iconContainer}
                     >
-                        <Image style={styles.goBack} source={require("../../assets/tick_light_green.png")} resizeMode='contain' />
+                        <Image style={styles.icon} source={require("../../assets/tick_light_green.png")} resizeMode='contain' />
                     </TouchableOpacity>
                 </View>
             </View>

@@ -60,7 +60,7 @@ export default function MainHead(props) {
                 </TouchableOpacity>
             </View> */}
             <View style={styles.mainTextContainer}>
-                <Text style={styles.mainText}>My tasks</Text>
+                <Text style={styles.mainText}>All tasks</Text>
             </View>
             <View style={styles.pinnedTextContainer}>
                 <Text style={styles.pinnedLabelText}>Pinned</Text>
