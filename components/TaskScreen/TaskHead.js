@@ -112,7 +112,7 @@ export default function TaskHead(props) {
                     onPress={() => props.navigation.navigate('home')}
                     style={styles.goBackContainer}
                 >
-                    <Image style={styles.goBack} source={require("../../assets/go_back_light_green.png")} resizeMode='contain' />
+                    <Image style={styles.goBack} source={require("../../assets/go_back.png")} resizeMode='contain' />
                 </TouchableOpacity>
                 <Text style={styles.dueDate}>
                     Due: {

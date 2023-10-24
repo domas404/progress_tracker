@@ -234,7 +234,7 @@ export default function LabelSection(props) {
                                 style={styles.createLabelOption}
                                 onPress={() => handleNewLabel(searchInput)}
                             >
-                                <Image style={styles.addIcon} source={require("../../assets/add_green.png")} resizeMode='contain' />
+                                <Image style={styles.addIcon} source={require("../../assets/add.png")} resizeMode='contain' />
                                 <Text>Create "{searchInput}"</Text>
                             </TouchableOpacity>
                         :
@@ -248,7 +248,7 @@ export default function LabelSection(props) {
                                     {
                                         label.checked ?
                                         <View style={[styles.checkBox, styles.checkedCheckBox]}>
-                                            <Image style={styles.tickIcon} source={require("../../assets/tick_light_green.png")} resizeMode='contain' />
+                                            <Image style={styles.tickIcon} source={require("../../assets/tick.png")} resizeMode='contain' />
                                         </View>
                                         :
                                         <View style={styles.checkBox} />

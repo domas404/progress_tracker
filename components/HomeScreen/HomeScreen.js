@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     addTask: {
         height: 30,
         width: 30,
+        tintColor: appColors.header_text
     },
     dateContainer: {
         width: '100%',
@@ -321,7 +322,7 @@ export default function HomeScreen(props) {
                         // onPress={() => clearAsyncStorage()}
                         style={styles.iconContainer}
                     >
-                        <Image style={styles.icon} source={require("../../assets/setting_light_green.png")} resizeMode='contain' />
+                        <Image style={styles.icon} source={require("../../assets/setting.png")} resizeMode='contain' />
                     </TouchableOpacity>
                     <TouchableOpacity
                         // onPress={() => props.navigation.navigate('home')}
@@ -333,7 +334,7 @@ export default function HomeScreen(props) {
                         // onPress={() => props.navigation.navigate('home')}
                         style={styles.iconContainer}
                     >
-                        <Image style={styles.icon} source={require("../../assets/filters_light_green.png")} resizeMode='contain' />
+                        <Image style={styles.icon} source={require("../../assets/filters.png")} resizeMode='contain' />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -389,7 +390,7 @@ export default function HomeScreen(props) {
                     )
                 }}
             >
-                <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
+                <Image style={styles.addTask} source={require("../../assets/add.png")} resizeMode='contain' />
             </TouchableOpacity>
         </SafeAreaView>
     );

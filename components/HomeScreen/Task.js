@@ -175,14 +175,14 @@ export default function Task(props) {
             <View style={[basicStyle.taskTitleContainer, styles.taskTitleContainer]}>
                 <View style={basicStyle.titleAndMenu}>
                     <View style={basicStyle.pinAndTitle}>
-                        { props.pinned && <Image style={basicStyle.pinIcon} source={require("../../assets/thumbtacks_light_green.png")} resizeMode='contain' />}
+                        { props.pinned && <Image style={basicStyle.pinIcon} source={require("../../assets/thumbtacks.png")} resizeMode='contain' />}
                         <Text style={[basicStyle.taskTitle, styles.taskTitle]}>{props.title}</Text>
                     </View>
                     <TouchableOpacity
                         onPress={() => getPosition() }
                         ref={myRef}
                     >
-                        <Image style={basicStyle.taskMenu} source={require("../../assets/dots_light_green.png")} resizeMode='contain' />
+                        <Image style={basicStyle.taskMenu} source={require("../../assets/dots.png")} resizeMode='contain' />
                     </TouchableOpacity>
                 </View>
             </View>

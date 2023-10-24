@@ -59,19 +59,19 @@ export default function SortMenuComponent(props) {
             <Pressable style={styles.modalBackground} onPress={() => setSortMenuVisible(prevState => !prevState)} />
             <View style={styles.sortMenuContainer}>
                 <TouchableOpacity style={styles.sortMenuOption} onPress={() => props.manageSorting('date')} >
-                    <Image style={styles.sortMenuIcon} source={require("../../assets/calendar_green.png")} resizeMode='contain' />
+                    <Image style={styles.sortMenuIcon} source={require("../../assets/calendar.png")} resizeMode='contain' />
                     <Text style={styles.option}>Date created</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.sortMenuOption} onPress={() => props.manageSorting('title')} >
-                    <Image style={styles.sortMenuIcon} source={require("../../assets/text_green.png")} resizeMode='contain' />
+                    <Image style={styles.sortMenuIcon} source={require("../../assets/text.png")} resizeMode='contain' />
                     <Text style={styles.option}>Title</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.sortMenuOption} onPress={() => props.manageSorting('progress')} >
-                    <Image style={styles.sortMenuIcon} source={require("../../assets/bar_chart_green.png")} resizeMode='contain' />
+                    <Image style={styles.sortMenuIcon} source={require("../../assets/bar_chart.png")} resizeMode='contain' />
                     <Text style={styles.option}>Progress</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.lastSortMenuOption} onPress={() => props.manageSorting('deadline')} >
-                    <Image style={styles.sortMenuIcon} source={require("../../assets/deadline_green.png")} resizeMode='contain' />
+                    <Image style={styles.sortMenuIcon} source={require("../../assets/deadline.png")} resizeMode='contain' />
                     <Text style={styles.option}>Due date</Text>
                 </TouchableOpacity>
             </View>

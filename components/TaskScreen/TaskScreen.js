@@ -31,6 +31,7 @@ export default function TaskScreen(props) {
         addTask: {
             height: 30,
             width: 30,
+            tintColor: props.route.params.appColors.header_text
         }
     });
 
@@ -225,7 +226,7 @@ export default function TaskScreen(props) {
                         toggleAddButtonVisibility();
                     }}
                 >
-                    <Image style={styles.addTask} source={require("../../assets/add_white.png")} resizeMode='contain' />
+                    <Image style={styles.addTask} source={require("../../assets/add.png")} resizeMode='contain' />
                 </TouchableOpacity>
             }
         </SafeAreaView>

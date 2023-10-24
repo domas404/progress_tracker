@@ -293,7 +293,7 @@ export default function AddTaskScreen(props) {
                         }}
                         style={styles.iconContainer}
                     >
-                        <Image style={styles.icon} source={require("../../assets/cancel_light_green.png")} resizeMode='contain' />
+                        <Image style={styles.icon} source={require("../../assets/cancel.png")} resizeMode='contain' />
                     </TouchableOpacity>
                     {
                         props.route.params.editTask ? <Text style={styles.add_edit} >Edit</Text> : <Text style={styles.add_edit} >Create</Text>
@@ -302,7 +302,7 @@ export default function AddTaskScreen(props) {
                         onPress={() => handleTaskAdded()}
                         style={styles.iconContainer}
                     >
-                        <Image style={styles.icon} source={require("../../assets/tick_light_green.png")} resizeMode='contain' />
+                        <Image style={styles.icon} source={require("../../assets/tick.png")} resizeMode='contain' />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -325,7 +325,7 @@ export default function AddTaskScreen(props) {
                 </View>
                 <View style={styles.formContainer}>
                     <View style={styles.labelLabelContainer}>
-                        <Image style={styles.labelImage} source={require("../../assets/calendar_green.png")} resizeMode='contain' />
+                        <Image style={styles.labelImage} source={require("../../assets/calendar.png")} resizeMode='contain' />
                         <Text style={styles.inputLabel}>Due date</Text>
                     </View>
                     <View style={styles.datetimeContainer}>
@@ -348,7 +348,7 @@ export default function AddTaskScreen(props) {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.labelLabelContainer}>
-                        <Image style={styles.labelImage} source={require("../../assets/notes_green.png")} resizeMode='contain' />
+                        <Image style={styles.labelImage} source={require("../../assets/notes.png")} resizeMode='contain' />
                         <Text style={styles.inputLabel}>Description</Text>
                     </View>
                     <TextInput
@@ -359,7 +359,7 @@ export default function AddTaskScreen(props) {
                         multiline={true}
                     />
                     <View style={styles.labelLabelContainer}>
-                        <Image style={styles.labelImage} source={require("../../assets/label_green.png")} resizeMode='contain' />
+                        <Image style={styles.labelImage} source={require("../../assets/label.png")} resizeMode='contain' />
                         <Text style={styles.inputLabel}>Labels</Text>
                     </View>
                     <LabelSection

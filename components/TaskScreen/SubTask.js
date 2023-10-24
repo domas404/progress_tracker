@@ -194,7 +194,7 @@ export default function SubTask(props) {
                         {
                             complete ?
                                 <View style={[basicStyle.checkBoxShape, basicStyle.checked]}>
-                                    <Image style={basicStyle.tick} source={require("../../assets/tick_light_green.png")} />
+                                    <Image style={basicStyle.tick} source={require("../../assets/tick.png")} />
                                 </View>
                             :
                                 <View style={basicStyle.checkBoxShape}></View>
