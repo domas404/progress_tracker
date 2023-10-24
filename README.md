@@ -1,8 +1,13 @@
 # PROGRESS tracker app
 
-Progress tracker is a hybrid mobile app made using the React Native framework with the help of Expo.
+Progress tracker is a hybrid mobile app made with React Native and Expo.
 
-> Note: This project was created in order to advance front-end and multi-platform mobile app development skills. It is by no means finished or ready for production. However, all implemented functionalities are fully operational in a debugging environment.
+> Note: This project was created in order to advance front-end and cross-platform mobile app development skills. It is by no means finished. However, all implemented functionalities are fully operational in a debugging environment.
+
+## About
+This app let's you track progress of your tasks by providing the percentage of completed subtasks. In order to do this, subtasks are given weight values, depending on the effort needed to complete them (the weight of each subtask defaults to 1, if not provided otherwise).
+
+## User Interface
 
 ### How to add a new task?
 1. Press Add button in the bottom right of the screen.
